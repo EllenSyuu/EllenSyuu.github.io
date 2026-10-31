@@ -14,8 +14,8 @@ results:
     label: 'Person-days collapsed into sufficient statistics (people at risk and events per covariate cell × calendar day) — same MLE, same standard errors, no sub-sampling.'
   - value: '1M people · 13 s'
     label: 'A million-person synthetic cohort fits in 13 s and 0.3 GB; the person-day route runs out of memory beyond about 5,000 people on the same machine.'
-github: ''
-external: ''
+github: 'https://github.com/EllenSyuu/VVI'
+external: 'https://ellensyuu.github.io/VVI/'
 tech:
   - Python
   - cloglog GLM
