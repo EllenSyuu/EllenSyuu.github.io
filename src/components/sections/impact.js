@@ -21,7 +21,7 @@ const ROLES = [
     note: 'Advised first-year students through the move from school to university; named Outstanding Science Student Peer Advisor, 2022–23.',
   },
   {
-    years: '2024 —',
+    years: '2024 — now',
     role: 'Alumni Connector',
     org: 'HKU Class of 2024',
     note: '',
@@ -37,6 +37,12 @@ const ROLES = [
     role: 'Project Coordinator',
     org: 'Millennium Fellowship · UN Academic Impact',
     note: 'Led voluntary teaching and support for children from minority groups in China during Covid-19.',
+  },
+  {
+    years: '2024 — 26',
+    role: 'Soprano',
+    org: 'McGill Choral Society',
+    note: '',
   },
   {
     years: '2020 — 24',
@@ -195,7 +201,7 @@ const Impact = () => {
         <p className="sub">roles alongside the degrees</p>
         <ol>
           {ROLES.map(r => (
-            <li key={r.role}>
+            <li key={`${r.role}-${r.org}`}>
               <span className="years">{r.years}</span>
               <span className="role">
                 {r.role}
