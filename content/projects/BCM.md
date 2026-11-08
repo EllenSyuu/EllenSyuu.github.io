@@ -1,7 +1,7 @@
 ---
 date: '2026-10-20'
 title: 'Bayesian Cohort Model (SDG 4.1.4)'
-github: ''
+github: 'https://github.com/EllenSyuu/BCM'
 external: ''
 tech:
   - NumPyro
