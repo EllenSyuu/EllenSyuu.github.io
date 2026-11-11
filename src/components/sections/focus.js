@@ -123,9 +123,9 @@ const StyledFocus = styled.section`
       border-radius: 0;
       background: none;
       color: var(--dark-slate);
-      font-family: var(--font-serif);
-      font-size: 12.5px;
-      font-weight: 600;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       outline: 0;
@@ -150,15 +150,16 @@ const StyledFocus = styled.section`
     padding-top: 16px;
     border-top: 0.75px solid var(--hairline);
     color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.16em;
     text-transform: uppercase;
 
     a {
       ${({ theme }) => theme.mixins.inlineLink};
       margin-left: 0;
+      font-family: var(--font-serif);
       font-size: 17px;
       font-style: italic;
       font-weight: 500;

@@ -4,6 +4,7 @@ import styled, { keyframes } from 'styled-components';
 import { usePrefersReducedMotion } from '@hooks';
 import { showResume, socialMedia } from '@config';
 import TailField from '@components/tail-field';
+import { Icon } from '@components/icons';
 
 /*
  * The cover: Montréal seen from the river, drawn as an atelier plate — Mont Royal in contour
@@ -180,40 +181,71 @@ const StyledHero = styled.section`
 
   .eyebrow {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 14px;
-    margin: 0 0 20px;
+    gap: 6px 0;
+    margin: 0 0 28px;
+    padding: 0;
+    list-style: none;
     color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.26em;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     animation: ${fade} 0.9s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
     &:before {
       content: '';
-      width: 40px;
+      width: 32px;
       height: 0.75px;
-      background: currentColor;
+      margin-right: 16px;
+      background: var(--ink);
+    }
+
+    li {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 600px) {
+      font-size: 10.5px;
+      letter-spacing: 0.13em;
+
+      &:before {
+        display: none;
+      }
+      li + li:before {
+        margin: 0 9px 2px;
+      }
+    }
+
+    li + li:before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      margin: 0 12px 2px;
+      border-radius: 50%;
+      background: var(--maple);
+      vertical-align: middle;
     }
   }
 
   h1 {
-    margin: 0;
-    max-width: 11em;
+    margin: 0 0 0 -0.04em;
     color: var(--lightest-slate);
     font-family: var(--font-serif);
-    font-size: clamp(54px, 7.4vw, 112px);
+    font-size: clamp(64px, 8.4vw, 132px);
     font-weight: 500;
-    line-height: 0.98;
-    letter-spacing: -0.012em;
+    line-height: 0.9;
+    letter-spacing: -0.028em;
+    white-space: nowrap;
 
     .w {
       display: inline-block;
       overflow: hidden;
-      padding: 0.06em 0.04em 0.12em 0;
-      margin-bottom: -0.12em;
+      padding: 0.04em 0.02em 0.14em 0;
+      margin-bottom: -0.14em;
       vertical-align: bottom;
 
       > span {
@@ -221,151 +253,124 @@ const StyledHero = styled.section`
         animation: ${up} 1.1s cubic-bezier(0.2, 0.75, 0.15, 1) both;
       }
     }
+  }
 
-    em {
-      color: var(--green);
-      font-style: italic;
-      font-weight: 500;
-    }
-    /* Phones: always two lines, whichever font is showing, so nothing reflows. */
-    @media (max-width: 600px) {
-      .w:nth-child(3) {
-        display: block;
-        width: max-content;
-      }
+  .aka {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 0 0.2em;
+    color: var(--green);
+    font-family: var(--font-hand);
+    font-size: clamp(20px, 1.7vw, 25px);
+    line-height: 1;
+    transform: rotate(-1.5deg);
+    transform-origin: left;
+    animation: ${fade} 1s 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+    &:before {
+      content: '';
+      width: 28px;
+      height: 0.75px;
+      background: currentColor;
     }
   }
 
   .positioning {
-    max-width: 29em;
-    margin: 30px 0 0;
-    color: var(--light-slate);
-    font-size: clamp(17px, 1.45vw, 19px);
-    line-height: 1.65;
+    max-width: 20.5em;
+    margin: 36px 0 0;
+    color: var(--lightest-slate);
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 1.85vw, 27px);
+    font-weight: 500;
+    line-height: 1.32;
+    letter-spacing: -0.003em;
     animation: ${fade} 1s 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
     em {
-      font-family: var(--font-serif);
-      font-size: 1.18em;
+      color: var(--green);
       font-style: italic;
-      font-weight: 600;
-      color: var(--lightest-slate);
     }
   }
 
-  .roles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 0;
-    margin: 24px 0 0;
-    padding: 0;
-    list-style: none;
-    color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .creds {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: 0 40px;
+    max-width: 620px;
+    margin: 40px 0 0;
+    padding-top: 16px;
+    border-top: 0.75px solid var(--hairline);
     animation: ${fade} 1s 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
-    li {
-      white-space: nowrap;
+    dt {
+      margin-bottom: 6px;
+      color: var(--dark-slate);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
     }
 
-    li + li:before {
-      content: '·';
-      margin: 0 14px;
-      color: var(--green);
+    dd {
+      margin: 0;
+      color: var(--lightest-slate);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.4;
     }
 
     @media (max-width: 600px) {
-      flex-direction: column;
+      grid-template-columns: 1fr;
+      gap: 10px;
 
-      li + li:before {
-        display: none;
+      > div {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        align-items: baseline;
+      }
+
+      dt {
+        margin: 0;
       }
     }
-  }
-
-  .open {
-    max-width: 26em;
-    margin: 18px 0 0;
-    color: var(--green);
-    font-family: var(--font-hand);
-    font-size: clamp(16px, 1.3vw, 18px);
-    line-height: 1.5;
-    animation: ${fade} 1s 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 26px;
+    gap: 18px 28px;
     margin-top: 40px;
     animation: ${fade} 1s 1.05s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  }
-
-  .quick {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 0;
-    margin: 26px 0 0;
-    padding: 0;
-    list-style: none;
-    animation: ${fade} 1s 1.15s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-
-    li + li:before {
-      content: '·';
-      margin: 0 12px;
-      color: var(--green);
-    }
-
-    a {
-      color: var(--dark-slate);
-      font-family: var(--font-serif);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-
-      &:hover,
-      &:focus-visible {
-        color: var(--green);
-      }
-
-      &:after {
-        display: none;
-      }
-    }
   }
 
   .primary {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
-    padding: 15px 26px 14px;
+    gap: 12px;
+    padding: 16px 24px;
+    border-radius: 2px;
     background: var(--lightest-slate);
     color: ${PAPER};
-    font-family: var(--font-serif);
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    outline: 0.75px solid var(--lightest-slate);
-    outline-offset: 4px;
-    transition: var(--transition);
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    box-shadow: 0 1px 0 rgba(34, 49, 74, 0.25), 0 10px 24px -14px rgba(34, 49, 74, 0.55);
+    transition: background 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
 
     .arrow {
-      letter-spacing: 0;
       transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
 
     &:hover,
     &:focus-visible {
-      background: var(--maple);
+      background: var(--green);
       color: ${PAPER};
-      outline-color: var(--green);
+      transform: translateY(-1px);
 
       .arrow {
         transform: translateX(4px);
@@ -378,20 +383,74 @@ const StyledHero = styled.section`
   }
 
   .secondary {
+    position: relative;
     color: var(--lightest-slate);
-    font-family: var(--font-serif);
-    font-size: 19px;
-    font-style: italic;
+    font-family: var(--font-sans);
+    font-size: 14.5px;
     font-weight: 500;
-    border-bottom: 0.75px solid currentColor;
-    padding-bottom: 1px;
+    padding: 4px 0;
 
     &:after {
-      display: none;
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.75px;
+      background: currentColor;
+      transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       color: var(--green);
+      &:after {
+        transform: scaleX(0.35);
+      }
+    }
+  }
+
+  .quick {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0 0 0 28px;
+    border-left: 0.75px solid var(--hairline);
+    list-style: none;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: var(--light-slate);
+      transition: color 0.25s ease, background 0.25s ease;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--green);
+        background: rgba(207, 96, 43, 0.08);
+      }
+
+      &:after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      width: 100%;
+      padding: 0;
+      border-left: 0;
+      margin-left: -10px;
     }
   }
 
@@ -445,7 +504,7 @@ const StyledHero = styled.section`
       background: var(--light-slate);
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1500px) {
       display: none;
     }
   }
@@ -471,37 +530,6 @@ const StyledHero = styled.section`
       letter-spacing: 0.24em;
       text-transform: uppercase;
       opacity: 0.8;
-    }
-
-    @media (max-width: 900px) {
-      display: none;
-    }
-  }
-
-  .scroll {
-    position: absolute;
-    left: max(24px, calc((100vw - 1080px) / 2));
-    bottom: 34px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-
-    span {
-      display: block;
-      width: 0.75px;
-      height: 40px;
-      background: currentColor;
-      animation: ${cue} 2.4s ease-in-out infinite;
-    }
-
-    &:after {
-      display: none;
     }
 
     @media (max-width: 900px) {
@@ -930,24 +958,40 @@ const Hero = () => {
       </div>
 
       <div className="copy">
-        <p className="eyebrow">Statistician &amp; data engineer · Montréal</p>
+        <ul className="eyebrow" aria-label="Role and city">
+          <li>Statistician</li>
+          <li>Data engineer</li>
+          <li>Montréal</li>
+        </ul>
         <h1 aria-label="Ziyi (Ellen) Zhou">
           <span aria-hidden="true">
-            {word('Ziyi', 0)} {word('(Ellen)', 1, true)} {word('Zhou.', 2)}
+            {word('Ziyi', 0)} {word('Zhou', 1)}
           </span>
         </h1>
+        <p className="aka" aria-hidden="true">
+          or simply Ellen
+        </p>
         <p className="positioning">
           I model <em>rare, high-impact events</em> — floods, financial tail risk, gaps in
           education data — and build the software that makes those models trustworthy.
         </p>
-        <ul className="roles">
-          <li>UNESCO Institute for Statistics</li>
-          <li>M.Sc. Statistics, McGill</li>
-          <li>B.Sc. Statistics, HKU</li>
-        </ul>
+        <dl className="creds">
+          <div>
+            <dt>Now</dt>
+            <dd>UNESCO Institute for Statistics</dd>
+          </div>
+          <div>
+            <dt>M.Sc.</dt>
+            <dd>Statistics, McGill</dd>
+          </div>
+          <div>
+            <dt>B.Sc.</dt>
+            <dd>Statistics, HKU</dd>
+          </div>
+        </dl>
         <div className="actions">
           <Link className="primary" to="/#projects">
-            Selected work <span className="arrow">→</span>
+            See selected work <span className="arrow">→</span>
           </Link>
           {showResume ? (
             <a className="secondary" href={withPrefix('/resume.pdf')} target="_blank" rel="noreferrer">
@@ -958,19 +1002,26 @@ const Hero = () => {
               Experience
             </Link>
           )}
-        </div>
-        <ul className="quick" aria-label="Find me">
-          {socialMedia.map(s => (
-            <li key={s.name}>
-              <a href={s.url} target="_blank" rel="noreferrer">
-                {s.name === 'Linkedin' ? 'LinkedIn' : s.name}
-              </a>
+          <ul className="quick" aria-label="Find me">
+            {socialMedia.map(s => (
+              <li key={s.name}>
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.name === 'Linkedin' ? 'LinkedIn' : s.name}
+                  title={s.name === 'Linkedin' ? 'LinkedIn' : s.name}>
+                  <Icon name={s.name} />
+                </a>
+              </li>
+            ))}
+            <li>
+              <Link to="/#contact" aria-label="Write to me" title="Write to me">
+                <Icon name="Mail" />
+              </Link>
             </li>
-          ))}
-          <li>
-            <Link to="/#contact">Write to me</Link>
-          </li>
-        </ul>
+          </ul>
+        </div>
       </div>
 
       <div className="sky-field" aria-hidden="true">
@@ -983,9 +1034,6 @@ const Hero = () => {
         Montréal, vue du fleuve<span>Planche 0</span>
       </p>
 
-      <Link className="scroll" to="/#about" aria-label="Scroll to About">
-        <span /> Scroll
-      </Link>
     </StyledHero>
   );
 };

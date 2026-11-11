@@ -19,9 +19,9 @@ const StyledPostHeader = styled.header`
   .overline {
     margin: 0 0 15px;
     color: var(--green);
-    font-family: var(--font-serif);
-    font-size: 13px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
   }

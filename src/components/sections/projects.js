@@ -155,9 +155,9 @@ const StyledProject = styled.li`
 
     li {
       color: var(--dark-slate);
-      font-family: var(--font-serif);
-      font-size: 12px;
-      font-weight: 600;
+      font-family: var(--font-sans);
+      font-size: 10.5px;
+      font-weight: 500;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       line-height: 1.9;

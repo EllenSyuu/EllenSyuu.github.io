@@ -131,20 +131,31 @@ const StyledLinks = styled.div`
     list-style: none;
 
     li {
-      margin: 0 5px;
+      margin: 0 4px;
       position: relative;
       counter-increment: item 1;
-      font-size: var(--fz-xs);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      letter-spacing: 0.005em;
 
       a {
-        padding: 10px;
+        padding: 10px 12px;
+        color: var(--lightest-slate);
 
         &:before {
-          content: '0' counter(item) '.';
-          margin-right: 5px;
+          content: counter(item, decimal-leading-zero);
+          margin-right: 8px;
           color: var(--green);
-          font-size: var(--fz-xxs);
-          text-align: right;
+          font-size: 10.5px;
+          font-weight: 500;
+          letter-spacing: 0.08em;
+          vertical-align: 1px;
+        }
+
+        &:hover,
+        &:focus-visible {
+          color: var(--green);
         }
       }
     }

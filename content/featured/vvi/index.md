@@ -15,7 +15,7 @@ results:
   - value: '1M people · 13 s'
     label: 'A million-person synthetic cohort fits in 13 s and 0.3 GB; the person-day route runs out of memory beyond about 5,000 people on the same machine.'
 github: 'https://github.com/EllenSyuu/VVI'
-external: 'https://ellensyuu.github.io/VVI/'
+external: ''
 tech:
   - Python
   - cloglog GLM

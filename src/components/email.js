@@ -43,18 +43,16 @@ const StyledLinkWrapper = styled.div`
   }
 `;
 
-// Shows the email vertically on the right; until one is set, shows where I am instead.
-const Email = ({ isHome }) => (
-  <Side isHome={isHome} orientation="right">
-    <StyledLinkWrapper>
-      {email ? (
+// Shows the email vertically on the right margin once one is set; nothing otherwise, so the
+// margin stays clear of the cover drawing.
+const Email = ({ isHome }) =>
+  email ? (
+    <Side isHome={isHome} orientation="right">
+      <StyledLinkWrapper>
         <a href={`mailto:${email}`}>{email}</a>
-      ) : (
-        <span className="place">Montréal · 45.50°N 73.57°W</span>
-      )}
-    </StyledLinkWrapper>
-  </Side>
-);
+      </StyledLinkWrapper>
+    </Side>
+  ) : null;
 
 Email.propTypes = {
   isHome: PropTypes.bool,

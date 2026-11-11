@@ -5,9 +5,9 @@ const button = css`
   background-color: transparent;
   border: 0.75px solid var(--ink);
   border-radius: 0;
-  font-size: 13px;
-  font-family: var(--font-serif);
-  font-weight: 600;
+  font-size: 11px;
+  font-family: var(--font-sans);
+  font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   line-height: 1;
@@ -95,9 +95,9 @@ const mixins = {
     border: 0.75px solid var(--ink);
     border-radius: 0;
     padding: 0.7rem 1rem 0.62rem;
-    font-size: 12px;
-    font-family: var(--font-serif);
-    font-weight: 600;
+    font-size: 10.5px;
+    font-family: var(--font-sans);
+    font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     line-height: 1;
@@ -121,9 +121,9 @@ const mixins = {
     border: 0.75px solid var(--ink);
     border-radius: 0;
     padding: 1.15rem 1.8rem 1.05rem;
-    font-size: 13.5px;
-    font-family: var(--font-serif);
-    font-weight: 600;
+    font-size: 11.5px;
+    font-family: var(--font-sans);
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     line-height: 1;

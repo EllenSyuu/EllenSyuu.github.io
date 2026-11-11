@@ -24,14 +24,10 @@ const StyledContactSection = styled.section`
     margin-bottom: 8px;
     color: var(--lightest-slate);
     font-family: var(--font-serif);
-    font-size: clamp(34px, 5vw, 46px);
-    font-weight: 600;
-    letter-spacing: 0;
+    font-size: clamp(38px, 5.4vw, 60px);
+    font-weight: 500;
+    letter-spacing: -0.022em;
     text-transform: none;
-
-    &:before {
-      bottom: 0;
-    }
 
     &:after {
       display: none;
@@ -79,9 +75,9 @@ const StyledForm = styled.form`
     flex-direction: column;
     gap: 4px;
     color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
   }

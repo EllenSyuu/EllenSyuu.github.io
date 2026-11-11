@@ -132,7 +132,7 @@ const StyledSidebar = styled.aside`
       }
 
       &:before {
-        content: '0' counter(item) '.';
+        content: counter(item, decimal-leading-zero);
         display: block;
         margin-bottom: 5px;
         color: var(--green);

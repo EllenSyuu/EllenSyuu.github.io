@@ -228,53 +228,41 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .numbered-heading {
-    display: flex;
-    align-items: center;
     position: relative;
-    margin: 10px 0 40px;
+    display: block;
     width: 100%;
-    font-size: clamp(26px, 5vw, var(--fz-heading));
-    white-space: nowrap;
+    margin: 10px 0 52px;
+    padding-top: 22px;
+    font-size: clamp(38px, 5.4vw, 60px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.022em;
 
     &:before {
-      position: relative;
-      bottom: 2px;
       counter-increment: section;
-      content: '0' counter(section) '.';
-      margin-right: 14px;
+      content: counter(section, decimal-leading-zero);
+      display: block;
+      margin-bottom: 20px;
       color: var(--green);
-      font-family: var(--font-serif);
-      font-size: clamp(20px, 3vw, 26px);
-      font-style: italic;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-style: normal;
       font-weight: 500;
-
-      @media (max-width: 480px) {
-        margin-bottom: -3px;
-        margin-right: 5px;
-      }
+      letter-spacing: 0.18em;
+      line-height: 1;
     }
 
+    /* The chapter rule: a full-width hairline that draws in from the left when seen. */
     &:after {
       content: '';
-      display: block;
-      position: relative;
-      top: -5px;
-      width: 300px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 0.75px;
-      margin-left: 22px;
       transform-origin: left;
       transition: transform 1.4s 0.15s cubic-bezier(0.55, 0.05, 0.25, 1);
-      background: linear-gradient(90deg, var(--ink), rgba(34, 49, 74, 0.25) 70%, transparent);
-
-      @media (max-width: 1080px) {
-        width: 200px;
-      }
-      @media (max-width: 768px) {
-        width: 100%;
-      }
-      @media (max-width: 600px) {
-        margin-left: 10px;
-      }
+      background: linear-gradient(90deg, var(--ink) 0, var(--ink) 64px, rgba(34, 49, 74, 0.28) 64px, rgba(34, 49, 74, 0.28) 70%, transparent);
     }
   }
 
@@ -455,9 +443,9 @@ const GlobalStyle = createGlobalStyle`
 
   .overline {
     color: var(--green);
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: var(--fz-sm);
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
   }

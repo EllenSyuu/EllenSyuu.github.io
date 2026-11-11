@@ -16,7 +16,7 @@ results:
   - value: 'Exact match'
     label: 'Pipeline counts of backfilled, retracted and revised values equal a planted ground truth, for several random seeds.'
 github: 'https://github.com/EllenSyuu/SDG'
-external: 'https://ellensyuu.github.io/SDG/'
+external: ''
 tech:
   - Python
   - Polars

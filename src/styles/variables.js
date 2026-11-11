@@ -40,7 +40,7 @@ const variables = css`
     --font-hand: 'La Belle Aurore', 'Segoe Script', cursive;
     --font-sans: 'Inter Variable', 'Inter Fallback', 'Inter', -apple-system, system-ui, 'PingFang SC',
       'Hiragino Sans', 'Microsoft YaHei', sans-serif;
-    --font-mono: var(--font-serif);
+    --font-mono: var(--font-sans);
     --font-code: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
 
     --fz-xxs: 12px;

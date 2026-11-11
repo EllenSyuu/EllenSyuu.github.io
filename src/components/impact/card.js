@@ -88,9 +88,9 @@ const StyledCard = styled.li`
   .card__overline {
     margin: 0 0 10px;
     color: var(--green);
-    font-family: var(--font-serif);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
   }

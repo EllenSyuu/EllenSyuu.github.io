@@ -53,9 +53,9 @@ const StyledCase = styled.li`
     gap: 16px;
     margin-bottom: 10px;
     color: var(--green);
-    font-family: var(--font-serif);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.22em;
     text-transform: uppercase;
 
@@ -195,9 +195,9 @@ const StyledCase = styled.li`
     h4 {
       margin: 0 0 10px;
       color: var(--green);
-      font-family: var(--font-serif);
-      font-size: 12.5px;
-      font-weight: 600;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
     }
@@ -221,9 +221,9 @@ const StyledCase = styled.li`
     gap: 4px 0;
     margin-top: 14px;
     color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 12px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
 
@@ -248,9 +248,9 @@ const StyledCase = styled.li`
       border: 0.75px solid var(--ink);
       border-radius: 0;
       color: var(--ink);
-      font-family: var(--font-serif);
-      font-size: 12.5px;
-      font-weight: 600;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       line-height: 1;

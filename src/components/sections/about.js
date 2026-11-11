@@ -74,9 +74,9 @@ const StyledText = styled.div`
   .langs-label {
     margin: 30px 0 0;
     color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
   }
@@ -195,9 +195,9 @@ const StyledPath = styled.ol`
 
   .place {
     color: var(--green);
-    font-family: var(--font-serif);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
 
