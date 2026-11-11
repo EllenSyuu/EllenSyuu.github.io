@@ -17,4 +17,6 @@ In 2022 I was selected as a **Millennium Fellow** through the United Nations Aca
      · what it taught you — and how it connects to your work on SDG 4 today
      Replace cover.jpg in this folder with a photo from the programme. -->
 
+The project I led was Fujia’s voluntary-teaching programme in Zhanjiang. Running it through Covid-19 made every part harder: sessions, volunteers and families all had to be coordinated around closures and uncertainty.
+
 The fellowship is where my interest in the SDGs became practical: it is one thing to read about a goal, and another to organise people, time and evidence around it.

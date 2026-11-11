@@ -36,7 +36,7 @@ const ROLES = [
     years: '2022',
     role: 'Project Coordinator',
     org: 'Millennium Fellowship · UN Academic Impact',
-    note: 'Led voluntary teaching and support for children from minority groups in China during Covid-19.',
+    note: 'Led voluntary teaching and support for children from minority groups in China during Covid-19 — the Fujia Zhanjiang project, recognised by the fellowship.',
   },
   {
     years: '2024 — 26',
