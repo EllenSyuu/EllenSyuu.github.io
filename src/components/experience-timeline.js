@@ -24,7 +24,7 @@ const STRANDS = [
       { label: 'Summer Research Fellow · HKU Statistics', from: t(2022, 5), to: t(2022, 9), span: 'May — Aug 2022' },
       { label: 'Research Assistant · HKU Social Work', from: t(2022, 8), to: t(2023, 1), span: 'Aug — Dec 2022' },
       { label: 'Research Assistant, epidemiology · HKU', from: t(2023, 9), to: t(2024, 7), span: 'Sep 2023 — Jun 2024' },
-      { label: 'M.Sc. thesis research · McGill', from: t(2024, 9), to: t(2026, 9), span: 'Sep 2024 — 2026' },
+      { label: 'M.Sc. thesis research · McGill', from: t(2024, 9), to: t(2026, 8), span: 'Sep 2024 — Jul 2026' },
     ],
   },
   {

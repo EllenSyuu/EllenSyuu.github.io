@@ -3,7 +3,7 @@ date: '2026-06-01'
 title: 'Graduate Researcher, M.Sc. Thesis'
 company: 'McGill'
 location: 'Montréal, QC'
-range: 'Sep 2024 — 2026'
+range: 'Sep 2024 — Jul 2026'
 url: 'https://www.mcgill.ca/mathstat/'
 ---
 
