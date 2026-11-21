@@ -9,7 +9,7 @@ import styled from 'styled-components';
 
 const START = 2020;
 const END = 2027;
-const TODAY = 2026 + 9.9 / 12; // late October 2026
+const TODAY = 2026 + 10.7 / 12; // late November 2026
 
 // [year, month (1–12)] → fractional year at the start of that month.
 const t = (y, m) => y + (m - 1) / 12;
@@ -31,7 +31,7 @@ const STRANDS = [
     key: 'edu',
     title: 'Education data & teaching',
     roles: [
-      { label: 'Intern, education statistics · UNESCO UIS', from: t(2026, 9), to: TODAY, span: 'Sep 2026 — present', now: true },
+      { label: 'Data Innovation & AI Intern · UNESCO UIS', from: t(2026, 9), to: TODAY, span: 'Sep 2026 — present', now: true },
       { label: 'Person in Charge, voluntary teaching · Fujia', from: t(2020, 9), to: t(2023, 9), span: 'Sep 2020 — Aug 2023' },
       { label: 'Science Student Peer Advisor · HKU', from: t(2022, 8), to: t(2024, 7), span: 'Aug 2022 — Jun 2024' },
       { label: 'Tutorials, MATH1851 & MATH1853 · HKU', from: t(2023, 2), to: t(2023, 5), span: 'Feb — Apr 2023' },

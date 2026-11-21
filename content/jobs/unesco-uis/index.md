@@ -1,6 +1,6 @@
 ---
 date: '2026-10-01'
-title: 'Intern, Education Statistics'
+title: 'Data Innovation and AI Intern'
 company: 'UNESCO UIS'
 location: 'Montréal, QC'
 range: 'Sep 2026 — present'
