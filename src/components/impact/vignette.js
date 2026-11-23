@@ -1,4 +1,5 @@
 import React from 'react';
+import { isFrost, FROST_LIGHT } from '@utils/season';
 import PropTypes from 'prop-types';
 
 /*
@@ -50,7 +51,7 @@ const Globe = () => (
   <Frame id="vg" label="Ink drawing of a globe ringed by seventeen marks for the Sustainable Development Goals" plate="FIG. A · LES 17 OBJECTIFS">
     <g transform="translate(160 92)">
       <g filter="url(#vg-wash)">
-        <circle r="52" fill={AMBER} opacity="0.18" />
+        <circle r="52" fill={isFrost ? FROST_LIGHT : AMBER} opacity={isFrost ? 0.35 : 0.18} />
       </g>
       {Array.from({ length: 17 }, (_, i) => {
         const a0 = (i / 17) * Math.PI * 2 - Math.PI / 2;
@@ -119,7 +120,7 @@ const Ledger = () => (
 const Compass = () => (
   <Frame id="vc" label="Ink drawing of a geometric construction with a compass and a hand-written formula" plate="FIG. C · L'INTUITION D'ABORD">
     <g filter="url(#vc-wash)">
-      <circle cx="120" cy="100" r="40" fill={AMBER} opacity="0.2" />
+      <circle cx="120" cy="100" r="40" fill={isFrost ? FROST_LIGHT : AMBER} opacity={isFrost ? 0.4 : 0.2} />
     </g>
     <circle cx="120" cy="100" r="48" fill="none" stroke={INK} strokeWidth="1.1" />
     <line x1="72" x2="168" y1="100" y2="100" stroke={GRAPH} strokeWidth="0.6" />

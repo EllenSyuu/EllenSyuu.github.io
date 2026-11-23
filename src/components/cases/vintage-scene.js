@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { isFrost, FROST_LIGHT } from '@utils/season';
 import styled from 'styled-components';
 import {
   Scene,
@@ -266,7 +267,7 @@ const VintageScene = () => {
                 <path
                   className="tabwash"
                   d={`M${tx} ${s.y + 1} L${tx + 8} ${s.y - 24} H${tx + 72} L${tx + 80} ${s.y + 1} Z`}
-                  fill={AMBER}
+                  fill={isFrost ? FROST_LIGHT : AMBER}
                   opacity={cur ? 0.55 : 0}
                   filter="url(#sv-wash)"
                   style={{ mixBlendMode: 'multiply' }}

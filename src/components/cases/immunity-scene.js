@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { isFrost, FROST_LIGHT } from '@utils/season';
 import styled, { keyframes } from 'styled-components';
 import {
   Scene,
@@ -370,8 +371,8 @@ const ImmunityScene = () => {
         {/* Dusk sun: warm wash under a fine circle, hatched where it sinks behind the ridge. */}
         <g className="fade" style={d(0.4)}>
           <g filter="url(#vv-wash)" style={{ mixBlendMode: 'multiply' }}>
-            <circle cx="476" cy="262" r="46" fill={AMBER} opacity="0.32" />
-            <circle cx="470" cy="268" r="30" fill={ORANGE} opacity="0.2" />
+            <circle cx="476" cy="262" r="46" fill={isFrost ? FROST_LIGHT : AMBER} opacity={isFrost ? 0.5 : 0.32} />
+            <circle cx="470" cy="268" r="30" fill={isFrost ? AMBER : ORANGE} opacity={isFrost ? 0.16 : 0.2} />
           </g>
         </g>
         <circle className="ink" pathLength="1" style={d(0.5)} cx="476" cy="262" r="38" fill="none" stroke={GRAPH} strokeWidth="0.6" />

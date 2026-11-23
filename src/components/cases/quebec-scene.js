@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { isFrost } from '@utils/season';
 import styled, { keyframes } from 'styled-components';
 import { Scene, useScene, useCountUp, drawCss, drawClass, delay as d, INK, GRAPH, FAINT, PAPER, FACE, ORANGE, AMBER, RUST, SERIF, HAND, GREEK } from './kit';
 
@@ -278,7 +279,10 @@ const QuebecScene = () => {
   const wet = clamp((s.post - 20) / 12);
   const isSnow = s.key === 'AM';
   const nClouds = 1 + Math.round(wet * 3);
-  const washTone = wet > 0.7 ? '#d8763f' : wet > 0.4 ? '#e8995d' : '#f0bd86';
+  // Cloud wash: warm in autumn, frost blue-grey once the season turns.
+  const washTone = isFrost
+    ? wet > 0.7 ? '#7f98b0' : wet > 0.4 ? '#9fb2c5' : '#c3cfdb'
+    : wet > 0.7 ? '#d8763f' : wet > 0.4 ? '#e8995d' : '#f0bd86';
   const gap = Math.round(14 - wet * 8);
   const lam = LAMBDA[s.key];
   const [mi, mj, ml] = lam.reduce((a, b) => (b[2] > a[2] ? b : a));
@@ -427,10 +431,11 @@ const QuebecScene = () => {
                 <line x1={x} x2={x} y1={y} y2={cy + 2} stroke={INK} strokeWidth="0.9" />
                 <g className="crown" style={{ animationDelay: `${-i * 0.7}s` }}>
                   <g filter="url(#at-wash-s)" style={{ mixBlendMode: 'multiply' }}>
-                    <circle cx={x} cy={cy - 3 * k} r={7.5 * k} fill={[ORANGE, AMBER, RUST][i % 3]} opacity="0.55" />
-                    <circle cx={x + 4 * k} cy={cy} r={5 * k} fill={[AMBER, RUST, ORANGE][i % 3]} opacity="0.5" />
+                    <circle cx={x} cy={cy - 3 * k} r={(isFrost ? 4.5 : 7.5) * k} fill={isFrost ? [RUST, '#b98a5a', RUST][i % 3] : [ORANGE, AMBER, RUST][i % 3]} opacity={isFrost ? 0.35 : 0.55} />
+                    <circle cx={x + 4 * k} cy={cy} r={(isFrost ? 3 : 5) * k} fill={isFrost ? ['#b98a5a', RUST, '#b98a5a'][i % 3] : [AMBER, RUST, ORANGE][i % 3]} opacity={isFrost ? 0.3 : 0.5} />
                   </g>
-                  <path d={scribble(x, cy - 2 * k, 7.5 * k, i)} fill="none" stroke={INK} strokeWidth="0.45" opacity="0.75" />
+                  <path d={scribble(x, cy - 2 * k, 7.5 * k, i)} fill="none" stroke={INK} strokeWidth="0.45" opacity={isFrost ? 0.35 : 0.75} />
+                  {isFrost && <path d={`M${x} ${cy + 2} L${x - 5 * k} ${cy - 9 * k} M${x} ${cy - 1 * k} L${x + 5 * k} ${cy - 10 * k} M${x} ${cy} V${cy - 12 * k}`} fill="none" stroke={INK} strokeWidth="0.6" />}
                 </g>
               </g>
             );
