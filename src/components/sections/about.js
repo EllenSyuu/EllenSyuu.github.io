@@ -15,12 +15,12 @@ const PATH = [
   {
     place: 'Montréal',
     title: 'M.Sc. Mathematics & Statistics, McGill',
-    note: 'Thesis on covariate-dependent Archimax copulas for rainfall extremes in Québec.',
+    note: 'CGPA 3.88; NSERC research grant and Graduate Excellence Award. Thesis on covariate-dependent Archimax copulas for rainfall extremes in Québec.',
   },
   {
     place: 'Montréal',
     title: 'UNESCO Institute for Statistics',
-    note: 'SDG 4 education statistics: cohort models and release-vintage analytics.',
+    note: 'Data Innovation and AI Intern: SDG 4 data pipelines and dashboards across 200+ countries.',
     now: true,
   },
 ];

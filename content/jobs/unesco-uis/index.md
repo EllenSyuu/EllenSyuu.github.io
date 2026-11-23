@@ -7,6 +7,6 @@ range: 'Sep 2026 — present'
 url: 'https://uis.unesco.org/'
 ---
 
-- Working on SDG 4 education statistics in the Foresight, Research and Methodology unit of the UNESCO Institute for Statistics, the custodian agency for the global education indicators.
-- Reproducing a Bayesian cohort model for out-of-school rates (SDG 4.1.4) in NumPyro/JAX against a Stan reference, with a synthetic-data demo, regression tests and a locked environment.
-- Built release-vintage analytics that measure how education indicators change between data releases — reporting lag, backfill, withdrawals and value revisions.
+- Built a Python data pipeline that tracks UN education (SDG 4) data for 200+ countries and territories across 11 annual releases, labelling every change as new reporting, revision or modelled estimate — so the team can explain why published figures move.
+- Created an interactive HTML/JavaScript dashboard, with a walkthrough for colleagues, so non-technical staff can explore the data on their own.
+- Profiled 44 SDG 4 indicators for coverage, continuity and source; mapped 60 regional (CESA 2026–2035) indicators to SDG 4; and reviewed 1,000+ Global Proficiency Framework descriptors before publication.
