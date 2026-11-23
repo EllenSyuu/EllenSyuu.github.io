@@ -100,7 +100,7 @@ export const useCountUp = (target, { decimals = 2, duration = 900, run = true } 
 export const INK = '#22314a';
 export const GRAPH = '#6f7b8c';
 export const FAINT = '#b4bcc7';
-export const PAPER = '#f6f1e6';
+export const PAPER = '#f4f2ec';
 export const FACE = '#eee6d6';
 export const ORANGE = '#cf602b';
 export const AMBER = '#e0a046';

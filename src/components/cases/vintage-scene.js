@@ -292,7 +292,7 @@ const VintageScene = () => {
                   {RELEASES[i].year}
                 </text>
               </g>
-              <rect className="fade" style={d(0.3 + i * 0.1)} x={s.x} y={s.y} width={SW} height={SH} fill={i === 3 ? '#fbf8f1' : FACE} />
+              <rect className="fade" style={d(0.3 + i * 0.1)} x={s.x} y={s.y} width={SW} height={SH} fill={i === 3 ? '#fafaf6' : FACE} />
               <path
                 className="ink"
                 pathLength="1"
@@ -364,7 +364,7 @@ const VintageScene = () => {
 
         {/* Reference year 2021: dash-dot station line with a hand-lettered leader. */}
         <path className="ink" pathLength="1" style={d(1.8)} d={`M${x21} ${Y0 + 26} V${Y1 - 6}`} fill="none" stroke={RUST} strokeWidth="0.7" />
-        <line className="fade" style={d(2)} x1={x21} x2={x21} y1={Y0 + 26} y2={Y1 - 6} stroke="#fbf8f1" strokeWidth="1.2" strokeDasharray="0 9 3 3" />
+        <line className="fade" style={d(2)} x1={x21} x2={x21} y1={Y0 + 26} y2={Y1 - 6} stroke="#fafaf6" strokeWidth="1.2" strokeDasharray="0 9 3 3" />
         <text className="write" style={d(2.6)} x={x21} y={Y0 + 41} textAnchor="middle" fontFamily={HAND} fontSize="15" fill={RUST}>
           2021, the year we follow
         </text>
@@ -433,7 +433,7 @@ const VintageScene = () => {
             fontFamily={HAND}
             fontSize="16"
             fill={RUST}
-            stroke="#fbf8f1"
+            stroke="#fafaf6"
             strokeWidth="3.5"
             paintOrder="stroke"
             style={{ transform: `translateY(${(py(16) + py(sel21)) / 2 + 5}px)` }}>
@@ -448,7 +448,7 @@ const VintageScene = () => {
           fontFamily={HAND}
           fontSize="15"
           fill={RUST}
-          stroke="#fbf8f1"
+          stroke="#fafaf6"
           strokeWidth="3.5"
           paintOrder="stroke"
           style={{ transition: 'all .6s ease' }}>

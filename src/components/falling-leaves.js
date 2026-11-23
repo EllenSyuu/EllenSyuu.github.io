@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { usePrefersReducedMotion } from '@hooks';
 import { maplePath, almondPath, oakPath, LEAF_COLOURS, pick } from '@utils/leaves';
+import { isFrost } from '@utils/season';
 
 /*
  * A few autumn leaves drifting down over the cover; below it no new leaves start, so the
@@ -47,9 +48,28 @@ const FallingLeaves = () => {
       canvas.height = Math.round(h * dpr);
     };
 
-    const COUNT = Math.round(Math.min(7, Math.max(4, window.innerWidth / 240)));
+    // In the first-frost season: light snow, with the odd last leaf among it.
+    const COUNT = isFrost
+      ? Math.round(Math.min(26, Math.max(14, window.innerWidth / 70)))
+      : Math.round(Math.min(7, Math.max(4, window.innerWidth / 240)));
     const spawn = (initial = false) => {
       const depth = Math.random(); // 0 = far, 1 = near
+      if (isFrost && Math.random() < 0.88) {
+        return {
+          snow: true,
+          x: Math.random() * w,
+          y: initial ? Math.random() * h : -20 - Math.random() * 80,
+          size: 1.4 + depth * 2.6,
+          vy: 14 + depth * 26,
+          sway: 6 + Math.random() * 16,
+          swayFreq: 0.25 + Math.random() * 0.4,
+          phase: Math.random() * Math.PI * 2,
+          rot: Math.random() * Math.PI,
+          spin: (Math.random() - 0.5) * 0.6,
+          alpha: 0.45 + depth * 0.45,
+          dx: 0,
+        };
+      }
       return {
         x: Math.random() * w,
         y: initial ? Math.random() * h : -40 - Math.random() * 120,
@@ -109,6 +129,30 @@ const FallingLeaves = () => {
           return;
         }
 
+        if (l.snow) {
+          // A snowflake on paper: a white disc with a frost-blue rim; the nearer ones get arms.
+          ctx.save();
+          ctx.translate(x, l.y);
+          ctx.rotate(l.rot);
+          ctx.fillStyle = `rgba(255,255,255,${l.alpha})`;
+          ctx.strokeStyle = `rgba(110,140,170,${0.55 * l.alpha})`;
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.arc(0, 0, l.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          if (l.size > 3) {
+            ctx.beginPath();
+            for (let k = 0; k < 6; k += 1) {
+              const a = (k * Math.PI) / 3;
+              ctx.moveTo(Math.cos(a) * l.size * 0.6, Math.sin(a) * l.size * 0.6);
+              ctx.lineTo(Math.cos(a) * l.size * 2.1, Math.sin(a) * l.size * 2.1);
+            }
+            ctx.stroke();
+          }
+          ctx.restore();
+          return;
+        }
         const flip = Math.cos(t * l.flipFreq + l.phase);
         const [r, g, b] = l.colour;
         ctx.save();

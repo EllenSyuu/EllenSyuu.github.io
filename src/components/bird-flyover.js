@@ -106,7 +106,7 @@ const BirdFlyover = () => {
     <StyledSky aria-hidden="true">
       <g ref={gRef} style={{ opacity: 0, transition: 'opacity 0.6s' }}>
         <path ref={wingRef} fill="none" stroke={INK} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-        <path ref={bodyRef} fill="#f6f1e6" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
+        <path ref={bodyRef} fill="#f4f2ec" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
         <path ref={beakRef} fill={ORANGE} />
       </g>
     </StyledSky>

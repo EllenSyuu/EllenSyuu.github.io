@@ -5,6 +5,7 @@ import { usePrefersReducedMotion } from '@hooks';
 import { showResume, socialMedia } from '@config';
 import TailField from '@components/tail-field';
 import { Icon } from '@components/icons';
+import { isFrost, FROST, FROST_LIGHT, SNOW } from '@utils/season';
 
 /*
  * The cover: Montréal seen from the river, drawn as an atelier plate — Mont Royal in contour
@@ -18,7 +19,7 @@ import { Icon } from '@components/icons';
 const INK = '#22314a';
 const GRAPH = '#6f7b8c';
 const FAINT = '#b4bcc7';
-const PAPER = '#f6f1e6';
+const PAPER = '#f4f2ec';
 const ORANGE = '#cf602b';
 const AMBER = '#e0a046';
 const RUST = '#a3432a';
@@ -75,10 +76,33 @@ const StyledHero = styled.section`
   --my: 0;
   --sy: 0;
 
+  /* Wide screens: the drawing is a framed plate on the right, like a print in a passe-partout —
+     a hairline frame, an inner rule, the plate number in the corner and a caption below. */
+  --plate-w: min(46vw, 660px);
+  --plate-r: max(40px, calc((100vw - 1280px) / 2));
+
   .scene {
     position: absolute;
     inset: 0;
     z-index: -1;
+
+    @media (min-width: 901px) {
+      inset: auto;
+      top: calc(var(--nav-height) + 6px);
+      bottom: 78px;
+      right: var(--plate-r);
+      width: var(--plate-w);
+      background: var(--navy);
+      box-shadow: 0 0 0 0.75px var(--ink), 0 30px 60px -40px rgba(34, 49, 74, 0.35);
+      outline: 0.75px solid var(--hairline);
+      outline-offset: -10px;
+      animation: ${fade} 1.2s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+      .edge {
+        display: none;
+      }
+
+    }
 
     @media (max-width: 900px) {
       top: auto;
@@ -171,6 +195,12 @@ const StyledHero = styled.section`
     max-width: calc(1080px + 2 * max(24px, (100vw - 1080px) / 2));
     padding: calc(var(--nav-height) + 20px) max(24px, calc((100vw - 1080px) / 2)) 120px;
 
+    @media (min-width: 901px) {
+      max-width: none;
+      padding: calc(var(--nav-height) + 10px) calc(var(--plate-w) + var(--plate-r) + clamp(40px, 5vw, 88px)) 96px
+        max(40px, calc((100vw - 1280px) / 2));
+    }
+
     @media (max-width: 900px) {
       justify-content: flex-start;
       min-height: 0;
@@ -235,7 +265,7 @@ const StyledHero = styled.section`
     margin: 0 0 0 -0.04em;
     color: var(--lightest-slate);
     font-family: var(--font-serif);
-    font-size: clamp(64px, 8.4vw, 132px);
+    font-size: clamp(60px, 7.2vw, 118px);
     font-weight: 500;
     line-height: 0.9;
     letter-spacing: -0.028em;
@@ -281,7 +311,7 @@ const StyledHero = styled.section`
     margin: 36px 0 0;
     color: var(--lightest-slate);
     font-family: var(--font-serif);
-    font-size: clamp(22px, 1.85vw, 27px);
+    font-size: clamp(20px, 1.65vw, 25px);
     font-weight: 500;
     line-height: 1.32;
     letter-spacing: -0.003em;
@@ -351,15 +381,15 @@ const StyledHero = styled.section`
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 24px;
-    border-radius: 2px;
+    padding: 15px 26px;
+    border-radius: 0;
     background: var(--lightest-slate);
     color: ${PAPER};
     font-family: var(--font-sans);
     font-size: 14.5px;
     font-weight: 500;
     letter-spacing: 0.01em;
-    box-shadow: 0 1px 0 rgba(34, 49, 74, 0.25), 0 10px 24px -14px rgba(34, 49, 74, 0.55);
+    box-shadow: none;
     transition: background 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
 
     .arrow {
@@ -458,9 +488,9 @@ const StyledHero = styled.section`
   .sky-field {
     position: absolute;
     z-index: 0;
-    right: max(15vw, calc((100vw - 1180px) / 2 + 150px));
-    top: 19%;
-    width: min(15vw, 236px);
+    right: calc(var(--plate-r) + var(--plate-w) * 0.62);
+    top: calc(var(--nav-height) + 6px + var(--plate-w) * 0.08);
+    width: calc(var(--plate-w) * 0.3);
     aspect-ratio: 1 / 1;
     pointer-events: none;
     animation: ${fade} 1.6s 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -512,8 +542,8 @@ const StyledHero = styled.section`
   .plate-title {
     position: absolute;
     z-index: 0;
-    right: max(28px, calc((100vw - 1180px) / 2));
-    bottom: 26px;
+    right: var(--plate-r);
+    bottom: 34px;
     margin: 0;
     color: var(--dark-slate);
     font-family: var(--font-serif);
@@ -611,6 +641,17 @@ const Cloud = ({ cx, cy, w, tone, t }) => {
 
 // Mont Royal in contour and hatching, with the summit level dimensioned.
 const MOUNT = 'M930 640 C 990 604 1040 552 1100 520 C 1150 492 1200 464 1250 458 C 1306 452 1360 478 1420 504 C 1480 530 1540 552 1600 566';
+// Lower edge of the snow on Mont Royal: follows the summit contour about 40 px down, ragged.
+const SNOWLINE = (() => {
+  const pts = [];
+  for (let x = 1020; x <= 1560; x += 20) {
+    const t = (x - 1020) / 540;
+    const base = 560 - Math.sin(t * Math.PI) * 58;
+    pts.push(`${x} ${(base + ((x / 20) % 3) * 6).toFixed(1)}`);
+  }
+  return `M1020 420 L${pts.join(' L')} L1560 420 Z`;
+})();
+
 const Mount = () => (
   <g>
     <clipPath id="hmount">
@@ -621,6 +662,18 @@ const Mount = () => (
         <line key={i} x1={900 + i * 11} y1="640" x2={990 + i * 11} y2="440" />
       ))}
     </g>
+    {isFrost && (
+      <g clipPath="url(#hmount)" className="fade" style={d(1.5)}>
+        {/* First snow on the upper slopes: paper left blank, edged with a ragged frost line. */}
+        <path d={SNOWLINE} fill={SNOW} />
+        <path d={SNOWLINE} fill="none" stroke={FROST} strokeWidth="0.9" opacity="0.9" />
+        <g stroke={FROST} strokeWidth="0.6" opacity="0.7">
+          {Array.from({ length: 16 }, (_, i) => (
+            <line key={i} x1={1120 + i * 20} y1={492 + Math.abs(8 - i) * 2.2} x2={1132 + i * 20} y2={482 + Math.abs(8 - i) * 2.2} />
+          ))}
+        </g>
+      </g>
+    )}
     <g fill="none" stroke={GRAPH} strokeWidth="0.6">
       {[16, 34].map((k, i) => (
         <path key={k} className="ink" pathLength="1" style={d(0.8 + i * 0.15)} d={MOUNT} transform={`translate(${k * 0.6} ${k})`} opacity="0.7" />
@@ -674,6 +727,13 @@ const Skyline = () => {
           <rect key={k} className="win" x={w.x} y={w.y} width="5" height="7" fill={AMBER} opacity="0.7" style={{ animationDelay: `${w.dl}s` }} />
         ))}
       </g>
+      {isFrost && (
+        <g className="fade" style={d(2.2)}>
+          {buildings.map(b => (
+            <path key={`s${b.x}`} d={`M${b.x - 3} ${640 - b.h} q ${b.w / 2 + 3} -5 ${b.w + 6} 0 Z`} fill={SNOW} stroke={FROST} strokeWidth="0.7" />
+          ))}
+        </g>
+      )}
       <g fill="none" stroke={INK} strokeLinecap="round">
         {buildings.map((b, i) => (
           <path
@@ -745,7 +805,11 @@ const Hero = () => {
     const svg = ref.current && ref.current.querySelector('.scene svg');
     if (!svg) return undefined;
     const mq = window.matchMedia('(min-width: 901px)');
-    const apply = () => svg.setAttribute('preserveAspectRatio', mq.matches ? 'xMaxYMax meet' : 'xMaxYMax slice');
+    const apply = () => {
+      // Wide: crop to the drawing itself so it fills its frame; phones: the full plate, cropped by CSS.
+      svg.setAttribute('viewBox', mq.matches ? '900 70 700 790' : '0 0 1600 900');
+      svg.setAttribute('preserveAspectRatio', mq.matches ? 'xMidYMid slice' : 'xMaxYMax slice');
+    };
     apply();
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
@@ -803,8 +867,8 @@ const Hero = () => {
               <feGaussianBlur in="dd" stdDeviation="1.1" />
             </filter>
             <radialGradient id="hhalo" cx="0.5" cy="0.5" r="0.5">
-              <stop offset="0" stopColor={AMBER} stopOpacity="0.35" />
-              <stop offset="1" stopColor={AMBER} stopOpacity="0" />
+              <stop offset="0" stopColor={isFrost ? FROST_LIGHT : AMBER} stopOpacity={isFrost ? 0.45 : 0.35} />
+              <stop offset="1" stopColor={isFrost ? FROST_LIGHT : AMBER} stopOpacity="0" />
             </radialGradient>
             <linearGradient id="hfade" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0" stopColor={PAPER} stopOpacity="1" />
@@ -827,11 +891,11 @@ const Hero = () => {
 
           <Layer depth={0.05}>
             <g className="clouds">
-              <Cloud cx={1100} cy={330} w={170} tone={ORANGE} t={0.6} />
-              <Cloud cx={1500} cy={120} w={130} tone={AMBER} t={0.9} />
+              <Cloud cx={1300} cy={360} w={170} tone={isFrost ? FROST : ORANGE} t={0.6} />
+              <Cloud cx={1500} cy={120} w={130} tone={isFrost ? FROST_LIGHT : AMBER} t={0.9} />
             </g>
             <g className="clouds b">
-              <Cloud cx={1190} cy={420} w={110} tone={AMBER} t={1.1} />
+              <Cloud cx={1190} cy={420} w={110} tone={isFrost ? FROST_LIGHT : AMBER} t={1.1} />
             </g>
           </Layer>
 
@@ -854,6 +918,13 @@ const Hero = () => {
                 <path key={y} className="shine" d={`M${1000 + i * 40} ${y} H1600`} style={{ animationDelay: `${-i * 2.5}s` }} />
               ))}
             </g>
+            {isFrost && (
+              <g className="fade" style={d(2.4)} fill={SNOW} stroke={FROST} strokeWidth="0.8" strokeLinejoin="round">
+                {[[1030, 712, 38], [1120, 728, 24], [1330, 704, 46], [1450, 724, 30], [1540, 700, 22], [1240, 738, 28]].map(([x, y, w]) => (
+                  <path key={x} d={`M${x} ${y} l${w * 0.3} -5 l${w * 0.5} 1 l${w * 0.2} 5 l-${w * 0.35} 4 l-${w * 0.55} -1 Z`} />
+                ))}
+              </g>
+            )}
             <Bridge />
             <text className="write" style={d(2.9)} x="1060" y="702" fontFamily={HAND} fontSize="21" fill={INK} stroke={PAPER} strokeWidth="4" paintOrder="stroke">
               Pont Jacques-Cartier
@@ -867,15 +938,25 @@ const Hero = () => {
             {/* Near bank: a contour, grass strokes, maples and a lamp. */}
             <path d="M900 780 C 1020 760 1120 790 1240 774 C 1380 756 1500 780 1600 768 V900 H900 Z" fill={PAPER} />
             <path className="ink" pathLength="1" style={d(1.4)} d="M900 780 C 1020 760 1120 790 1240 774 C 1380 756 1500 780 1600 768" fill="none" stroke={INK} strokeWidth="1.4" />
+            {isFrost && (
+              <path
+                className="fade"
+                style={d(1.7)}
+                d="M900 781 C 1020 761 1120 791 1240 775 C 1380 757 1500 781 1600 769 V786 C 1500 796 1380 772 1240 790 C 1120 806 1020 776 900 796 Z"
+                fill={SNOW}
+                stroke={FROST}
+                strokeWidth="0.6"
+              />
+            )}
             <g stroke={GRAPH} strokeWidth="0.6" strokeLinecap="round" className="fade" style={d(1.8)}>
-              {Array.from({ length: 34 }, (_, i) => {
+              {Array.from({ length: isFrost ? 18 : 34 }, (_, i) => {
                 const x = 960 + i * 19 + (i % 3) * 4;
                 return <path key={i} d={`M${x} 800 q 2 -8 ${4 - (i % 4) * 2} -${10 + (i % 5) * 3}`} fill="none" />;
               })}
             </g>
             {[
-              [1478, 774, 0.72, [ORANGE, RUST, AMBER]],
-              [1560, 770, 0.6, [AMBER, ORANGE, RUST]],
+              [1478, 774, 0.72, isFrost ? [RUST, '#b98a5a', RUST] : [ORANGE, RUST, AMBER]],
+              [1560, 770, 0.6, isFrost ? ['#b98a5a', RUST, '#b98a5a'] : [AMBER, ORANGE, RUST]],
             ].map(([x, y, k, tones], i) => (
               <g key={x} transform={`translate(${x} ${y}) scale(${k})`}>
                 <path className="ink" pathLength="1" style={d(2 + i * 0.2)} d="M0 0 V-120 M0 -70 L-34 -110 M0 -90 L28 -126" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" />
@@ -883,7 +964,7 @@ const Hero = () => {
                   <g className="fade" style={d(2.4 + i * 0.2)}>
                     <g filter="url(#hwash)" style={{ mixBlendMode: 'multiply' }}>
                       {[[0, -150, 70], [-36, -172, 48], [36, -164, 46], [4, -200, 42]].map(([cx, cy, rr], j) => (
-                        <circle key={j} cx={cx} cy={cy} r={rr} fill={tones[j % 3]} opacity="0.32" />
+                        <circle key={j} cx={cx} cy={cy} r={isFrost ? rr * 0.55 : rr} fill={tones[j % 3]} opacity={isFrost ? 0.22 : 0.32} />
                       ))}
                     </g>
                   </g>
@@ -899,8 +980,21 @@ const Hero = () => {
                     fill="none"
                     stroke={INK}
                     strokeWidth="0.7"
-                    opacity="0.75"
+                    opacity={isFrost ? 0.35 : 0.75}
+                    strokeDasharray={isFrost ? '3 7' : undefined}
                   />
+                  {isFrost && (
+                    <path
+                      className="ink"
+                      pathLength="1"
+                      style={d(2.5 + i * 0.2)}
+                      d="M0 -120 L-18 -168 M-18 -168 L-34 -176 M-18 -168 L-12 -196 M0 -120 L22 -170 M22 -170 L40 -182 M22 -170 L16 -204 M-34 -110 L-58 -132 M28 -126 L54 -148 M0 -150 L4 -214"
+                      fill="none"
+                      stroke={INK}
+                      strokeWidth="1.1"
+                      strokeLinecap="round"
+                    />
+                  )}
                 </g>
               </g>
             ))}
@@ -911,8 +1005,8 @@ const Hero = () => {
           </Layer>
 
           {/* Soften the drawing towards the text side. */}
-          <rect x="900" y="0" width="150" height="900" fill="url(#hfade)" />
-          <rect x="0" y="0" width="900" height="900" fill={PAPER} />
+          <rect className="edge" x="900" y="0" width="150" height="900" fill="url(#hfade)" />
+          <rect className="edge" x="0" y="0" width="900" height="900" fill={PAPER} />
 
           {/* Maple branch entering from the top corner: ink twig, watercolour leaves. */}
           <Layer depth={0.3}>
@@ -920,16 +1014,30 @@ const Hero = () => {
               <g className="branch">
                 <path className="ink" pathLength="1" style={d(0.6)} d="M0 40 C -120 70 -220 60 -330 120 C -380 148 -420 150 -470 140" fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round" />
                 <path className="ink" pathLength="1" style={d(0.9)} d="M-200 72 C -230 110 -240 140 -238 170" fill="none" stroke={INK} strokeWidth="1.6" strokeLinecap="round" />
-                {[
-                  [-470, 140, 34, -30, ORANGE],
-                  [-420, 170, 28, 20, AMBER],
-                  [-350, 110, 30, -60, RUST],
-                  [-300, 160, 36, 10, ORANGE],
-                  [-238, 196, 30, 30, AMBER],
-                  [-180, 50, 32, -20, ORANGE],
-                  [-120, 110, 38, 15, RUST],
-                  [-60, 70, 30, -40, AMBER],
-                ].map(([x, y, s, rot, c], i) => (
+                {isFrost && (
+                  <g className="fade" style={d(1.4)} fill={SNOW} stroke={FROST} strokeWidth="1">
+                    <path d="M-4 37 C -60 44 -110 50 -150 58 C -120 52 -64 40 -4 31 Z" />
+                    <path d="M-250 76 C -290 90 -320 104 -352 118 C -322 100 -292 84 -250 70 Z" />
+                    <path d="M-404 140 C -428 144 -448 144 -466 138 C -446 136 -428 136 -404 134 Z" />
+                  </g>
+                )}
+                {(isFrost
+                  ? [
+                      [-238, 196, 30, 30, RUST],
+                      [-120, 110, 34, 15, '#b98a5a'],
+                      [-470, 140, 26, -30, RUST],
+                    ]
+                  : [
+                      [-470, 140, 34, -30, ORANGE],
+                      [-420, 170, 28, 20, AMBER],
+                      [-350, 110, 30, -60, RUST],
+                      [-300, 160, 36, 10, ORANGE],
+                      [-238, 196, 30, 30, AMBER],
+                      [-180, 50, 32, -20, ORANGE],
+                      [-120, 110, 38, 15, RUST],
+                      [-60, 70, 30, -40, AMBER],
+                    ]
+                ).map(([x, y, s, rot, c], i) => (
                   <g key={`${x}${y}`} transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
                     <g className="fade" style={d(1.2 + i * 0.08)}>
                       <path d={MAPLE} fill={c} opacity="0.62" transform="translate(0.05 0.05)" />
@@ -943,11 +1051,14 @@ const Hero = () => {
           </Layer>
 
           {/* A few leaves crossing the whole drawing. */}
-          {[
-            [1100, 0, 14, ORANGE, 0],
-            [1400, 0, 11, AMBER, -6],
-            [900, 0, 12, RUST, -10],
-          ].map(([x, y, s, c, dl]) => (
+          {(isFrost
+            ? [[1400, 0, 11, RUST, -6]]
+            : [
+                [1100, 0, 14, ORANGE, 0],
+                [1400, 0, 11, AMBER, -6],
+                [900, 0, 12, RUST, -10],
+              ]
+          ).map(([x, y, s, c, dl]) => (
             <g key={x} transform={`translate(${x} ${y})`}>
               <g className="leafFall" style={{ animationDelay: `${dl}s` }}>
                 <path d={MAPLE} transform={`scale(${s})`} fill={c} opacity="0.85" />
@@ -1027,11 +1138,8 @@ const Hero = () => {
       <div className="sky-field" aria-hidden="true">
         {wide && <TailField animate={!prefersReducedMotion} variant="sky" />}
       </div>
-      <p className="sky-note">
-        <b>live, in the sky</b>how extremes cluster — a Gumbel copula, the idea behind my thesis
-      </p>
       <p className="plate-title" aria-hidden="true">
-        Montréal, vue du fleuve<span>Planche 0</span>
+        Montréal, vue du fleuve{isFrost ? ' · premier gel' : ''}<span>Planche 0</span>
       </p>
 
     </StyledHero>

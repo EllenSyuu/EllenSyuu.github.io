@@ -107,11 +107,18 @@ const StyledMap = styled.nav`
     border-color: var(--green);
   }
 
+  transition: opacity 0.6s ease;
+  &[data-on='false'] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   a.active:before {
     box-shadow: 0 0 0 4px var(--green-tint);
   }
 `;
 
+/* The rail stays out of the way on the cover and fades in once the first chapter is reached. */
 const chapters = navLinks
   .filter(l => l.url.startsWith('/#'))
   .map((l, i) => ({ id: l.url.slice(2), name: l.name, num: `0${i + 1}` }));
@@ -152,7 +159,7 @@ const ChapterMap = () => {
   }, []);
 
   return (
-    <StyledMap aria-label="Page chapters">
+    <StyledMap aria-label="Page chapters" data-on={active >= 0 ? 'true' : 'false'}>
       <ol>
         <span className="fill" style={{ transform: `scaleY(${progress})` }} aria-hidden="true" />
         {chapters.map((c, i) => (

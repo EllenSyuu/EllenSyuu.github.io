@@ -205,7 +205,7 @@ const Stamp = () => (
         ))}
       </mask>
     </defs>
-    <rect width="64" height="76" fill="#fbf8f1" mask="url(#perf)" style={{ filter: 'drop-shadow(0 2px 3px rgba(34,49,74,.18))' }} />
+    <rect width="64" height="76" fill="#fafaf6" mask="url(#perf)" style={{ filter: 'drop-shadow(0 2px 3px rgba(34,49,74,.18))' }} />
     <rect x="7" y="7" width="50" height="62" fill="none" stroke="#22314a" strokeWidth="0.6" />
     <path d={MAPLE} transform="translate(32 34) scale(15)" fill="#cf602b" opacity="0.7" />
     <path d={MAPLE} transform="translate(32 34) scale(15)" fill="none" stroke="#22314a" strokeWidth="0.05" />

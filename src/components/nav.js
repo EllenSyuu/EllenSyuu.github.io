@@ -135,23 +135,15 @@ const StyledLinks = styled.div`
       position: relative;
       counter-increment: item 1;
       font-family: var(--font-sans);
-      font-size: 13.5px;
+      font-size: 12px;
       font-weight: 500;
-      letter-spacing: 0.005em;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
 
       a {
         padding: 10px 12px;
         color: var(--lightest-slate);
 
-        &:before {
-          content: counter(item, decimal-leading-zero);
-          margin-right: 8px;
-          color: var(--green);
-          font-size: 10.5px;
-          font-weight: 500;
-          letter-spacing: 0.08em;
-          vertical-align: 1px;
-        }
 
         &:hover,
         &:focus-visible {

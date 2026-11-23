@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 const INK = '#22314a';
 const GRAPH = '#6f7b8c';
 const FAINT = '#b4bcc7';
-const PAPER = '#f1ebdf';
+const PAPER = '#efede7';
 const ORANGE = '#cf602b';
 const AMBER = '#e0a046';
 const HAND = '"La Belle Aurore", cursive';
@@ -23,7 +23,7 @@ const Frame = ({ id, children, label, plate }) => (
         <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
       </filter>
       <pattern id={`${id}-grid`} width="10" height="10" patternUnits="userSpaceOnUse">
-        <path d="M10 0 H0 V10" fill="none" stroke="#e1d9ca" strokeWidth="0.5" />
+        <path d="M10 0 H0 V10" fill="none" stroke="#dcd9d1" strokeWidth="0.5" />
       </pattern>
     </defs>
     <rect width="320" height="200" fill={PAPER} />
@@ -87,8 +87,8 @@ const Globe = () => (
 const Ledger = () => (
   <Frame id="vl" label="Ink drawing of an open ledger with a line chart and a magnifying glass" plate="FIG. B · DONNÉES PUBLIQUES">
     <g transform="translate(46 30)">
-      <path d="M0 8 L104 0 L104 126 L0 134 Z" fill="#fbf8f1" stroke={INK} strokeWidth="1" />
-      <path d="M104 0 L208 8 L208 134 L104 126 Z" fill="#fbf8f1" stroke={INK} strokeWidth="1" />
+      <path d="M0 8 L104 0 L104 126 L0 134 Z" fill="#fafaf6" stroke={INK} strokeWidth="1" />
+      <path d="M104 0 L208 8 L208 134 L104 126 Z" fill="#fafaf6" stroke={INK} strokeWidth="1" />
       {Array.from({ length: 10 }, (_, i) => (
         <g key={i} stroke={FAINT} strokeWidth="0.6">
           <line x1="10" x2="96" y1={22 + i * 11} y2={21.2 + i * 11 - 0.4} />
@@ -108,7 +108,7 @@ const Ledger = () => (
       </g>
     </g>
     <g transform="translate(248 52)">
-      <circle r="18" fill="#fbf8f1" fillOpacity="0.4" stroke={INK} strokeWidth="1.4" />
+      <circle r="18" fill="#fafaf6" fillOpacity="0.4" stroke={INK} strokeWidth="1.4" />
       <line x1="13" y1="13" x2="32" y2="34" stroke={INK} strokeWidth="3" strokeLinecap="round" />
     </g>
     <text x="226" y="118" fontFamily={HAND} fontSize="12" fill={INK}>revised, not wrong</text>
