@@ -880,6 +880,11 @@ const Hero = () => {
               <stop offset="0.6" stopColor="#fff" stopOpacity="0" />
               <stop offset="1" stopColor={RUST} stopOpacity="0.7" />
             </radialGradient>
+            <radialGradient id="hsun" cx="0.42" cy="0.38" r="0.7">
+              <stop offset="0" stopColor="#f3dfae" stopOpacity="0.95" />
+              <stop offset="0.6" stopColor="#e3bd74" stopOpacity="0.7" />
+              <stop offset="1" stopColor="#c9964a" stopOpacity="0.55" />
+            </radialGradient>
             <linearGradient id="hfade" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0" stopColor={PAPER} stopOpacity="1" />
               <stop offset="1" stopColor={PAPER} stopOpacity="0" />
@@ -901,8 +906,8 @@ const Hero = () => {
 
           <Layer depth={0.05}>
             <g className="clouds">
-              <Cloud cx={1300} cy={360} w={170} tone={isFrost ? FROST : ORANGE} t={0.6} />
-              <Cloud cx={1500} cy={120} w={130} tone={isFrost ? FROST_LIGHT : AMBER} t={0.9} />
+              <Cloud cx={isFrost ? 1400 : 1300} cy={isFrost ? 300 : 360} w={170} tone={isFrost ? FROST : ORANGE} t={0.6} />
+              <Cloud cx={isFrost ? 1250 : 1500} cy={isFrost ? 150 : 120} w={130} tone={isFrost ? FROST_LIGHT : AMBER} t={0.9} />
             </g>
             <g className="clouds b">
               <Cloud cx={1190} cy={420} w={110} tone={isFrost ? FROST_LIGHT : AMBER} t={1.1} />
@@ -974,7 +979,7 @@ const Hero = () => {
                   <g className="fade" style={d(2.4 + i * 0.2)}>
                     <g filter="url(#hwash)" style={{ mixBlendMode: 'multiply' }}>
                       {[[0, -150, 70], [-36, -172, 48], [36, -164, 46], [4, -200, 42]].map(([cx, cy, rr], j) => (
-                        <circle key={j} cx={cx} cy={cy} r={isFrost ? rr * 0.55 : rr} fill={tones[j % 3]} opacity={isFrost ? 0.22 : 0.32} />
+                        <circle key={j} cx={cx} cy={cy} r={rr} fill={tones[j % 3]} opacity={isFrost ? 0 : 0.32} />
                       ))}
                     </g>
                   </g>
@@ -990,8 +995,7 @@ const Hero = () => {
                     fill="none"
                     stroke={INK}
                     strokeWidth="0.7"
-                    opacity={isFrost ? 0.35 : 0.75}
-                    strokeDasharray={isFrost ? '3 7' : undefined}
+                    opacity={isFrost ? 0 : 0.75}
                   />
                   {isFrost && (
                     <path
@@ -1019,8 +1023,28 @@ const Hero = () => {
           <rect className="edge" x="0" y="0" width="900" height="900" fill={PAPER} />
 
           {/* Maple branch entering from the top corner: ink twig, watercolour leaves. */}
+          {isFrost && (
+            <Layer depth={0.03}>
+              {/* A low winter sun: gilt wash, hairline rings, engraved where it meets the haze. */}
+              <g transform="translate(1452 236)">
+                <circle r="54" fill="url(#hsun)" className="fade" style={d(0.8)} />
+                <clipPath id="hsunc">
+                  <rect x="-60" y="6" width="120" height="60" />
+                </clipPath>
+                <g clipPath="url(#hsunc)" stroke={INK} strokeWidth="0.45" opacity="0.55" className="fade" style={d(1.6)}>
+                  {Array.from({ length: 9 }, (_, i) => (
+                    <line key={i} x1="-60" x2="60" y1={10 + i * 5.5} y2={10 + i * 5.5} />
+                  ))}
+                </g>
+                <circle className="ink" pathLength="1" style={d(0.7)} r="54" fill="none" stroke={INK} strokeWidth="1" />
+                <circle className="ink" pathLength="1" style={d(1)} r="70" fill="none" stroke={INK} strokeWidth="0.45" opacity="0.6" />
+                <circle className="ink" pathLength="1" style={d(1.2)} r="92" fill="none" stroke={FAINT} strokeWidth="0.6" strokeDasharray="1 5" />
+                <path className="ink" pathLength="1" style={d(1.4)} d="M-120 0 H-98 M98 0 H120 M0 -120 V-98" stroke={INK} strokeWidth="0.6" />
+              </g>
+            </Layer>
+          )}
           <Layer depth={0.3}>
-            <g transform="translate(1600 96) scale(0.86)">
+            <g transform="translate(1600 96) scale(0.86)" style={isFrost ? { display: 'none' } : undefined}>
               <g className="branch">
                 <path className="ink" pathLength="1" style={d(0.6)} d="M0 40 C -120 70 -220 60 -330 120 C -380 148 -420 150 -470 140" fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round" />
                 <path className="ink" pathLength="1" style={d(0.9)} d="M-200 72 C -230 110 -240 140 -238 170" fill="none" stroke={INK} strokeWidth="1.6" strokeLinecap="round" />
@@ -1064,7 +1088,7 @@ const Hero = () => {
 
           {/* A few leaves crossing the whole drawing. */}
           {(isFrost
-            ? [[1400, 0, 11, RUST, -6]]
+            ? []
             : [
                 [1100, 0, 14, ORANGE, 0],
                 [1400, 0, 11, AMBER, -6],

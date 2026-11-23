@@ -54,7 +54,7 @@ const FallingLeaves = () => {
       : Math.round(Math.min(7, Math.max(4, window.innerWidth / 240)));
     const spawn = (initial = false) => {
       const depth = Math.random(); // 0 = far, 1 = near
-      if (isFrost && Math.random() < 0.88) {
+      if (isFrost) {
         return {
           snow: true,
           x: Math.random() * w,

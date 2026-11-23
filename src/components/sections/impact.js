@@ -231,9 +231,6 @@ const Impact = () => {
         ))}
       </StyledImpactGrid>
 
-      <Link className="more" to="/impact">
-        Read all stories <span aria-hidden="true">→</span>
-      </Link>
 
       <StyledLedger>
         <h3>

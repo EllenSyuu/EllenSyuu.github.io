@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Head, Nav, Social, Email, Footer, Ambient, ChapterMap } from '@components';
 import FallingLeaves from '@components/falling-leaves';
 import CursorTrail from '@components/cursor-trail';
+import { isFrost } from '@utils/season';
 import BirdFlyover from '@components/bird-flyover';
 import useMarks from '@components/mark-observer';
 import { GlobalStyle, theme } from '@styles';
@@ -66,7 +67,7 @@ const Layout = ({ children, location }) => {
             <StyledContent>
               <Ambient />
               <FallingLeaves />
-              <CursorTrail />
+              {!isFrost && <CursorTrail />}
               <BirdFlyover />
               <a className="skip-to-content" href="#content">
                 Skip to Content
