@@ -18,144 +18,143 @@ import {
   HAND,
   GREEK,
 } from './kit';
+import { isFrost, FROST_LIGHT } from '@utils/season';
 
 /*
- * TailFM as an atelier plate. Three heavy-tailed densities (tail index ξ = 0.15, 0.35, 0.6)
- * are engraved as a ridge plot, each breathing between a lighter and a heavier tail; the
- * heaviest tail is washed in amber and dimensioned. Simulated worlds (glass specimens holding
- * point clouds) drop samples onto the ridges; magnitudes (warm) and ranks (ink) take two
- * separate pathways into a small DeepSets network that outputs ξ and χ. The card is the
- * held-out result from reports/benchmark/report.md: for every training seed × copula family,
- * the paired ξ error of the network minus Hill, with its 95% Monte Carlo interval. All nine
- * sit on Hill's side.
+ * Planche IV — the tail-index preprint as an atelier plate, drawn from its stored outputs
+ * (EllenSyuu/tailfm-union-band, reports/phase3).
+ *
+ * Main drawing: the Danish fire-insurance application (n = 2,167). At five thresholds k the
+ * union band — the hull of simultaneous credible bands over a range of working ρ′ — is drawn
+ * as a washed bar in warm ink; the first-order band sits beside it in graphite. The ruled
+ * stripe is where all union bands overlap, ξ ∈ [0.523, 0.843], the interval that survives
+ * any choice of k on the grid.
+ *
+ * Card: the pre-registered benchmark (seed 2033, code frozen), the 16 settings inside the
+ * stated ρ range. For each, the minimum post-selection coverage of the union band over four
+ * selection rules (warm) and the coverage of the usual first-order interval at a
+ * Lepski-selected k (hollow). Values from paper/preprint/generated/tab_bench.tex.
  */
 
-const RESULTS = [
-  { family: 'Independent', rows: [[0.0654, 0.0491, 0.0817], [0.1, 0.0811, 0.1188], [0.061, 0.0452, 0.0768]] },
-  { family: 'Gaussian', rows: [[0.0656, 0.0482, 0.083], [0.0935, 0.0734, 0.1136], [0.0639, 0.0474, 0.0805]] },
-  { family: 'Student-t', rows: [[0.0858, 0.0678, 0.1038], [0.1209, 0.1001, 0.1418], [0.0847, 0.068, 0.1013]] },
+// Danish application: [simultaneous lower, centre, simultaneous upper] at each k.
+const KS = [19, 39, 79, 158, 317];
+const UNION = [
+  [0.365, 0.774, 1.587],
+  [0.379, 0.712, 1.295],
+  [0.364, 0.59, 1.009],
+  [0.379, 0.583, 0.843],
+  [0.523, 0.725, 0.976],
 ];
-const SEEDS = [ORANGE, INK, GRAPH];
-
-/* ---------- ridges ---------- */
-const PEAK = 118;
-const AMP = 108;
-// Density shape: Gaussian-like rise, generalised-Pareto-like tail.
-const f = (xi, width, px) => {
-  if (px < PEAK) {
-    const z = (px - PEAK) / 34;
-    return Math.exp(-z * z);
-  }
-  return Math.pow(1 + (xi * (px - PEAK)) / width, -1 / xi - 1);
-};
-const ridgeY = (r, xi, px) => r.base - AMP * f(xi, r.width, px);
-const ridge = (r, xi) => {
-  const pts = [];
-  for (let px = 30; px <= 940; px += 6) pts.push(`${px} ${ridgeY(r, xi, px).toFixed(1)}`);
-  return `M30 ${r.base} L${pts.join(' L')} L940 ${r.base}`;
-};
-
-// Back → front: lighter tails far away, the heaviest in front.
-const RIDGES = [
-  { xi: 0.15, lo: 0.12, hi: 0.2, base: 330, width: 44, label: '0.15' },
-  { xi: 0.35, lo: 0.3, hi: 0.42, base: 386, width: 58, label: '0.35' },
-  { xi: 0.6, lo: 0.55, hi: 0.66, base: 442, width: 74, label: '0.6' },
+const FIRST = [
+  [0.38, 0.606, 1.053],
+  [0.398, 0.555, 0.806],
+  [0.467, 0.591, 0.765],
+  [0.616, 0.729, 0.873],
+  [0.619, 0.698, 0.792],
 ];
-const FRONT = RIDGES[2];
+const INTER = [0.523, 0.843];
 
-// The heaviest tail, for the amber wash and the hatching.
-const tailShape = (() => {
-  const pts = [];
-  for (let px = 210; px <= 620; px += 6) pts.push(`${px} ${ridgeY(FRONT, FRONT.xi, px).toFixed(1)}`);
-  return `M210 ${FRONT.base} L${pts.join(' L')} L620 ${FRONT.base} Z`;
-})();
-
-/* ---------- network ---------- */
-const NET = [
-  [392, [128, 160, 192]],
-  [448, [112, 144, 176, 208]],
-  [504, [138, 182]],
-];
-const MAGNITUDE = `M340 ${ridgeY(FRONT, FRONT.xi, 340).toFixed(1)} C 362 360 352 236 384 184`;
-const RANKS = 'M236 122 C 290 104 330 112 384 132';
-
-const WORLDS = [
-  [92, 92, 30, 0],
-  [196, 136, 21, 1],
-  [270, 62, 17, 2],
+// Benchmark, in-range settings: [union band min post-selection coverage, first-order at Lepski k].
+const BENCH = [
+  ['|t|', 0.98, 0.86],
+  ['|t|', 0.98, 0.88],
+  ['|t|', 0.99, 0.33],
+  ['|t|', 0.98, 0.28],
+  ['Burr', 0.98, 0.61],
+  ['Burr', 0.98, 0.59],
+  ['Burr', 1.0, 0.65],
+  ['Burr', 0.99, 0.52],
+  ['Burr', 0.96, 0.03],
+  ['Burr', 0.95, 0.05],
+  ['Burr', 0.98, 0.03],
+  ['Burr', 0.98, 0.03],
+  ['Fréchet', 0.99, 0.84],
+  ['Fréchet', 0.99, 0.79],
+  ['Fréchet', 0.98, 0.83],
+  ['Fréchet', 0.98, 0.78],
 ];
 
-/* ---------- motion ---------- */
-const fall = keyframes`
-  0%   { transform: translateY(0); opacity: 0; }
-  15%  { opacity: 0.9; }
-  80%  { opacity: 0.9; }
-  100% { transform: translateY(210px); opacity: 0; }
+/* ---------- geometry ---------- */
+const Y0 = 426;
+const Y1 = 92;
+const XI_LO = 0.2;
+const XI_HI = 1.7;
+const y = xi => Y0 - ((xi - XI_LO) / (XI_HI - XI_LO)) * (Y0 - Y1);
+const X = i => 128 + i * 104;
+const LEFT = 78;
+const RIGHT = 600;
+
+const grow = keyframes`
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
 `;
 const breathe = keyframes`
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-`;
-const pulse = keyframes`
-  0%   { transform: scale(0.8); opacity: 0.8; }
-  100% { transform: scale(2.2); opacity: 0; }
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.9; }
 `;
 
 const Art = styled.svg`
   ${drawCss}
 
-  .drop { animation: ${fall} 4.8s cubic-bezier(0.5, 0, 0.9, 0.6) infinite; }
-  .world { animation: ${breathe} 7s ease-in-out infinite; }
-  .ring { transform-box: fill-box; transform-origin: center; animation: ${pulse} 2.8s ease-out infinite; }
+  .bar {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+  }
+  &.on .bar {
+    animation: ${grow} 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  &.still .bar {
+    animation: none;
+  }
+  .stripe {
+    animation: ${breathe} 6s ease-in-out infinite;
+  }
 `;
 
-// Engraved forest chart for the card.
+// Dot chart for the card: one row per benchmark setting.
 const Chart = ({ run }) => {
-  const x = v => 78 + v * 1380; // 0 → 78, 0.14 → 271
+  const x = v => 70 + v * 205;
+  const rowY = i => 22 + i * 8.8;
   return (
-    <svg viewBox="0 0 290 176" width="100%" aria-hidden="true" style={{ marginTop: 6 }}>
-      <defs>
-        <pattern id="tf-hill" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="4" stroke={ORANGE} strokeWidth="0.5" />
-        </pattern>
-      </defs>
-      <rect x={x(0)} y="4" width={x(0.145) - x(0)} height="146" fill="url(#tf-hill)" opacity="0.35" />
-      <line x1={x(0)} x2={x(0)} y1="0" y2="154" stroke={INK} strokeWidth="0.8" strokeDasharray="2 3" />
-      <line x1={x(0)} x2={x(0.145)} y1="150" y2="150" stroke={INK} strokeWidth="0.6" />
-      {[0, 0.05, 0.1].map(v => (
+    <svg viewBox="0 0 290 182" width="100%" aria-hidden="true" style={{ marginTop: 6 }}>
+      <line x1={x(0.9)} x2={x(0.9)} y1="14" y2="164" stroke={ORANGE} strokeWidth="0.7" strokeDasharray="3 3" />
+      <line x1={x(0)} x2={x(1)} y1="166" y2="166" stroke={INK} strokeWidth="0.6" />
+      {[0, 0.5, 0.9, 1].map(v => (
         <g key={v}>
-          <line x1={x(v)} x2={x(v)} y1="150" y2="154" stroke={INK} strokeWidth="0.6" />
-          <text x={x(v)} y="164" fontSize="9.5" fill={GRAPH} textAnchor="middle" fontFamily={SERIF} fontWeight="600">
-            {v === 0 ? '' : `+${v.toFixed(2)}`}
+          <line x1={x(v)} x2={x(v)} y1="166" y2="170" stroke={INK} strokeWidth="0.6" />
+          <text x={x(v)} y="180" fontSize="9.5" fill={v === 0.9 ? ORANGE : GRAPH} textAnchor="middle" fontFamily={SERIF} fontWeight="600">
+            {v === 0 ? '0' : v === 1 ? '1' : v.toFixed(v === 0.5 ? 1 : 2)}
           </text>
         </g>
       ))}
-      {RESULTS.map((g, gi) => (
-        <g key={g.family} transform={`translate(0 ${20 + gi * 46})`}>
-          <text x="0" y="12" fontSize="13" fill={INK} fontFamily={SERIF} fontWeight="600">
-            {g.family}
-          </text>
-          {g.rows.map(([m, lo, hi], si) => (
-            <g
-              key={si}
-              style={{
-                transform: `translate(${run ? 0 : x(0) - x(m)}px, ${si * 11}px)`,
-                opacity: run ? 1 : 0,
-                transition: `transform 1.4s cubic-bezier(.22,.8,.3,1) ${gi * 0.35 + si * 0.12}s, opacity .6s ${gi * 0.35 + si * 0.12}s`,
-              }}>
-              <line x1={x(lo)} x2={x(hi)} y1="0" y2="0" stroke={SEEDS[si]} strokeWidth="1.2" />
-              <line x1={x(lo)} x2={x(lo)} y1="-2.5" y2="2.5" stroke={SEEDS[si]} strokeWidth="0.8" />
-              <line x1={x(hi)} x2={x(hi)} y1="-2.5" y2="2.5" stroke={SEEDS[si]} strokeWidth="0.8" />
-              <circle cx={x(m)} cy="0" r="3" fill={si === 0 ? ORANGE : PAPER} stroke={SEEDS[si]} strokeWidth="1" />
-            </g>
-          ))}
+      {BENCH.map(([fam, u, f], i) => (
+        <g
+          key={i}
+          style={{
+            opacity: run ? 1 : 0,
+            transition: `opacity .6s ${0.08 * i}s`,
+          }}>
+          {(i === 0 || BENCH[i - 1][0] !== fam) && (
+            <text x="0" y={rowY(i) + 3.5} fontSize="11.5" fill={INK} fontFamily={SERIF} fontWeight="600">
+              {fam}
+            </text>
+          )}
+          <line x1={x(f)} x2={x(u)} y1={rowY(i)} y2={rowY(i)} stroke={FAINT} strokeWidth="0.7" />
+          <circle cx={x(f)} cy={rowY(i)} r="2.4" fill={PAPER} stroke={INK} strokeWidth="0.9" />
+          <circle
+            cx={x(u)}
+            cy={rowY(i)}
+            r="2.8"
+            fill={ORANGE}
+            style={{
+              transform: `translateX(${run ? 0 : x(f) - x(u)}px)`,
+              transition: `transform 1.3s cubic-bezier(.22,.8,.3,1) ${0.08 * i}s`,
+            }}
+          />
         </g>
       ))}
-      <text x={x(0) - 4} y="176" fontSize="12" fill={GRAPH} textAnchor="end" fontFamily={HAND}>
-        tie
-      </text>
-      <text x={x(0.145)} y="176" fontSize="12" fill={ORANGE} textAnchor="end" fontFamily={HAND}>
-        Hill better →
+      <text x={x(0.9) - 4} y="11" fontSize="11" fill={ORANGE} textAnchor="end" fontFamily={HAND}>
+        nominal 90%
       </text>
     </svg>
   );
@@ -164,19 +163,20 @@ const Chart = ({ run }) => {
 const TailScene = () => {
   const scene = useScene();
   // The real value is rendered first (and for crawlers); it counts up from 0 once on screen.
-  const shown = useCountUp(scene.near && !scene.seen && !scene.reduced ? 0 : 9, { decimals: 0, duration: 1800, run: scene.seen && !scene.reduced });
+  const shown = useCountUp(scene.near && !scene.seen && !scene.reduced ? 0 : 16, { decimals: 0, duration: 1800, run: scene.seen && !scene.reduced });
   const cls = drawClass(scene);
+  const stripeTone = isFrost ? FROST_LIGHT : AMBER;
 
   const card = (
     <div className="card" style={{ right: 18, top: 18 }}>
-      <p className="kicker">Held-out test · tail-index error</p>
-      <span className="big">{shown} of 9</span>
+      <p className="kicker">Pre-registered benchmark · coverage</p>
+      <span className="big">{shown} of 16</span>
       <p className="note" style={{ marginTop: 6 }}>
-        comparisons where the classical Hill estimator is still more accurate. Reported as found.
+        settings where the band kept coverage after four ways of choosing <i>k</i>. The usual interval fell below 80% in 12 of them.
       </p>
       <Chart run={scene.seen || scene.reduced} />
       <p className="note" style={{ marginTop: 4, fontSize: 13.5 }}>
-        Paired error, network − Hill, with 95% intervals; three training seeds, 64 shared worlds per family.
+        <span style={{ color: ORANGE }}>●</span> union band, worst of four selection rules &nbsp;○ first-order interval at the chosen <i>k</i>
       </p>
     </div>
   );
@@ -185,201 +185,112 @@ const TailScene = () => {
     <Scene
       scene={scene}
       card={card}
-      label="Engineering-style drawing of three heavy-tailed densities as an engraved ridge plot, simulated worlds dropping samples onto them, and two pathways — magnitudes and ranks — feeding a small neural network; the chart shows the network did not beat the Hill estimator."
-      caption="Planche IV — ridges are heavy-tailed densities with different tail indices; magnitudes (warm) and ranks (ink) take separate pathways into the network, the fix for the identifiability flaw.">
+      label="Engineering-style drawing of tail-index intervals for Danish fire-insurance losses at five thresholds: a wide union band and a narrower first-order band at each threshold, with a ruled stripe where all union bands overlap, from 0.52 to 0.84. The card compares coverage in a pre-registered benchmark: the union band stays near or above 95% in all 16 settings, while the usual interval at a selected threshold falls as low as 3%."
+      caption="Planche IV — Danish fire-insurance losses (n = 2,167). At each threshold k: the union band (warm, hull over working ρ′) and the first-order band (graphite). The ruled stripe is their common ground, ξ ∈ [0.52, 0.84], valid whichever k is chosen.">
       <Art className={cls} viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <defs>
-          <filter id="tf-wash" x="-20%" y="-30%" width="140%" height="160%">
+          <filter id="tf-wash" x="-40%" y="-10%" width="180%" height="120%">
             <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="7" result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="9" result="dd" />
-            <feGaussianBlur in="dd" stdDeviation="1" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="7" result="dd" />
+            <feGaussianBlur in="dd" stdDeviation="0.8" />
           </filter>
-          <pattern id="tf-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)">
-            <line x1="0" y1="0" x2="0" y2="5" stroke={GRAPH} strokeWidth="0.45" />
+          <pattern id="tf-rule" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke={GRAPH} strokeWidth="0.4" />
           </pattern>
-          <clipPath id="tf-tail">
-            <path d={tailShape} />
-          </clipPath>
-          <marker id="tf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 2 L10 5 L0 8" fill="none" stroke={INK} strokeWidth="1.2" />
-          </marker>
         </defs>
 
         <rect width="960" height="540" fill={PAPER} />
 
-        {/* Construction: baselines and a vertical datum through the mode, overshooting. */}
+        {/* Construction: ξ gridlines, overshooting the frame. */}
         <g fill="none" stroke={FAINT} strokeWidth="0.5">
-          {RIDGES.map((r, i) => (
-            <path key={i} className="ink" pathLength="1" style={d(i * 0.1)} d={`M14 ${r.base} H950`} />
+          {[0.25, 0.5, 0.75, 1, 1.25, 1.5].map((v, i) => (
+            <path key={v} className="ink" pathLength="1" style={d(i * 0.06)} d={`M${LEFT - 14} ${y(v)} H${RIGHT + 10}`} opacity={v === 1 ? 0.9 : 0.6} />
           ))}
-          <path className="ink" pathLength="1" style={d(0.3)} d={`M${PEAK} 196 V462`} strokeDasharray="1" />
-          <path className="ink" pathLength="1" style={d(0.35)} d="M14 120 L330 120" opacity="0.6" />
+          <path className="ink" pathLength="1" style={d(0.3)} d={`M${LEFT} ${Y1 - 30} V${Y0 + 14}`} />
         </g>
-
-        {/* Simulated worlds: glass specimens with small point clouds. */}
-        {WORLDS.map(([cx, cy, r, k]) => (
-          <g key={k} transform={`translate(${cx} ${cy})`}>
-            <g className="world" style={{ animationDelay: `${-k * 2.1}s` }}>
-              <circle className="ink" pathLength="1" style={d(0.5 + k * 0.15)} r={r} fill="none" stroke={INK} strokeWidth="0.9" />
-              <path className="ink" pathLength="1" style={d(0.8 + k * 0.15)} d={`M${-r * 0.62} ${-r * 0.3} A ${r * 0.7} ${r * 0.7} 0 0 1 ${-r * 0.1} ${-r * 0.7}`} fill="none" stroke={GRAPH} strokeWidth="0.6" />
-              <ellipse className="ink" pathLength="1" style={d(0.9 + k * 0.15)} rx={r} ry={r * 0.28} fill="none" stroke={FAINT} strokeWidth="0.5" />
-              <g className="fade" style={d(1.1 + k * 0.15)}>
-                {Array.from({ length: 13 }, (_, j) => {
-                  const a = (j * 2.39996) % (Math.PI * 2);
-                  const rr = r * 0.72 * Math.sqrt(((j * 37 + k * 11) % 13) / 13);
-                  const u = Math.cos(a) * rr;
-                  const v = Math.sin(a) * rr * 0.6 - u * 0.4;
-                  return <circle key={j} cx={u} cy={v} r={r / 18 + 0.7} fill={j % 6 === 0 ? ORANGE : INK} opacity="0.85" />;
-                })}
-              </g>
-            </g>
-          </g>
-        ))}
-        <text className="write" style={d(2.4)} x="40" y="150" fontFamily={HAND} fontSize="15" fill={GRAPH}>
-          simulated worlds
+        <g className="fade" style={d(0.8)} fontFamily={SERIF} fontSize="12" fontWeight="600" fill={GRAPH} textAnchor="end">
+          {[0.25, 0.5, 0.75, 1, 1.25, 1.5].map(v => (
+            <text key={v} x={LEFT - 18} y={y(v) + 4}>
+              {v.toFixed(2)}
+            </text>
+          ))}
+        </g>
+        <text className="write" style={d(1)} x={LEFT - 6} y={Y1 - 40} fontFamily={GREEK} fontStyle="italic" fontSize="22" fill={INK} textAnchor="middle">
+          ξ
         </text>
 
-        {/* Samples falling from the worlds onto the ridges. */}
+        {/* The common ground of all union bands. */}
         <g className="fade" style={d(2.6)}>
-          {Array.from({ length: 9 }, (_, i) => {
-            const x = 60 + ((i * 71) % 240);
-            const y = 150 + ((i * 29) % 40);
-            return (
-              <circle key={i} className="drop" cx={x} cy={y} r={1.6 + (i % 2)} fill={i % 4 === 0 ? ORANGE : INK} style={{ animationDelay: `${-(i * 0.53) % 4.8}s` }} />
-            );
-          })}
+          <rect className="stripe" x={LEFT} y={y(INTER[1])} width={RIGHT - LEFT} height={y(INTER[0]) - y(INTER[1])} fill={stripeTone} opacity="0.7" />
+          <rect x={LEFT} y={y(INTER[1])} width={RIGHT - LEFT} height={y(INTER[0]) - y(INTER[1])} fill="url(#tf-rule)" opacity="0.55" />
+          <line x1={LEFT} x2={RIGHT} y1={y(INTER[1])} y2={y(INTER[1])} stroke={INK} strokeWidth="0.6" strokeDasharray="5 4" />
+          <line x1={LEFT} x2={RIGHT} y1={y(INTER[0])} y2={y(INTER[0])} stroke={INK} strokeWidth="0.6" strokeDasharray="5 4" />
         </g>
 
-        {/* Heavy-tailed ridges, engraved back to front; each breathes between lighter and heavier tails. */}
-        {RIDGES.map((r, i) => (
-          <path key={i} className="ink" pathLength="1" style={d(0.6 + i * 0.25)} d={ridge(r, r.xi)} fill={PAPER} stroke={INK} strokeWidth={0.8 + i * 0.25} strokeLinejoin="round">
-            <animate
-              attributeName="d"
-              dur={`${9 + i * 2}s`}
-              repeatCount="indefinite"
-              calcMode="spline"
-              keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
-              values={`${ridge(r, r.lo)};${ridge(r, r.hi)};${ridge(r, r.lo)}`}
-            />
-          </path>
-        ))}
-        {/* Fine engraving lines under each ridge's body. */}
-        <g fill="none" stroke={GRAPH} strokeWidth="0.4" className="fade" style={d(1.4)}>
-          {RIDGES.map((r, i) =>
-            [0.35, 0.6].map(k => {
-              const pts = [];
-              for (let px = 70; px <= 190; px += 6) pts.push(`${px} ${(r.base - AMP * k * f(r.xi, r.width, px)).toFixed(1)}`);
-              return <path key={`${i}-${k}`} d={`M${pts.join(' L')}`} opacity="0.6" />;
-            }),
-          )}
-        </g>
-
-        {/* The heaviest tail: amber wash, hatching, and a dimension marking where the tail begins. */}
-        <g className="fade" style={d(1.8)}>
-          <path d={tailShape} fill={AMBER} opacity="0.4" filter="url(#tf-wash)" style={{ mixBlendMode: 'multiply' }} />
-          <rect x="200" y="380" width="430" height="70" fill="url(#tf-hatch)" clipPath="url(#tf-tail)" opacity="0.8" />
-        </g>
-        <g className="fade" style={d(2.2)} fill="none" stroke={INK} strokeWidth="0.55">
-          <line x1="210" x2="210" y1={FRONT.base + 4} y2={FRONT.base + 22} stroke={GRAPH} strokeWidth="0.45" />
-          <line x1="560" x2="560" y1={FRONT.base + 4} y2={FRONT.base + 22} stroke={GRAPH} strokeWidth="0.45" />
-          <line x1="202" x2="568" y1={FRONT.base + 17} y2={FRONT.base + 17} />
-          <path d={`M206 ${FRONT.base + 21} L214 ${FRONT.base + 13} M556 ${FRONT.base + 21} L564 ${FRONT.base + 13}`} strokeWidth="1.1" />
-        </g>
-        <text className="write" style={d(2.8)} x="385" y={FRONT.base + 35} textAnchor="middle" fontFamily={HAND} fontSize="16" fill={RUST} stroke={PAPER} strokeWidth="4" paintOrder="stroke">
-          the tail, where extremes live
-        </text>
-
-        {/* Tail-index labels with leaders. */}
-        {RIDGES.map((r, i) => {
-          const lx = 172 + i * 14;
-          const ly = ridgeY(r, r.xi, lx);
+        {/* Bands at each threshold. */}
+        {KS.map((k, i) => {
+          const x = X(i);
+          const [ul, uc, uh] = UNION[i];
+          const [fl, fc, fh] = FIRST[i];
           return (
-            <g key={r.label}>
-              <path className="ink" pathLength="1" style={d(2.4 + i * 0.12)} d={`M${lx} ${ly - 2} L${lx + 16} ${ly - 20} H${lx + 22}`} fill="none" stroke={GRAPH} strokeWidth="0.5" />
-              <text className="write" style={d(2.6 + i * 0.15)} x={lx + 25} y={ly - 17} fontSize="16" fill={INK} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
-                <tspan fontFamily={GREEK} fontStyle="italic" fontSize="14">ξ</tspan>
-                <tspan fontFamily={HAND}> = {r.label}</tspan>
+            <g key={k}>
+              <g className="bar" style={{ animationDelay: `${1.2 + i * 0.18}s` }}>
+                <rect x={x - 9} y={y(uh)} width="18" height={y(ul) - y(uh)} fill={ORANGE} opacity="0.32" filter="url(#tf-wash)" style={{ mixBlendMode: 'multiply' }} />
+                <path d={`M${x - 9} ${y(uh)} H${x + 9} M${x - 9} ${y(ul)} H${x + 9} M${x} ${y(uh)} V${y(ul)}`} fill="none" stroke={RUST} strokeWidth="1.3" />
+              </g>
+              <circle className="fade" style={d(2 + i * 0.12)} cx={x} cy={y(uc)} r="3.4" fill={ORANGE} stroke={PAPER} strokeWidth="1" />
+              <g className="bar" style={{ animationDelay: `${1.5 + i * 0.18}s` }}>
+                <path d={`M${x + 22} ${y(fh)} V${y(fl)} M${x + 18} ${y(fh)} H${x + 26} M${x + 18} ${y(fl)} H${x + 26}`} fill="none" stroke={GRAPH} strokeWidth="1" />
+              </g>
+              <circle className="fade" style={d(2.2 + i * 0.12)} cx={x + 22} cy={y(fc)} r="2.4" fill={PAPER} stroke={INK} strokeWidth="0.9" />
+              {/* k on the axis */}
+              <path className="ink" pathLength="1" style={d(0.6 + i * 0.05)} d={`M${x} ${Y0 + 6} V${Y0 + 14}`} stroke={INK} strokeWidth="0.8" />
+              <text className="fade" style={d(1 + i * 0.06)} x={x + 6} y={Y0 + 32} fontFamily={SERIF} fontSize="14" fontWeight="600" fill={INK} textAnchor="middle">
+                {k}
               </text>
             </g>
           );
         })}
-
-        {/* Two pathways into the network. */}
-        <path className="ink" pathLength="1" style={d(2)} d={MAGNITUDE} fill="none" stroke={ORANGE} strokeWidth="1.6" strokeLinecap="round" />
-        <path className="ink" pathLength="1" style={d(2.1)} d={MAGNITUDE} fill="none" stroke={ORANGE} strokeWidth="0.5" strokeLinecap="round" transform="translate(4 2)" opacity="0.6" />
-        <path className="ink" pathLength="1" style={d(2.2)} d={RANKS} fill="none" stroke={INK} strokeWidth="1.1" strokeDasharray="1" strokeLinecap="round" />
-        <path className="fade" style={d(2.6)} d={RANKS} fill="none" stroke={INK} strokeWidth="0.5" strokeDasharray="5 4" transform="translate(0 4)" />
-        <g className="fade" style={d(3)}>
-          {[0, 1, 2].map(k => (
-            <g key={k}>
-              <circle r="2.6" fill={ORANGE}>
-                <animateMotion dur="3.2s" begin={`${-k * 1.05}s`} repeatCount="indefinite" path={MAGNITUDE} />
-              </circle>
-              <circle r="2.3" fill={PAPER} stroke={INK} strokeWidth="0.9">
-                <animateMotion dur="3.6s" begin={`${-k * 1.2}s`} repeatCount="indefinite" path={RANKS} />
-              </circle>
-            </g>
-          ))}
-        </g>
-        <text className="write" style={d(3.1)} x="372" y="318" fontFamily={HAND} fontSize="16" fill={ORANGE} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke" transform="rotate(-70 372 318)">
-          magnitudes
-        </text>
-        <text className="write" style={d(3.2)} x="292" y="98" fontFamily={HAND} fontSize="16" fill={INK} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
-          ranks
+        <path className="ink" pathLength="1" style={d(0.5)} d={`M${LEFT - 14} ${Y0 + 10} H${RIGHT + 10}`} fill="none" stroke={INK} strokeWidth="0.8" />
+        <text className="write" style={d(3)} x={LEFT} y={Y0 + 48} fontFamily={HAND} fontSize="15" fill={GRAPH}>
+          k — how many of the largest losses enter the estimate
         </text>
 
-        {/* The network inside a dashed construction box with overshooting corners. */}
-        <g fill="none" stroke={FAINT} strokeWidth="0.55">
-          <path className="ink" pathLength="1" style={d(1.2)} d="M360 92 H594 M360 228 H594 M370 82 V238 M584 82 V238" />
+        {/* Width shrinks like k^(-1/2): a dimension on the first and last union bands. */}
+        <g className="fade" style={d(3.2)} fill="none" stroke={GRAPH} strokeWidth="0.5">
+          <path d={`M${X(0) - 18} ${y(UNION[0][2])} V${y(UNION[0][0])} M${X(0) - 22} ${y(UNION[0][2]) + 4} L${X(0) - 14} ${y(UNION[0][2]) - 4} M${X(0) - 22} ${y(UNION[0][0]) + 4} L${X(0) - 14} ${y(UNION[0][0]) - 4}`} />
         </g>
-        <text className="fade" style={d(1.6)} x="370" y="76" fontFamily={SERIF} fontSize="10.5" fontWeight="600" letterSpacing="0.24em" fill={GRAPH}>
-          DEEPSETS · TWO PATHWAYS
+        <text className="write" style={d(3.4)} x={X(0) + 18} y={y(1.55)} fontFamily={HAND} fontSize="15" fill={INK} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
+          width ∝ k
+          <tspan dy="-7" fontSize="11">−1/2</tspan>
         </text>
-        <g className="fade" style={d(2.4)}>
-          {NET.slice(0, -1).map(([lx, ys], li) =>
-            ys.map(y =>
-              NET[li + 1][1].map(y2 => <line key={`${lx}-${y}-${y2}`} x1={lx} y1={y} x2={NET[li + 1][0]} y2={y2} stroke={GRAPH} strokeWidth="0.45" opacity="0.7" />),
-            ),
-          )}
-        </g>
-        {NET.map(([lx, ys], li) =>
-          ys.map((y, k) => (
-            <g key={`${lx}-${y}`} className="fade" style={d(2.5 + li * 0.15 + k * 0.05)}>
-              {li === 2 && <circle className="ring" cx={lx} cy={y} r="7" fill="none" stroke={ORANGE} strokeWidth="0.8" />}
-              <circle cx={lx} cy={y} r="6.5" fill={PAPER} stroke={INK} strokeWidth="1" />
-              <circle cx={lx} cy={y} r="2" fill={li === 2 ? ORANGE : INK} />
-            </g>
-          )),
-        )}
-        <g className="write" style={d(3.3)} fontFamily={GREEK} fontStyle="italic" fontSize="17" fill={INK}>
-          <path d="M512 138 H530 M512 182 H530" stroke={GRAPH} strokeWidth="0.5" />
-          <text x="536" y="143">ξ</text>
-          <text x="536" y="187">χ</text>
-        </g>
-        <text className="write" style={d(3.5)} x="557" y="143" fontFamily={HAND} fontSize="13" fill={GRAPH}>tail</text>
-        <text className="write" style={d(3.6)} x="557" y="187" fontFamily={HAND} fontSize="13" fill={GRAPH}>together</text>
 
-        {/* Note with leader: why two pathways. */}
-        <path className="ink" pathLength="1" style={d(3.4)} d="M448 212 L462 252 H474" fill="none" stroke={GRAPH} strokeWidth="0.5" />
-        <text className="write" style={d(3.6)} x="478" y="256" fontFamily={HAND} fontSize="14" fill={INK} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
-          the fix for the
+        {/* Labels with leaders. */}
+        <path className="ink" pathLength="1" style={d(3.2)} d={`M${X(1) + 10} ${y(1.2)} C ${X(1) + 40} ${y(1.3)} ${X(2) - 10} ${y(1.36)} ${X(2) + 14} ${y(1.36)}`} fill="none" stroke={RUST} strokeWidth="0.6" />
+        <text className="write" style={d(3.5)} x={X(2) + 18} y={y(1.36) + 5} fontFamily={HAND} fontSize="16" fill={RUST} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
+          union band — hull over working ρ′
         </text>
-        <text className="write" style={d(3.8)} x="478" y="274" fontFamily={HAND} fontSize="14" fill={INK} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
-          identifiability flaw
+        <path className="ink" pathLength="1" style={d(3.3)} d={`M${X(3) + 26} ${y(0.88)} C ${X(3) + 40} ${y(1.0)} ${X(3) + 46} ${y(1.08)} ${X(3) + 62} ${y(1.1)}`} fill="none" stroke={GRAPH} strokeWidth="0.5" />
+        <text className="write" style={d(3.6)} x={X(3) + 66} y={y(1.1) + 5} fontFamily={HAND} fontSize="15" fill={GRAPH} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
+          first-order band
+        </text>
+        <text className="write" style={d(3.8)} x={RIGHT - 4} y={y(INTER[0]) + 22} textAnchor="end" fontFamily={HAND} fontSize="16" fill={INK} stroke={PAPER} strokeWidth="3.5" paintOrder="stroke">
+          common ground: ξ ∈ [0.52, 0.84]
+        </text>
+
+        <text className="write" style={d(0.9)} x={LEFT + 14} y={Y1 - 40} fontFamily={HAND} fontSize="19" fill={INK}>
+          Danish fire losses, n = 2,167
         </text>
 
         {/* Plate title and signature. */}
         <g className="fade" style={d(3.9)}>
-          <text x="40" y="506" fontFamily={SERIF} fontStyle="italic" fontSize="22" fill={INK}>Planche IV.</text>
-          <text x="148" y="506" fontFamily={SERIF} fontSize="11" fontWeight="600" letterSpacing="0.26em" fill={GRAPH}>
-            QUEUES LOURDES · INFÉRENCE AMORTIE
+          <text x="40" y="518" fontFamily={SERIF} fontStyle="italic" fontSize="22" fill={INK}>Planche IV.</text>
+          <text x="148" y="518" fontFamily={SERIF} fontSize="11" fontWeight="600" letterSpacing="0.26em" fill={GRAPH}>
+            QUEUES LOURDES · INFÉRENCE APRÈS SÉLECTION
           </text>
-          <line x1="40" x2="600" y1="515" y2="515" stroke={INK} strokeWidth="0.5" />
-          <line x1="40" x2="600" y1="518" y2="518" stroke={INK} strokeWidth="0.25" />
+          <line x1="40" x2="600" y1="526" y2="526" stroke={INK} strokeWidth="0.5" />
+          <line x1="40" x2="600" y1="529" y2="529" stroke={INK} strokeWidth="0.25" />
         </g>
-        <text className="write" style={d(4.3)} x="600" y="535" textAnchor="end" fontFamily={HAND} fontSize="15" fill={GRAPH}>
-          Z. Zhou, MMXXVI
-        </text>
       </Art>
     </Scene>
   );
