@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 import { maplePath } from '@utils/leaves';
+import { paintLeaf } from '@utils/maple';
 import { createCover } from '@utils/leaf-cover';
 
 /*
@@ -262,16 +263,18 @@ const TailField = ({ animate, variant }) => {
 
         const k = Math.pow(m, 2.2); // weight towards the joint extremes
         const [r, gg, b] = ramp(k);
-        if (m > 0.8 && leaf) {
-          // Joint extremes become little maple leaves, each with its own angle.
-          const s = (sky ? 1.2 : 1) * (2.6 + (4.6 * (m - 0.8)) / 0.2);
-          ctx.save();
-          ctx.translate(x, y);
-          ctx.rotate(inputs[i].jitter * 6.283 + t * 0.15 * (inputs[i].jitter - 0.5));
-          ctx.scale(s, s);
-          ctx.fillStyle = `rgba(${r},${gg},${b},0.92)`;
-          ctx.fill(leaf);
-          ctx.restore();
+        if (m > 0.8) {
+          // Joint extremes: warm ink dots, each with a fine ring, growing with how extreme they are.
+          const s = (sky ? 1.1 : 1) * (2 + (2.4 * (m - 0.8)) / 0.2);
+          ctx.fillStyle = `rgba(${r},${gg},${b},0.9)`;
+          ctx.beginPath();
+          ctx.arc(x, y, s, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = `rgba(163,67,42,${0.25 + 0.5 * (m - 0.8) / 0.2})`;
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.arc(x, y, s + 2.2, 0, Math.PI * 2);
+          ctx.stroke();
         } else {
           ctx.fillStyle = `rgba(${r},${gg},${b},${sky ? 0.55 + 0.4 * k : 0.45 + 0.5 * k})`;
           ctx.beginPath();
@@ -302,13 +305,7 @@ const TailField = ({ animate, variant }) => {
         } else {
           const fx = d.x - age * size * 0.35 + Math.sin(age * 9) * 10;
           const fy = d.y + age * size * 0.9;
-          ctx.save();
-          ctx.translate(fx, fy);
-          ctx.rotate(d.spin + age * 5);
-          ctx.scale(7 * (0.35 + 0.65 * Math.abs(Math.cos(age * 7))), 7);
-          ctx.fillStyle = `rgba(196,80,31,${0.85 * (1 - age)})`;
-          ctx.fill(leaf);
-          ctx.restore();
+          paintLeaf(ctx, { x: fx, y: fy, size: 8, rot: d.spin + age * 5, flip: Math.cos(age * 7), rgb: [163, 67, 42], alpha: 1 - age });
         }
       }
       for (let i = ripples.length - 1; i >= 0; i -= 1) {

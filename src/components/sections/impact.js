@@ -128,10 +128,47 @@ const StyledLedger = styled.div`
 `;
 
 const StyledImpactSection = styled.section`
+  /* A quiet text link under the story cards, not a boxed button. */
   .more {
-    ${({ theme }) => theme.mixins.smallButton};
+    position: relative;
     display: table;
-    margin: 60px auto 0;
+    margin: 34px 0 0 auto;
+    padding: 4px 0;
+    color: var(--lightest-slate);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-style: italic;
+
+    span {
+      display: inline-block;
+      margin-left: 6px;
+      font-style: normal;
+      transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.75px;
+      background: currentColor;
+      transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--green);
+
+      span {
+        transform: translateX(5px);
+      }
+      &:after {
+        transform: scaleX(0.4);
+      }
+    }
   }
 `;
 
@@ -194,6 +231,10 @@ const Impact = () => {
         ))}
       </StyledImpactGrid>
 
+      <Link className="more" to="/impact">
+        Read all stories <span aria-hidden="true">→</span>
+      </Link>
+
       <StyledLedger>
         <h3>
           <span className="mark">Leadership &amp; community</span>
@@ -212,10 +253,6 @@ const Impact = () => {
           ))}
         </ol>
       </StyledLedger>
-
-      <Link className="more" to="/impact">
-        All stories
-      </Link>
     </StyledImpactSection>
   );
 };

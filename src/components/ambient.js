@@ -31,9 +31,9 @@ const StyledSpotlight = styled.div`
   opacity: 0;
   transition: opacity 0.6s ease;
   background: radial-gradient(
-    560px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(226, 176, 74, 0.13),
-    transparent 62%
+    460px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.55),
+    transparent 64%
   );
 
   &.on {

@@ -6,6 +6,7 @@ import { showResume, socialMedia } from '@config';
 import TailField from '@components/tail-field';
 import { Icon } from '@components/icons';
 import { isFrost, FROST, FROST_LIGHT, SNOW } from '@utils/season';
+import { MAPLE_D, VEINS_D } from '@utils/maple';
 
 /*
  * The cover: Montréal seen from the river, drawn as an atelier plate — Mont Royal in contour
@@ -583,8 +584,7 @@ const StyledHero = styled.section`
   }
 `;
 
-const MAPLE =
-  'M0 -1 L.14 -.6 L.34 -.74 L.3 -.42 L.64 -.5 L.54 -.28 L.96 -.12 L.64 .06 L.74 .3 L.4 .22 L.34 .46 L.08 .32 L.04 .98 L-.04 .98 L-.08 .32 L-.34 .46 L-.4 .22 L-.74 .3 L-.64 .06 L-.96 -.12 L-.54 -.28 L-.64 -.5 L-.3 -.42 L-.34 -.74 L-.14 -.6 Z';
+const MAPLE = MAPLE_D;
 
 // Deterministic pseudo-random numbers so the drawing renders the same on server and client.
 const rnd = seed => {
@@ -870,6 +870,16 @@ const Hero = () => {
               <stop offset="0" stopColor={isFrost ? FROST_LIGHT : AMBER} stopOpacity={isFrost ? 0.45 : 0.35} />
               <stop offset="1" stopColor={isFrost ? FROST_LIGHT : AMBER} stopOpacity="0" />
             </radialGradient>
+            <radialGradient id="hleaf0" cx="0.3" cy="0.3" r="0.9">
+              <stop offset="0" stopColor="#fff" stopOpacity="0.5" />
+              <stop offset="0.55" stopColor="#fff" stopOpacity="0" />
+              <stop offset="1" stopColor={RUST} stopOpacity="0.75" />
+            </radialGradient>
+            <radialGradient id="hleaf1" cx="0.7" cy="0.35" r="0.9">
+              <stop offset="0" stopColor="#fff" stopOpacity="0.45" />
+              <stop offset="0.6" stopColor="#fff" stopOpacity="0" />
+              <stop offset="1" stopColor={RUST} stopOpacity="0.7" />
+            </radialGradient>
             <linearGradient id="hfade" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0" stopColor={PAPER} stopOpacity="1" />
               <stop offset="1" stopColor={PAPER} stopOpacity="0" />
@@ -1040,10 +1050,12 @@ const Hero = () => {
                 ).map(([x, y, s, rot, c], i) => (
                   <g key={`${x}${y}`} transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
                     <g className="fade" style={d(1.2 + i * 0.08)}>
-                      <path d={MAPLE} fill={c} opacity="0.62" transform="translate(0.05 0.05)" />
+                      {/* wash: a light ground, then pigment pooling towards one side */}
+                      <path d={MAPLE} fill={c} opacity="0.42" transform="translate(0.04 0.04)" />
+                      <path d={MAPLE} fill={`url(#hleaf${i % 2})`} opacity="0.55" transform="translate(0.04 0.04)" />
                     </g>
-                    <path className="ink" pathLength="1" style={d(1 + i * 0.08)} d={MAPLE} fill="none" stroke={INK} strokeWidth={0.9 / s} strokeLinejoin="round" />
-                    <path className="ink" pathLength="1" style={d(1.3 + i * 0.08)} d="M0 0.95 L0 -0.6 M0 0 L-0.5 -0.3 M0 0 L0.5 -0.3" fill="none" stroke={INK} strokeWidth={0.6 / s} opacity="0.7" />
+                    <path className="ink" pathLength="1" style={d(1 + i * 0.08)} d={MAPLE} fill="none" stroke={INK} strokeWidth={0.85 / s} strokeLinejoin="round" />
+                    <path className="ink" pathLength="1" style={d(1.3 + i * 0.08)} d={VEINS_D} fill="none" stroke={INK} strokeWidth={0.5 / s} strokeLinecap="round" opacity="0.55" />
                   </g>
                 ))}
               </g>
@@ -1061,7 +1073,11 @@ const Hero = () => {
           ).map(([x, y, s, c, dl]) => (
             <g key={x} transform={`translate(${x} ${y})`}>
               <g className="leafFall" style={{ animationDelay: `${dl}s` }}>
-                <path d={MAPLE} transform={`scale(${s})`} fill={c} opacity="0.85" />
+                <g transform={`scale(${s})`}>
+                  <path d={MAPLE} fill={c} opacity="0.6" />
+                  <path d={MAPLE} fill="none" stroke={INK} strokeWidth={0.8 / s} strokeLinejoin="round" />
+                  <path d={VEINS_D} fill="none" stroke={INK} strokeWidth={0.5 / s} opacity="0.5" />
+                </g>
               </g>
             </g>
           ))}

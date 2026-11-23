@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { usePrefersReducedMotion } from '@hooks';
-import { maplePath, almondPath, oakPath, LEAF_COLOURS, pick } from '@utils/leaves';
+import { LEAF_COLOURS, pick } from '@utils/leaves';
 import { isFrost } from '@utils/season';
+import { paintLeaf } from '@utils/maple';
 
 /*
  * A few autumn leaves drifting down over the cover; below it no new leaves start, so the
@@ -30,7 +31,6 @@ const FallingLeaves = () => {
 
     const canvas = ref.current;
     const ctx = canvas.getContext('2d');
-    const shapes = [maplePath(), maplePath(), oakPath(), almondPath()];
     let w = 0;
     let h = 0;
     let dpr = 1;
@@ -59,7 +59,7 @@ const FallingLeaves = () => {
           snow: true,
           x: Math.random() * w,
           y: initial ? Math.random() * h : -20 - Math.random() * 80,
-          size: 1.4 + depth * 2.6,
+          size: depth > 0.72 ? 3 + (depth - 0.72) * 9 : 1 + depth * 2.4,
           vy: 14 + depth * 26,
           sway: 6 + Math.random() * 16,
           swayFreq: 0.25 + Math.random() * 0.4,
@@ -73,7 +73,7 @@ const FallingLeaves = () => {
       return {
         x: Math.random() * w,
         y: initial ? Math.random() * h : -40 - Math.random() * 120,
-        size: 7 + depth * 11,
+        size: 9 + depth * 11,
         vy: 9 + depth * 17, // px / s — slow, unhurried
         sway: 18 + Math.random() * 34,
         swayFreq: 0.3 + Math.random() * 0.45,
@@ -81,7 +81,6 @@ const FallingLeaves = () => {
         rot: Math.random() * Math.PI * 2,
         spin: (Math.random() - 0.5) * 0.9,
         flipFreq: 0.4 + Math.random() * 0.7,
-        shape: pick(shapes, Math.random()),
         colour: pick(LEAF_COLOURS, Math.random()),
         alpha: 0.28 + depth * 0.38,
         dx: 0,
@@ -130,23 +129,41 @@ const FallingLeaves = () => {
         }
 
         if (l.snow) {
-          // A snowflake on paper: a white disc with a frost-blue rim; the nearer ones get arms.
           ctx.save();
           ctx.translate(x, l.y);
-          ctx.rotate(l.rot);
-          ctx.fillStyle = `rgba(255,255,255,${l.alpha})`;
-          ctx.strokeStyle = `rgba(110,140,170,${0.55 * l.alpha})`;
-          ctx.lineWidth = 0.7;
-          ctx.beginPath();
-          ctx.arc(0, 0, l.size, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          if (l.size > 3) {
+          if (l.size < 3) {
+            // Far flakes: out of focus, a soft pale dot.
+            const g = ctx.createRadialGradient(0, 0, 0, 0, 0, l.size * 2.6);
+            g.addColorStop(0, `rgba(255,255,255,${0.95 * l.alpha})`);
+            g.addColorStop(0.45, `rgba(214,224,234,${0.55 * l.alpha})`);
+            g.addColorStop(1, 'rgba(214,224,234,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(0, 0, l.size * 2.6, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Near flakes: a six-armed crystal in hairline, turning slowly.
+            ctx.rotate(l.rot);
+            ctx.strokeStyle = `rgba(96,124,154,${0.7 * l.alpha})`;
+            ctx.lineWidth = 0.6;
+            ctx.lineCap = 'round';
+            const R = l.size * 2.4;
             ctx.beginPath();
             for (let k = 0; k < 6; k += 1) {
               const a = (k * Math.PI) / 3;
-              ctx.moveTo(Math.cos(a) * l.size * 0.6, Math.sin(a) * l.size * 0.6);
-              ctx.lineTo(Math.cos(a) * l.size * 2.1, Math.sin(a) * l.size * 2.1);
+              const ca = Math.cos(a);
+              const sa = Math.sin(a);
+              ctx.moveTo(0, 0);
+              ctx.lineTo(ca * R, sa * R);
+              [0.5, 0.74].forEach(u => {
+                const bx = ca * R * u;
+                const by = sa * R * u;
+                const len = R * (u === 0.5 ? 0.3 : 0.2);
+                ctx.moveTo(bx, by);
+                ctx.lineTo(bx + Math.cos(a + 1.05) * len, by + Math.sin(a + 1.05) * len);
+                ctx.moveTo(bx, by);
+                ctx.lineTo(bx + Math.cos(a - 1.05) * len, by + Math.sin(a - 1.05) * len);
+              });
             }
             ctx.stroke();
           }
@@ -154,25 +171,7 @@ const FallingLeaves = () => {
           return;
         }
         const flip = Math.cos(t * l.flipFreq + l.phase);
-        const [r, g, b] = l.colour;
-        ctx.save();
-        ctx.translate(x, l.y);
-        ctx.rotate(l.rot);
-        ctx.scale(l.size * (0.25 + 0.75 * Math.abs(flip)), l.size);
-        // Darker underside when the leaf is "flipped".
-        const shade = flip < 0 ? 0.78 : 1;
-        ctx.fillStyle = `rgba(${Math.round(r * shade)},${Math.round(g * shade)},${Math.round(
-          b * shade,
-        )},${l.alpha})`;
-        ctx.fill(l.shape);
-        // Mid-vein.
-        ctx.strokeStyle = `rgba(255,240,220,${0.35 * l.alpha})`;
-        ctx.lineWidth = 0.06;
-        ctx.beginPath();
-        ctx.moveTo(0, -0.7);
-        ctx.lineTo(0, 0.9);
-        ctx.stroke();
-        ctx.restore();
+        paintLeaf(ctx, { x, y: l.y, size: l.size, rot: l.rot, flip, rgb: l.colour, alpha: Math.min(1, l.alpha + 0.3) });
       });
     };
 

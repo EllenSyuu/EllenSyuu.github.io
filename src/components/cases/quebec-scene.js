@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { isFrost } from '@utils/season';
+import { MAPLE_D } from '@utils/maple';
 import styled, { keyframes } from 'styled-components';
 import { Scene, useScene, useCountUp, drawCss, drawClass, delay as d, INK, GRAPH, FAINT, PAPER, FACE, ORANGE, AMBER, RUST, SERIF, HAND, GREEK } from './kit';
 
@@ -130,8 +131,7 @@ const scribble = (cx, cy, r, seed) => {
   return poly(pts);
 };
 
-const MAPLE =
-  'M0 -1 L.14 -.6 L.34 -.74 L.3 -.42 L.64 -.5 L.54 -.28 L.96 -.12 L.64 .06 L.74 .3 L.4 .22 L.34 .46 L.08 .32 L.04 .98 L-.04 .98 L-.08 .32 L-.34 .46 L-.4 .22 L-.74 .3 L-.64 .06 L-.96 -.12 L-.54 -.28 L-.64 -.5 L-.3 -.42 L-.34 -.74 L-.14 -.6 Z';
+const MAPLE = MAPLE_D;
 
 /* ---------- motion ---------- */
 const drawIn = keyframes`from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; }`;

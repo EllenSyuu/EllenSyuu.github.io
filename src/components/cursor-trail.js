@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { maplePath, oakPath } from '@utils/leaves';
+import { paintLeaf } from '@utils/maple';
 
 /*
- * An autumn companion for the mouse. A small maple leaf follows the pointer on a soft spring
- * and tilts with its motion; moving now and then sheds a leaf that tumbles down and fades; a
- * click scatters a few. The normal cursor stays. It wakes on the first real mouse / trackpad /
+ * A companion for the mouse: one small maple leaf, drawn in ink and wash, follows the pointer
+ * on a soft spring and tilts with its motion. Nothing is shed and nothing bursts. The normal cursor stays. It wakes on the first real mouse / trackpad /
  * TrackPoint movement (pointerType "mouse"), so touch-screen laptops work too; touch and pen
  * never trigger it. With reduced motion nothing is shed. The loop sleeps when idle.
  */
@@ -30,8 +29,6 @@ const CursorTrail = () => {
 
     const canvas = ref.current;
     const ctx = canvas.getContext('2d');
-    const maple = maplePath();
-    const oak = oakPath();
     let w = 0;
     let h = 0;
     let dpr = 1;
@@ -79,8 +76,6 @@ const CursorTrail = () => {
       ctx.rotate(b.rot);
       const flip = Math.cos(b.life * 5 + b.phase);
       ctx.scale(b.size * (0.3 + 0.7 * Math.abs(flip)), b.size);
-      ctx.fillStyle = b.colour;
-      ctx.fill(b.kind === 'oak' ? oak : maple);
       ctx.restore();
     };
 
@@ -90,8 +85,8 @@ const CursorTrail = () => {
       last = now;
 
       // The follower: a spring towards a point just below-right of the pointer.
-      const tx = mouse.x + 16;
-      const ty = mouse.y + 18;
+      const tx = mouse.x + 22;
+      const ty = mouse.y + 26;
       follower.vx += (tx - follower.x) * 140 * dt;
       follower.vy += (ty - follower.y) * 140 * dt;
       follower.vx *= Math.pow(0.0009, dt);
@@ -114,20 +109,15 @@ const CursorTrail = () => {
       ctx.clearRect(0, 0, w, h);
       bits.forEach(drawBit);
 
-      if (mouse.seen && maple) {
-        ctx.save();
-        ctx.translate(follower.x, follower.y);
-        ctx.rotate(follower.rot + Math.sin(now / 600) * 0.12);
-        ctx.scale(12, 12);
-        ctx.fillStyle = 'rgba(207,96,43,0.88)';
-        ctx.fill(maple);
-        ctx.strokeStyle = 'rgba(255,240,220,0.7)';
-        ctx.lineWidth = 0.07;
-        ctx.beginPath();
-        ctx.moveTo(0, -0.7);
-        ctx.lineTo(0, 0.9);
-        ctx.stroke();
-        ctx.restore();
+      if (mouse.seen) {
+        paintLeaf(ctx, {
+          x: follower.x,
+          y: follower.y,
+          size: 10,
+          rot: follower.rot + Math.sin(now / 900) * 0.1 + 0.5,
+          rgb: [163, 67, 42],
+          alpha: 0.9,
+        });
       }
 
       const moving = Math.abs(follower.vx) + Math.abs(follower.vy) > 2;
@@ -155,13 +145,12 @@ const CursorTrail = () => {
       const now = performance.now();
       if (now - lastSpawn > 160 && dx * dx + dy * dy > 30) {
         lastSpawn = now;
-        if (!reduced && Math.random() < 0.45) spawn(follower.x, follower.y);
+
       }
       wake();
     };
     const onDown = e => {
       if (e.pointerType && e.pointerType !== 'mouse') return;
-      for (let i = 0; i < (reduced ? 0 : 6); i += 1) spawn(e.clientX, e.clientY, true);
       wake();
     };
     const onLeave = () => {
