@@ -82,25 +82,72 @@ const StyledText = styled.div`
   }
 `;
 
-// One photograph, set straight.
+// Two photos, pinned like polaroids; they straighten and lift on hover.
 const StyledPolaroids = styled.div`
+  position: relative;
+  height: 330px;
   margin: 0 0 34px;
 
+  @media (max-width: 480px) {
+    height: 250px;
+  }
+
   figure {
+    position: absolute;
+    top: 0;
+    width: 50%;
     margin: 0;
-  }
-  .img {
-    display: block;
-    width: 100%;
-  }
-  figcaption {
-    margin-top: 10px;
-    color: var(--dark-slate);
-    font-family: var(--font-sans);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    padding: 10px 10px 34px;
+    border-radius: 4px;
+    background: #fffdf8;
+    box-shadow: 0 1px 2px rgba(60, 35, 18, 0.12), 0 18px 34px -18px rgba(60, 35, 18, 0.45);
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s ease, z-index 0s;
+
+    &:first-child {
+      left: -2%;
+      transform: rotate(-5deg);
+      z-index: 1;
+    }
+    &:last-child {
+      right: -2%;
+      top: 26px;
+      transform: rotate(4deg);
+    }
+    &:hover {
+      z-index: 2;
+      transform: rotate(0deg) translateY(-8px) scale(1.03);
+      box-shadow: 0 1px 2px rgba(60, 35, 18, 0.12), 0 30px 44px -20px rgba(60, 35, 18, 0.5);
+    }
+
+    .img {
+      display: block;
+      border-radius: 2px;
+    }
+
+    figcaption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 8px;
+      color: var(--light-slate);
+      font-family: var(--font-hand);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* A strip of washi tape. */
+    &:before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      top: -9px;
+      left: 50%;
+      width: 64px;
+      height: 20px;
+      margin-left: -32px;
+      background: rgba(226, 176, 74, 0.55);
+      transform: rotate(-3deg);
+    }
   }
 `;
 
@@ -225,6 +272,19 @@ const About = () => {
             <figure>
               <StaticImage
                 className="img"
+                src="../../images/photos/whiteboard.jpg"
+                alt="Ziyi (Ellen) Zhou in a graduation gown, wiping a whiteboard covered in copula formulas"
+                width={460}
+                aspectRatio={4 / 5}
+                quality={86}
+                placeholder="blurred"
+                formats={['AUTO', 'WEBP', 'AVIF']}
+              />
+              <figcaption>Copulas on the whiteboard</figcaption>
+            </figure>
+            <figure>
+              <StaticImage
+                className="img"
                 src="../../images/photos/autumn.jpg"
                 alt="Ziyi (Ellen) Zhou in a red sweater, sitting under a tree among autumn leaves"
                 width={460}
@@ -233,7 +293,7 @@ const About = () => {
                 placeholder="blurred"
                 formats={['AUTO', 'WEBP', 'AVIF']}
               />
-              <figcaption>Montréal, autumn</figcaption>
+              <figcaption>Autumn leaves</figcaption>
             </figure>
           </StyledPolaroids>
 

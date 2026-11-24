@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
+import ExperienceTimeline from '@components/experience-timeline';
 import { srConfig } from '@config';
 import { KEY_CODES } from '@utils';
 import sr from '@utils/sr';
@@ -250,6 +251,7 @@ const Jobs = () => {
         programming and quantitative work throughout.
       </p>
 
+      <ExperienceTimeline />
 
       <div className="inner">
         <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>

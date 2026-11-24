@@ -1,10 +1,10 @@
 import React from 'react';
 
-// Monogram: the masthead's Z, reversed out of a black square.
+// Monogram: the masthead's Z, reversed out of a vermilion square.
 const IconLogo = () => (
   <svg id="logo" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 84 96">
     <title>Ziyi Zhou</title>
-    <rect x="4" y="10" width="76" height="76" fill="#0d0d0d" />
+    <rect x="4" y="10" width="76" height="76" fill="#c8431f" />
     <text
       x="42"
       y="69"
