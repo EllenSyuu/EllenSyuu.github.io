@@ -96,7 +96,7 @@ const StyledLedger = styled.div`
     color: var(--green);
     font-family: var(--font-serif);
     font-size: 17px;
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     white-space: nowrap;
   }
@@ -137,7 +137,7 @@ const StyledImpactSection = styled.section`
     color: var(--lightest-slate);
     font-family: var(--font-serif);
     font-size: 20px;
-    font-style: italic;
+    font-style: normal;
 
     span {
       display: inline-block;

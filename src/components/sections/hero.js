@@ -24,7 +24,7 @@ const StyledHero = styled.section`
   min-height: 100vh;
   min-height: 100svh;
   margin: 0 calc(50% - 50vw);
-  padding: calc(var(--nav-height) + 4px) clamp(22px, 5.5vw, 80px) 17.5vw;
+  padding: calc(var(--nav-height) + 4px) clamp(22px, 5.5vw, 80px) 24vw;
   overflow: hidden;
   isolation: isolate;
   background: ${COVER.cream};

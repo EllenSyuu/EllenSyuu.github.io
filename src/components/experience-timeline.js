@@ -114,7 +114,7 @@ const StyledTimeline = styled.figure`
       color: var(--dark-slate);
       font-family: var(--font-serif);
       font-size: 14px;
-      font-style: italic;
+      font-style: normal;
     }
   }
 
@@ -227,7 +227,7 @@ const StyledTimeline = styled.figure`
     color: var(--dark-slate);
     font-family: var(--font-serif);
     font-size: 15px;
-    font-style: italic;
+    font-style: normal;
   }
 
   /* Bars draw out from their start date when the figure scrolls in. */

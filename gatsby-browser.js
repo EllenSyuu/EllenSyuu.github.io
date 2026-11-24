@@ -7,6 +7,7 @@ import '@fontsource/cormorant-garamond/latin-500-italic.css';
 import '@fontsource/cormorant-garamond/latin-600-italic.css';
 import '@fontsource/la-belle-aurore/latin-400.css';
 import '@fontsource-variable/bodoni-moda/opsz.css';
+import '@fontsource-variable/bodoni-moda/opsz-italic.css';
 import '@fontsource-variable/inter/wght.css';
 import '@fontsource-variable/inter/wght-italic.css';
 import '@fontsource/jetbrains-mono/latin-400.css';

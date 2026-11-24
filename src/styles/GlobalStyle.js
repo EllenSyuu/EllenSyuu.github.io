@@ -189,6 +189,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0 0 10px 0;
     font-family: var(--font-display);
     font-weight: 600;
+    font-variation-settings: 'opsz' 26;
     letter-spacing: -0.005em;
     color: var(--lightest-slate);
     line-height: 1.08;
@@ -196,7 +197,7 @@ const GlobalStyle = createGlobalStyle`
 
   em.accent,
   .accent-italic {
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     color: var(--green);
   }
@@ -262,7 +263,7 @@ const GlobalStyle = createGlobalStyle`
       height: 0.75px;
       transform-origin: left;
       transition: transform 1.4s 0.15s cubic-bezier(0.55, 0.05, 0.25, 1);
-      background: linear-gradient(90deg, var(--ink) 0, var(--ink) 64px, rgba(34, 49, 74, 0.28) 64px, rgba(34, 49, 74, 0.28) 70%, transparent);
+      background: linear-gradient(90deg, var(--ink) 0, var(--ink) 64px, rgba(20, 33, 58, 0.28) 64px, rgba(20, 33, 58, 0.28) 70%, transparent);
     }
   }
 
@@ -392,7 +393,7 @@ const GlobalStyle = createGlobalStyle`
 
     p {
       font-family: var(--font-serif);
-      font-style: italic;
+      font-style: normal;
       font-size: 26px;
     }
   }
@@ -450,20 +451,9 @@ const GlobalStyle = createGlobalStyle`
     text-transform: uppercase;
   }
 
-  /* Highlighter: a watercolour brush stroke with a pencil underline, swept in behind a
-     subtitle when it scrolls into view (see components/mark-observer). */
+  /* Highlighter: retired — titles are set plain. */
   .mark {
-    padding: 0 0.06em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 8.5 C 28 4.5 62 6.5 101 5 S 168 3.2 197 6.6 L 196.4 14.6 C 158 17.2 121 13.8 80 16.2 S 22 17.6 4 15.4 Z' fill='%23e0a046' fill-opacity='.46'/%3E%3Cpath d='M8 10.5 C 52 8 120 9.8 192 8.6 L 191 12.8 C 130 14.6 60 12.6 9 14 Z' fill='%23cf602b' fill-opacity='.16'/%3E%3Cpath d='M5 15.2 C 60 13.2 132 15.4 195 13.4' stroke='%2322314a' stroke-opacity='.28' stroke-width='.7' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: 0 92%;
-    background-size: 0% 0.64em;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-    transition: background-size 1.15s cubic-bezier(0.55, 0.05, 0.25, 1) 0.1s;
-  }
-  .mark.is-marked {
-    background-size: 100% 0.64em;
+    background: none;
   }
 
   /* Watercolour edges (SVG turbulence filters) are costly to paint on phones: there the

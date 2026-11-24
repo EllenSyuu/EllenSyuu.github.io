@@ -18,7 +18,7 @@ const StyledCanvas = styled.canvas`
   pointer-events: none;
 `;
 
-const LEAF_TONES = ['#cf602b', '#e0a046', '#a3432a', '#d9703a'];
+const LEAF_TONES = ['#c8431f', '#e0ad4a', '#a5391c', '#d9703a'];
 const pick = a => a[Math.floor(Math.random() * a.length)];
 
 const CursorTrail = () => {

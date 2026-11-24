@@ -59,7 +59,7 @@ const StyledStats = styled.section`
     .suffix {
       color: var(--green);
       font-size: 0.55em;
-      font-style: italic;
+      font-style: normal;
       margin-left: 2px;
     }
   }

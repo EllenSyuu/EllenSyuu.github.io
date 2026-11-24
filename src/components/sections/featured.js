@@ -62,7 +62,7 @@ const StyledCase = styled.li`
     .index {
       color: var(--dark-slate);
       font-size: 17px;
-      font-style: italic;
+      font-style: normal;
       font-weight: 500;
       letter-spacing: 0;
       text-transform: none;
@@ -92,7 +92,7 @@ const StyledCase = styled.li`
     color: var(--light-slate);
     font-family: var(--font-display);
     font-size: clamp(23px, 2.8vw, 30px);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     line-height: 1.35;
 

@@ -19,8 +19,8 @@ const StyledSky = styled.svg`
   pointer-events: none;
 `;
 
-const INK = '#22314a';
-const ORANGE = '#cf602b';
+const INK = '#14213a';
+const ORANGE = '#c8431f';
 
 // Wing pair seen from below: an "M" whose height follows the flap phase (−1 … 1).
 const gullWings = f => {
@@ -106,7 +106,7 @@ const BirdFlyover = () => {
     <StyledSky aria-hidden="true">
       <g ref={gRef} style={{ opacity: 0, transition: 'opacity 0.6s' }}>
         <path ref={wingRef} fill="none" stroke={INK} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-        <path ref={bodyRef} fill="#f4f2ec" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
+        <path ref={bodyRef} fill="#f6f0e4" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
         <path ref={beakRef} fill={ORANGE} />
       </g>
     </StyledSky>

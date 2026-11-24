@@ -84,7 +84,7 @@ const StyledFocus = styled.section`
     color: var(--green);
     font-family: var(--font-serif);
     font-size: 19px;
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
   }
 
@@ -161,7 +161,7 @@ const StyledFocus = styled.section`
       margin-left: 0;
       font-family: var(--font-serif);
       font-size: 17px;
-      font-style: italic;
+      font-style: normal;
       font-weight: 500;
       letter-spacing: 0;
       text-transform: none;

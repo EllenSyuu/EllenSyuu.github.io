@@ -7,14 +7,14 @@ import PropTypes from 'prop-types';
  * as the case-study plates. Used in place of a photo until a real one is added.
  */
 
-const INK = '#22314a';
+const INK = '#14213a';
 const GRAPH = '#6f7b8c';
 const FAINT = '#b4bcc7';
 const PAPER = '#efede7';
-const ORANGE = '#cf602b';
-const AMBER = '#e0a046';
+const ORANGE = '#c8431f';
+const AMBER = '#e0ad4a';
 const HAND = '"La Belle Aurore", cursive';
-const SERIF = '"Cormorant Garamond", Georgia, serif';
+const SERIF = '"Bodoni Moda Variable", "Cormorant Garamond", Georgia, serif';
 
 const Frame = ({ id, children, label, plate }) => (
   <svg viewBox="0 0 320 200" role="img" aria-label={label} style={{ display: 'block', width: '100%', height: '100%' }}>

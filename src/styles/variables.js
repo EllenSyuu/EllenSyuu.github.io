@@ -6,36 +6,36 @@ const variables = css`
        with orange kept for autumn things and for the data that matters.
        Variable names are kept from v4 so every component keeps working:
        "navy" = paper, "slate" = ink, "green" = the warm accent. */
-    --dark-navy: #ebe8e1;
-    --navy: #f4f2ec;
-    --light-navy: #fafaf6;
-    --lightest-navy: #d9d7d0;
-    --navy-shadow: rgba(34, 49, 74, 0.14);
-    --dark-slate: #626d7d;
-    --slate: #46526a;
-    --light-slate: #34425a;
-    --lightest-slate: #22314a;
-    --white: #22314a;
-    --green: #a84a26;
-    --green-tint: rgba(207, 96, 43, 0.08);
-    --photo-tint: #e8e6e0;
-    --amber: #e0a046;
-    --gold: #e0a046;
-    --maple: #cf602b;
+    --dark-navy: #ece4d4;
+    --navy: #f6f0e4;
+    --light-navy: #fbf7ee;
+    --lightest-navy: #ddd4c2;
+    --navy-shadow: rgba(20, 33, 58, 0.14);
+    --dark-slate: #66708a;
+    --slate: #3f4c66;
+    --light-slate: #2a3856;
+    --lightest-slate: #14213a;
+    --white: #14213a;
+    --green: #c8431f;
+    --green-tint: rgba(200, 67, 31, 0.08);
+    --photo-tint: #ece4d4;
+    --amber: #e0ad4a;
+    --gold: #e0ad4a;
+    --maple: #c8431f;
     --cranberry: #a3432a;
     --sage: #7c8a5c;
-    --coffee: #22314a;
+    --coffee: #14213a;
     --pink: #b4318c;
     --blue: #1d6fb8;
-    --ink: #22314a;
+    --ink: #14213a;
     --graphite: #6f7b8c;
     --faint: #b4bcc7;
-    --hairline: rgba(34, 49, 74, 0.28);
+    --hairline: rgba(20, 33, 58, 0.28);
 
     /* Type: Cormorant Garamond (display, labels in small caps) · Inter (text) ·
        La Belle Aurore (hand-lettered notes) · JetBrains Mono (code only).
        All open-licensed and self-hosted via Fontsource. CJK falls back to system fonts. */
-    --font-serif: 'Cormorant Garamond', Garamond, 'Times New Roman', 'Songti SC', serif;
+    --font-serif: 'Bodoni Moda Variable', 'Cormorant Garamond', Didot, 'Times New Roman', 'Songti SC', serif;
     --font-display: var(--font-serif);
     --font-hand: 'La Belle Aurore', 'Segoe Script', cursive;
     --font-sans: 'Inter Variable', 'Inter Fallback', 'Inter', -apple-system, system-ui, 'PingFang SC',

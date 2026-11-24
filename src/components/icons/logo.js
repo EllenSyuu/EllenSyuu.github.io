@@ -1,23 +1,21 @@
 import React from 'react';
 
-// Monogram: an engraved double ring with an italic serif "E", like a seal on a drawing plate.
+// Monogram: the masthead's Z, reversed out of a vermilion square.
 const IconLogo = () => (
   <svg id="logo" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 84 96">
-    <title>Logo</title>
-    <circle cx="42" cy="48" r="38" fill="#f4f2ec" stroke="currentColor" strokeWidth="1.6" />
-    <circle cx="42" cy="48" r="32.5" fill="none" stroke="currentColor" strokeWidth="0.7" />
+    <title>Ziyi Zhou</title>
+    <rect x="4" y="10" width="76" height="76" fill="#c8431f" />
     <text
-      x="42.5"
-      y="62"
+      x="42"
+      y="69"
       textAnchor="middle"
-      fontFamily="'Cormorant Garamond', Garamond, Georgia, serif"
-      fontSize="44"
-      fontStyle="italic"
-      fontWeight="500"
-      fill="currentColor">
-      E
+      fontFamily="'Bodoni Moda Variable', Didot, 'Cormorant Garamond', serif"
+      fontSize="58"
+      fontWeight="600"
+      style={{ fontVariationSettings: "'opsz' 22" }}
+      fill="#f6f0e4">
+      Z
     </text>
-    <circle cx="61" cy="60" r="2.4" fill="#cf602b" />
   </svg>
 );
 

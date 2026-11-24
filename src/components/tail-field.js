@@ -145,7 +145,7 @@ const TailField = ({ animate, variant }) => {
       [143, 42, 28],
     ];
     // In the cover drawing the points are ink stipple; only the joint extremes turn warm.
-    if (sky) RAMP.splice(0, 5, [150, 160, 175], [111, 123, 140], [34, 49, 74], [207, 96, 43], [163, 67, 42]);
+    if (sky) RAMP.splice(0, 5, [150, 160, 175], [111, 123, 140], [20, 33, 58], [207, 96, 43], [163, 67, 42]);
     const ramp = k => {
       const x = Math.min(0.9999, Math.max(0, k)) * (RAMP.length - 1);
       const i = Math.floor(x);
@@ -324,7 +324,7 @@ const TailField = ({ animate, variant }) => {
       // Axis labels.
       {
         ctx.fillStyle = sky ? 'rgba(34,49,74,0.8)' : `rgba(${ink.join(',')},0.9)`;
-        ctx.font = sky ? 'italic 15px "Cormorant Garamond", Georgia, serif' : `11px ${css(document.documentElement, '--font-mono')}`;
+        ctx.font = sky ? 'italic 15px "Bodoni Moda Variable", "Cormorant Garamond", Georgia, serif' : `11px ${css(document.documentElement, '--font-mono')}`;
         ctx.fillText('U₁', x0 + size - 14, y0 + size + 18);
         ctx.fillText('U₂', x0 - 22, y0 + 12);
       }

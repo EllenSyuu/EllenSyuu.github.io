@@ -97,15 +97,15 @@ export const useCountUp = (target, { decimals = 2, duration = 900, run = true } 
 
 /* Atelier palette: blue-black ink and graphite on warm paper; orange only for the warm
    things (clouds, maples, leaves) and for the data that matters. */
-export const INK = '#22314a';
+export const INK = '#14213a';
 export const GRAPH = '#6f7b8c';
 export const FAINT = '#b4bcc7';
-export const PAPER = '#f4f2ec';
+export const PAPER = '#f6f0e4';
 export const FACE = '#ebe8e1';
-export const ORANGE = '#cf602b';
-export const AMBER = '#e0a046';
-export const RUST = '#a3432a';
-export const SERIF = '"Cormorant Garamond", Garamond, Georgia, serif';
+export const ORANGE = '#c8431f';
+export const AMBER = '#e0ad4a';
+export const RUST = '#a5391c';
+export const SERIF = '"Bodoni Moda Variable", "Cormorant Garamond", Didot, Georgia, serif';
 export const HAND = '"La Belle Aurore", cursive';
 export const GREEK = "Georgia, 'Times New Roman', serif";
 
@@ -143,7 +143,7 @@ export const StyledScene = styled.div`
     overflow: hidden;
     border-radius: 2px;
     background: ${PAPER};
-    box-shadow: 0 0 0 0.75px rgba(34, 49, 74, 0.28), 0 30px 60px -44px rgba(34, 49, 74, 0.45);
+    box-shadow: 0 0 0 0.75px rgba(20, 33, 58, 0.28), 0 30px 60px -44px rgba(20, 33, 58, 0.45);
     isolation: isolate;
 
     > svg {
@@ -179,8 +179,8 @@ export const StyledScene = styled.div`
     padding: 16px 20px 14px;
     border-radius: 0;
     background: rgba(250, 247, 240, 0.94);
-    box-shadow: 0 0 0 0.75px ${INK}, 0 22px 40px -30px rgba(34, 49, 74, 0.55);
-    outline: 0.75px solid rgba(34, 49, 74, 0.35);
+    box-shadow: 0 0 0 0.75px ${INK}, 0 22px 40px -30px rgba(20, 33, 58, 0.55);
+    outline: 0.75px solid rgba(20, 33, 58, 0.35);
     outline-offset: -6px;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);

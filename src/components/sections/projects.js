@@ -84,7 +84,7 @@ const StyledProject = styled.li`
       color: var(--green);
       font-family: var(--font-serif);
       font-size: 22px;
-      font-style: italic;
+      font-style: normal;
       font-weight: 500;
     }
 

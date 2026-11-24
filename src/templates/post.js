@@ -76,7 +76,7 @@ const StyledPostContent = styled.div`
     p {
       color: var(--lightest-slate);
       font-size: var(--fz-xxl);
-      font-style: italic;
+      font-style: normal;
     }
   }
 
