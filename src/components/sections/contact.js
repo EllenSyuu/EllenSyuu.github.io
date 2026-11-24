@@ -278,7 +278,6 @@ const Contact = () => {
         </StyledThanks>
       ) : (
         <StyledForm onSubmit={onSubmit}>
-          <Stamp />
           <label>
             Name
             <input name="name" type="text" autoComplete="name" required placeholder="Your name" />

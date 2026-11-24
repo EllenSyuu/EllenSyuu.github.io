@@ -6,12 +6,8 @@ import sr from '@utils/sr';
 import { srConfig } from '@config';
 import { Icon } from '@components/icons';
 import { usePrefersReducedMotion } from '@hooks';
-import QuebecScene from '@components/cases/quebec-scene';
-import TailScene from '@components/cases/tail-scene';
-import VintageScene from '@components/cases/vintage-scene';
-import ImmunityScene from '@components/cases/immunity-scene';
 
-const SCENES = { quebec: QuebecScene, tail: TailScene, vintage: VintageScene, immunity: ImmunityScene };
+const SCENES = {};
 
 /*
  * Selected Work as three case studies. Each one reads top to bottom:

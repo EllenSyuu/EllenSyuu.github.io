@@ -37,7 +37,7 @@ const variables = css`
        All open-licensed and self-hosted via Fontsource. CJK falls back to system fonts. */
     --font-serif: 'Bodoni Moda Variable', 'Cormorant Garamond', Didot, 'Times New Roman', 'Songti SC', serif;
     --font-display: var(--font-serif);
-    --font-hand: 'La Belle Aurore', 'Segoe Script', cursive;
+    --font-hand: var(--font-sans);
     --font-sans: 'Inter Variable', 'Inter Fallback', 'Inter', -apple-system, system-ui, 'PingFang SC',
       'Hiragino Sans', 'Microsoft YaHei', sans-serif;
     --font-mono: var(--font-sans);

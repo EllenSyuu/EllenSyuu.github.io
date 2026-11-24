@@ -2,11 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withPrefix } from 'gatsby';
 import styled, { ThemeProvider } from 'styled-components';
-import { Head, Nav, Social, Email, Footer, Ambient, ChapterMap } from '@components';
-import FallingLeaves from '@components/falling-leaves';
-import CursorTrail from '@components/cursor-trail';
-import { isFrost } from '@utils/season';
-import BirdFlyover from '@components/bird-flyover';
+import { Head, Nav, Social, Email, Footer, ChapterMap } from '@components';
 import useMarks from '@components/mark-observer';
 import { GlobalStyle, theme } from '@styles';
 
@@ -65,10 +61,6 @@ const Layout = ({ children, location }) => {
 
           {
             <StyledContent>
-              <Ambient />
-              <FallingLeaves />
-              {!isFrost && <CursorTrail />}
-              <BirdFlyover />
               <a className="skip-to-content" href="#content">
                 Skip to Content
               </a>
