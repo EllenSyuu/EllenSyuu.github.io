@@ -1,110 +1,122 @@
 /*
- * The cover painting: Montréal from the river at dusk on the first frost. Flat gouache shapes —
- * a low, broad Mont Royal with its cross, the lit skyline, the Jacques-Cartier truss in gold,
- * the river in ruled reflections and one winterberry branch in the foreground.
- * Returned as SVG markup for a 1440 × 620 view (y from 280 to 900); deterministic.
+ * The cover drawing: Montréal from the river, cut like a three-colour print — navy, two slates and
+ * gold on bare paper. Mont Royal and its cross, the towers of the centre drawn one by one, the
+ * Old Port with its clock tower and grain silos, and the Jacques-Cartier bridge.
+ * Returned as SVG markup for a 1440 × 620 view (y from 280 to 900). Nothing here is random.
  */
 export const COVER = {
   cream: '#f6f0e4',
   navy: '#14213a',
+  slate: '#4a6a82',
+  haze: '#a9b9c3',
   vermilion: '#c8431f',
-  gold: '#e0ad4a',
-  blue: '#2c5d7c',
-  pale: '#bcd3df',
-  dusk: '#f2c79c',
-  rose: '#eaa283',
+  gold: '#d9a441',
 };
+
+const GROUND = 742;
+
+// [x, width, height, kind] — kind: slab | step | point | mast | cross (Place Ville Marie)
+const TOWERS = [
+  [596, 30, 58, 'slab'],
+  [634, 24, 84, 'step'],
+  [666, 34, 66, 'slab'],
+  [708, 26, 118, 'mast'],
+  [742, 40, 92, 'slab'],
+  [790, 28, 150, 'step'],
+  [826, 36, 108, 'slab'],
+  [870, 30, 186, 'point'],
+  [908, 44, 132, 'cross'],
+  [960, 26, 168, 'mast'],
+  [994, 38, 114, 'step'],
+  [1040, 30, 142, 'slab'],
+  [1078, 34, 96, 'slab'],
+  [1120, 24, 124, 'step'],
+  [1152, 40, 78, 'slab'],
+  [1200, 28, 102, 'slab'],
+  [1236, 36, 64, 'step'],
+  [1280, 30, 84, 'slab'],
+  [1318, 42, 52, 'slab'],
+  [1368, 28, 70, 'slab'],
+  [1404, 36, 44, 'slab'],
+];
 
 export const coverScene = () => {
   const C = COVER;
-  let seed = 11;
-  const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  const f = n => n.toFixed(1);
   let o = '';
 
-  o += `<defs><linearGradient id="cvsky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${C.cream}" stop-opacity="0"/><stop offset=".5" stop-color="${C.dusk}"/><stop offset="1" stop-color="${C.rose}"/></linearGradient></defs>`;
-  o += `<rect x="0" y="280" width="1440" height="480" fill="url(#cvsky)"/>`;
-  // moon
-  o += `<circle cx="1296" cy="392" r="30" fill="#fbf7ee"/><circle cx="1296" cy="392" r="42" fill="none" stroke="#fbf7ee" stroke-width="1"/>`;
-  // far shore
-  o += `<path d="M0 700 C180 672 330 684 500 664 C660 646 780 612 900 588 C1000 568 1080 548 1160 548 C1260 548 1350 580 1440 596 V900 H0Z" fill="#46708a"/>`;
-  // Mont Royal: low and broad, three soft summits
-  const ridge =
-    'M560 742 C680 716 760 676 850 628 C900 602 940 570 990 556 C1030 545 1056 560 1090 540 C1124 520 1150 498 1190 496 C1232 494 1256 520 1290 530 C1330 542 1352 536 1380 556 C1404 573 1424 590 1440 600';
-  o += `<path d="${ridge} V900 H560Z" fill="#1c3550"/>`;
-  // frost along the crest
-  o += `<path d="M1010 552 C1034 546 1056 560 1090 540 C1124 520 1150 498 1190 496 C1232 494 1256 520 1290 530 C1320 539 1340 538 1362 546 C1340 548 1330 556 1310 550 C1290 544 1282 556 1262 548 C1242 540 1234 552 1214 540 C1196 530 1186 534 1170 528 C1150 536 1138 552 1118 554 C1098 556 1090 568 1070 566 C1050 564 1036 558 1010 552Z" fill="#fbf7ee"/>`;
-  o += `<path d="M1190 494V462M1180 473H1200" stroke="${C.gold}" stroke-width="2.6"/>`;
-  // skyline
-  let x = 40;
-  while (x < 1400) {
-    const t = x / 1440;
-    const w = 16 + R() * 26;
-    const h = 26 + Math.pow(R(), 1.7) * (40 + 140 * Math.exp(-Math.pow((t - 0.62) / 0.17, 2)));
-    const y0 = 742;
-    o += `<rect x="${f(x)}" y="${f(y0 - h)}" width="${f(w)}" height="${f(h)}" fill="#0f1a30"/>`;
-    for (let k = 0; k < h / 10 - 1; k++)
-      for (let j = 0; j < w / 7 - 1; j++)
-        if (R() < 0.4)
-          o += `<rect${R() < 0.12 ? ` class="win" style="animation-delay:-${f(R() * 9)}s"` : ''} x="${f(x + 4 + j * 7)}" y="${f(y0 - h + 6 + k * 10)}" width="2.6" height="4" fill="${C.gold}"/>`;
-    if (R() < 0.15) o += `<path d="M${f(x + w / 2)} ${f(y0 - h)}v-20" stroke="#0f1a30" stroke-width="1.6"/>`;
-    x += w + 3 + R() * 8;
-  }
-  // river: ruled water with broken reflections
-  o += `<rect x="0" y="740" width="1440" height="160" fill="${C.blue}"/>`;
-  for (let r = 0; r < 13; r++) {
-    const y = 754 + r * 11.5;
-    let d = '';
-    let px = -20 + R() * 60;
-    while (px < 1440) {
-      const len = 30 + R() * 150;
-      d += `M${f(px)} ${f(y)}h${f(len)}`;
-      px += len + 16 + R() * 70;
+  // a low wash of dusk on the horizon
+  o += `<defs><linearGradient id="cvsky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f0c9a4" stop-opacity="0"/><stop offset="1" stop-color="#f0c9a4"/></linearGradient></defs><rect x="0" y="430" width="1440" height="${GROUND - 430}" fill="url(#cvsky)"/>`;
+  // far shore and the mountain
+  o += `<path d="M0 716 C200 700 380 704 560 690 C720 678 800 640 900 604 C1000 570 1080 548 1160 548 C1260 548 1350 580 1440 596 V${GROUND} H0Z" fill="${C.haze}"/>`;
+  o += `<path d="M640 ${GROUND} C740 716 800 668 870 624 C912 598 944 568 990 556 C1030 545 1056 560 1090 540 C1124 520 1150 498 1190 496 C1232 494 1256 520 1290 530 C1330 542 1352 536 1380 556 C1404 573 1424 590 1440 600 V${GROUND}Z" fill="${C.slate}"/>`;
+  o += `<path d="M1190 494V458M1179 470H1201" stroke="${C.gold}" stroke-width="2.6"/>`;
+
+  // Old Port: grain silos, sheds and the clock tower
+  let port = '';
+  for (let i = 0; i < 9; i++) port += `M${150 + i * 17} ${GROUND}V686a8.5 8.5 0 0 1 17 0V${GROUND}Z`;
+  port += `M303 ${GROUND}V664h34V${GROUND}Z M337 ${GROUND}V700h70V${GROUND}Z`;
+  port += `M60 ${GROUND}V718h76V${GROUND}Z M430 ${GROUND}V722h96V${GROUND}Z`;
+  port += `M468 ${GROUND}V664h-3v-6h3V640h3l5-12 5 12h3v18h3v6h-3V${GROUND}Z`;
+  o += `<path d="${port}" fill="${C.navy}"/>`;
+  o += `<circle cx="476" cy="650" r="3.2" fill="${C.gold}"/>`;
+
+  // the towers
+  let body = '';
+  let lit = '';
+  TOWERS.forEach(([x, w, h, kind], n) => {
+    const top = GROUND - h;
+    if (kind === 'step') {
+      body += `M${x} ${GROUND}V${top + 22}h${w * 0.2}V${top + 9}h${w * 0.18}V${top}h${w * 0.24}V${top + 9}h${w * 0.18}V${top + 22}h${w * 0.2}V${GROUND}Z`;
+    } else if (kind === 'point') {
+      body += `M${x} ${GROUND}V${top + 30}L${x + w / 2} ${top}L${x + w} ${top + 30}V${GROUND}Z`;
+    } else if (kind === 'cross') {
+      body += `M${x} ${GROUND}V${top + 10}h${w * 0.3}V${top}h${w * 0.4}V${top + 10}h${w * 0.3}V${GROUND}Z`;
+    } else {
+      body += `M${x} ${GROUND}V${top}h${w}V${GROUND}Z`;
+      if (kind === 'mast') body += `M${x + w / 2 - 1} ${top}v-26h2v26Z`;
     }
-    o += `<path d="${d}" stroke="${r % 3 === 1 ? C.cream : C.pale}" stroke-width="1" opacity="${f(0.55 - r * 0.02)}" fill="none"/>`;
-  }
-  for (let i = 0; i < 90; i++) {
-    const gx = 60 + R() * 1320;
-    const gy = 748 + R() * 46;
-    o += `<path d="M${f(gx)} ${f(gy)}v${f(3 + R() * 7)}" stroke="${C.gold}" stroke-width="1.6" opacity="${f(0.35 + R() * 0.4)}"/>`;
-  }
-  o += `<rect x="0" y="806" width="1440" height="94" fill="${C.navy}" opacity=".55"/>`;
-  // bridge
-  let br = 'M620 752H1440M620 736H1440';
-  for (let bx = 620; bx < 1440; bx += 16) br += `M${bx} 752l8-16l8 16`;
+    // lit floors: short gold bars, on a fixed pattern
+    const rows = Math.floor((h - 30) / 9);
+    for (let r = 0; r < rows; r++) {
+      const k = (n * 7 + r * 3) % 11;
+      if (k < 3) {
+        const len = 5 + ((n + r) % 3) * 4;
+        const off = 4 + ((n * 5 + r * 2) % Math.max(1, Math.floor(w - len - 8)));
+        lit += `M${(x + off).toFixed(1)} ${top + 26 + r * 9}h${len}`;
+      }
+    }
+  });
+  o += `<path d="${body}" fill="${C.navy}"/>`;
+  o += `<path class="lit" d="${lit}" stroke="${C.gold}" stroke-width="2" fill="none"/>`;
+
+  // the river
+  o += `<rect x="0" y="${GROUND - 1}" width="1440" height="160" fill="${C.navy}"/>`;
+  let water = '';
+  [
+    [40, 762, 210], [330, 762, 120], [520, 766, 60],
+    [120, 778, 90], [270, 780, 260], [600, 782, 140],
+    [30, 796, 160], [420, 798, 110], [1260, 800, 150],
+  ].forEach(([x, y, l]) => {
+    water += `M${x} ${y}h${l}`;
+  });
+  o += `<path d="${water}" stroke="${C.cream}" stroke-width="1" opacity=".38" fill="none"/>`;
+  let glow = '';
+  [884, 930, 973, 806, 1055].forEach((x, i) => {
+    for (let k = 0; k < 4 - (i % 2); k++) glow += `M${x - 6 + k * 2} ${760 + k * 9}h${12 - k * 3}`;
+  });
+  o += `<path d="${glow}" stroke="${C.gold}" stroke-width="1.6" opacity=".8" fill="none"/>`;
+
+  // Jacques-Cartier bridge
+  let br = 'M700 752H1440M700 736H1440';
+  for (let bx = 700; bx < 1440; bx += 16) br += `M${bx} 752l8-16l8 16`;
   br += 'M900 736Q1020 640 1140 736';
   for (let bx = 916; bx < 1140; bx += 16) {
     const t = (bx - 900) / 240;
-    br += `M${bx} ${f(736 - 4 * 48 * t * (1 - t))}V736`;
+    br += `M${bx} ${(736 - 4 * 48 * t * (1 - t)).toFixed(1)}V736`;
   }
   o += `<path d="${br}" fill="none" stroke="${C.gold}" stroke-width="1.4"/>`;
-  for (const px of [760, 900, 1140, 1300]) o += `<path d="M${px} 752V800" stroke="${C.gold}" stroke-width="2.4"/>`;
-  // winterberry
-  const berry = (x0, y0, ang, len, cv) => {
-    let s = '';
-    let b = '';
-    let bx0 = x0;
-    let by0 = y0;
-    let a = ang;
-    const steps = Math.round(len / 11);
-    for (let i = 0; i < steps; i++) {
-      const nx = bx0 + Math.cos(a) * 11;
-      const ny = by0 + Math.sin(a) * 11;
-      s += `${i ? 'L' : `M${f(bx0)} ${f(by0)}L`}${f(nx)} ${f(ny)}`;
-      if (i % 2 === 1) {
-        const ca = a + (i % 4 === 1 ? 1 : -1) * 1.2;
-        for (let k = 0; k < 3; k++) {
-          const cx = nx + Math.cos(ca + k * 0.5 - 0.5) * (10 + k * 2.5);
-          const cy = ny + Math.sin(ca + k * 0.5 - 0.5) * (10 + k * 2.5);
-          b += `<circle cx="${f(cx)}" cy="${f(cy)}" r="5.2" fill="${C.vermilion}"/><circle cx="${f(cx - 1.5)}" cy="${f(cy - 1.7)}" r="1.3" fill="#f6c9a8"/>`;
-        }
-      }
-      bx0 = nx;
-      by0 = ny;
-      a += cv;
-    }
-    return `<path d="${s}" stroke="#3a2618" stroke-width="2" fill="none"/>${b}`;
-  };
-  o += berry(1440, 716, -2.55, 200, -0.03) + berry(1440, 668, -2.2, 150, 0.04);
+  [780, 900, 1140, 1300].forEach(px => {
+    o += `<path d="M${px} 752V806" stroke="${C.gold}" stroke-width="2.4"/>`;
+  });
   return o;
 };

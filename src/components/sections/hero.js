@@ -7,7 +7,7 @@ import { COVER, coverScene } from '@utils/cover-scene';
 
 /*
  * The cover, set like a magazine: an issue bar, the name as a masthead across the page, and one
- * painting — Montréal from the river at dusk — running the full width beneath it.
+ * drawing — Montréal from the river at dusk — running the full width beneath it.
  */
 
 const DISPLAY = '"Bodoni Moda Variable", "Bodoni Moda", Didot, "Cormorant Garamond", serif';
@@ -15,10 +15,6 @@ const DISPLAY = '"Bodoni Moda Variable", "Bodoni Moda", Didot, "Cormorant Garamo
 const rise = keyframes`
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
-`;
-const twinkle = keyframes`
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.15; }
 `;
 
 const StyledHero = styled.section`
@@ -48,14 +44,8 @@ const StyledHero = styled.section`
       width: 100%;
       height: 100%;
     }
-    .win {
-      animation: ${twinkle} 7s ease-in-out infinite;
-    }
     @media (prefers-reduced-motion: reduce) {
       animation: none;
-      .win {
-        animation: none;
-      }
     }
   }
 
@@ -130,7 +120,7 @@ const StyledHero = styled.section`
     flex-wrap: wrap;
     align-items: center;
     gap: 14px 24px;
-    margin-top: 24px;
+    margin-top: 0;
     font-family: var(--font-sans);
     font-size: 11px;
     font-weight: 500;
@@ -262,11 +252,6 @@ const Hero = () => {
       </h1>
 
       <div className="copy">
-        <p className="tagline">Rare events, honestly measured.</p>
-        <p className="positioning">
-          I model rare, high-impact events — floods, financial tail risk, gaps in education data —
-          and build the software that makes those models trustworthy.
-        </p>
         <div className="actions">
           <Link className="primary" to="/#projects">
             See selected work <span className="arrow">→</span>
