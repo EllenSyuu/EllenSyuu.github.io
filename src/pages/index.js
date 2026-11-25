@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled, { createGlobalStyle } from 'styled-components';
 import {
@@ -46,54 +46,54 @@ const StyledMainContainer = styled.main`
   counter-reset: section;
 `;
 
-/* Everything below the cover hangs on one thread: the river leaves the bottom of the cover and
-   runs down the left margin of the page to Contact. Chapter headings are stops on it, so the
-   page reads as one continuous scroll rather than a stack of slides. */
-const Thread = styled.div`
-  --thread-x: -56px;
+/* The cover stays put while the page slides up over it like a sheet of paper laid on a print:
+   the cover sinks back a little and dims as the sheet covers it. One continuous movement
+   instead of a cut between two slides. */
+const Stage = styled.div`
+  position: sticky;
+  top: var(--cover-top, 0px);
+  z-index: 0;
+
+  > section {
+    transform: translate3d(0, calc(var(--p, 0) * -4vh), 0) scale(calc(1 - var(--p, 0) * 0.045));
+    transform-origin: 50% 100%;
+    will-change: transform;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    inset: 0 calc(50% - 50vw);
+    background: #14213a;
+    opacity: calc(var(--p, 0) * 0.3);
+    pointer-events: none;
+  }
+`;
+
+const Sheet = styled.div`
   position: relative;
+  z-index: 1;
+  padding-top: 8px;
 
-  @media (max-width: 1080px) {
-    --thread-x: -44px;
-  }
-  @media (max-width: 768px) {
-    --thread-x: -28px;
-  }
-  @media (max-width: 480px) {
-    --thread-x: -13px;
-  }
-
-  /* the line sits on the left edge of the 1080px reading column every section shares */
+  /* the paper itself, edge to edge, with a soft shadow on its leading edge */
   &:before {
     content: '';
     position: absolute;
     top: 0;
-    bottom: 160px;
-    left: calc(max(0px, (100% - 1080px) / 2) + var(--thread-x));
-    width: 1.5px;
-    background: linear-gradient(180deg, #1d3557 0, #3f6f96 120px, rgba(63, 111, 150, 0.45) 520px);
-    pointer-events: none;
+    bottom: 0;
+    left: calc(50% - 50vw);
+    right: calc(50% - 50vw);
+    z-index: -1;
+    background: var(--navy);
+    box-shadow: 0 -22px 60px rgba(20, 33, 58, 0.28);
   }
 
-  /* chapter headings become stops on the line instead of numbered slide titles */
+  /* chapter headings without slide numbers or divider rules */
   .numbered-heading {
     margin: 0 0 26px;
     padding-top: 0;
     font-size: clamp(32px, 4vw, 46px);
 
-    &:before {
-      content: '';
-      counter-increment: none;
-      position: absolute;
-      top: 0.42em;
-      left: calc(var(--thread-x) - 4.25px);
-      width: 10px;
-      height: 10px;
-      margin: 0;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 0 4px var(--navy);
-    }
+    &:before,
     &:after {
       display: none;
     }
@@ -113,14 +113,51 @@ const Thread = styled.div`
   }
 `;
 
+const useSheet = ref => {
+  useEffect(() => {
+    const stage = ref.current;
+    if (!stage) {
+      return undefined;
+    }
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const h = stage.offsetHeight;
+      stage.style.setProperty('--cover-top', `${Math.min(0, window.innerHeight - h)}px`);
+      if (!reduce) {
+        const p = Math.max(0, Math.min(1, window.scrollY / Math.max(1, h)));
+        stage.style.setProperty('--p', p.toFixed(4));
+      }
+    };
+    const onScroll = () => {
+      if (!frame) {
+        frame = requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [ref]);
+};
+
 const IndexPage = ({ location }) => {
   usePastCover();
+  const stage = useRef(null);
+  useSheet(stage);
   return (
     <Layout location={location}>
       <CoverOnly />
       <StyledMainContainer className="fillHeight">
-        <Hero />
-        <Thread>
+        <Stage ref={stage}>
+          <Hero />
+        </Stage>
+        <Sheet>
           <Stats />
           <About />
           <Jobs />
@@ -129,7 +166,7 @@ const IndexPage = ({ location }) => {
           <Projects />
           <Impact />
           <Contact />
-        </Thread>
+        </Sheet>
       </StyledMainContainer>
     </Layout>
   );
