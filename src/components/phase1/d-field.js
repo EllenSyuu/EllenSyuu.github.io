@@ -210,7 +210,9 @@ const Cols = styled.ol`
 `;
 
 const Langs = styled.p`
-  margin: 72px 0 0;
+  && {
+    margin: 80px 0 0;
+  }
   color: ${T.ink};
   font-size: clamp(18px, 1.5vw, 21px);
   font-weight: 500;
