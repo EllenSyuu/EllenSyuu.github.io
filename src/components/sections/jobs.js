@@ -1,167 +1,137 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import ExperienceTimeline from '@components/experience-timeline';
-import { srConfig } from '@config';
-import { KEY_CODES } from '@utils';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
+import { Page, SectionHead, T, DISPLAY, SANS, cap } from '@components/editorial';
 
-const StyledJobsSection = styled.section`
-  max-width: 1000px;
+/*
+ * Experience — a chronology. The range chart gives every role at a glance; below it each
+ * principal role is set as a dated entry: when and where in the margin, the role and the
+ * institution, then what was done and what came of it.
+ */
 
-  .inner {
-    display: flex;
-
-    @media (max-width: 600px) {
-      display: block;
-    }
-
-    // Prevent container from jumping
-    @media (min-width: 700px) {
-      min-height: 340px;
-    }
-  }
-`;
-
-const StyledTabList = styled.div`
-  position: relative;
-  z-index: 3;
-  width: max-content;
+const Entries = styled.ol`
+  margin: clamp(64px, 7vw, 104px) 0 0;
   padding: 0;
-  margin: 0;
   list-style: none;
-
-  @media (max-width: 600px) {
-    display: flex;
-    overflow-x: auto;
-    width: calc(100% + 100px);
-    padding-left: 50px;
-    margin-left: -50px;
-    margin-bottom: 30px;
-  }
-  @media (max-width: 480px) {
-    width: calc(100% + 50px);
-    padding-left: 25px;
-    margin-left: -25px;
-  }
+  counter-reset: none;
 
   li {
-    &:first-of-type {
-      @media (max-width: 600px) {
-        margin-left: 50px;
-      }
-      @media (max-width: 480px) {
-        margin-left: 25px;
-      }
-    }
-    &:last-of-type {
-      @media (max-width: 600px) {
-        padding-right: 50px;
-      }
-      @media (max-width: 480px) {
-        padding-right: 25px;
-      }
-    }
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(16px, 2.2vw, 32px);
+    padding: 26px 0 30px;
+    border-top: 1px solid ${T.hair};
   }
-`;
-
-const StyledTabButton = styled.button`
-  ${({ theme }) => theme.mixins.link};
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--tab-height);
-  padding: 0 20px 2px;
-  border-left: 2px solid var(--lightest-navy);
-  background-color: transparent;
-  color: ${({ isActive }) => (isActive ? 'var(--green)' : 'var(--slate)')};
-  font-family: var(--font-mono);
-  font-size: var(--fz-xs);
-  text-align: left;
-  white-space: nowrap;
-
-  @media (max-width: 768px) {
-    padding: 0 15px 2px;
-  }
-  @media (max-width: 600px) {
-    ${({ theme }) => theme.mixins.flexCenter};
-    min-width: 120px;
-    padding: 0 15px;
-    border-left: 0;
-    border-bottom: 2px solid var(--lightest-navy);
-    text-align: center;
+  li:first-child {
+    border-top-color: ${T.rule};
   }
 
-  &:hover,
-  &:focus {
-    background-color: var(--light-navy);
+  .when {
+    grid-column: 1 / span 3;
+    color: ${T.ink};
+    font-family: ${SANS};
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
   }
-`;
-
-const StyledHighlight = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 2px;
-  height: var(--tab-height);
-  border-radius: var(--border-radius);
-  background: var(--green);
-  transform: translateY(calc(${({ activeTabId }) => activeTabId} * var(--tab-height)));
-  transition: transform 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition-delay: 0.1s;
-
-  @media (max-width: 600px) {
-    top: auto;
-    bottom: 0;
-    width: 100%;
-    max-width: var(--tab-width);
-    height: 2px;
-    margin-left: 50px;
-    transform: translateX(calc(${({ activeTabId }) => activeTabId} * var(--tab-width)));
-  }
-  @media (max-width: 480px) {
-    margin-left: 25px;
-  }
-`;
-
-const StyledTabPanels = styled.div`
-  position: relative;
-  width: 100%;
-  margin-left: 20px;
-
-  @media (max-width: 600px) {
-    margin-left: 0;
-  }
-`;
-
-const StyledTabPanel = styled.div`
-  width: 100%;
-  height: auto;
-  padding: 10px 5px;
-
-  ul {
-    ${({ theme }) => theme.mixins.fancyList};
+  .when small {
+    display: block;
+    color: ${T.muted};
+    ${cap};
+    font-size: 10px;
+    margin-top: 4px;
   }
 
-  h3 {
-    margin-bottom: 2px;
-    font-size: var(--fz-xxl);
+  .what {
+    grid-column: 4 / span 4;
+    padding-right: 12px;
+  }
+  .what h3 {
+    margin: 0;
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: clamp(21px, 1.9vw, 26px);
     font-weight: 500;
-    line-height: 1.3;
+    font-variation-settings: 'opsz' 20;
+    line-height: 1.18;
+  }
+  .what .org {
+    display: block;
+    margin-top: 6px;
+    color: ${T.vermilionText};
+    font-family: ${SANS};
+    font-size: 14px;
+  }
+  .what a.org:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 
-    .company {
-      color: var(--green);
+  .detail {
+    grid-column: 8 / span 5;
+    color: ${T.text};
+    font-family: ${SANS};
+    font-size: 15px;
+    line-height: 1.62;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      display: block;
+      position: relative;
+      padding: 0 0 0 16px;
+      border: 0;
+      & + li {
+        margin-top: 10px;
+      }
+      &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.72em;
+        width: 7px;
+        height: 1px;
+        background: ${T.ink};
+      }
+    }
+    a {
+      color: ${T.ink};
+      text-decoration: underline;
+      text-decoration-color: ${T.vermilionText};
+      text-underline-offset: 3px;
+    }
+    strong {
+      color: ${T.ink};
+      font-weight: 600;
+    }
+    em {
+      font-style: italic;
+    }
+    code {
+      font-size: 13px;
     }
   }
 
-  .range {
-    margin-bottom: 25px;
-    color: var(--light-slate);
-    font-family: var(--font-mono);
-    font-size: var(--fz-xs);
+  @media (max-width: 900px) {
+    .when {
+      grid-column: 1 / -1;
+      margin-bottom: 8px;
+    }
+    .when small {
+      display: inline;
+      margin-left: 10px;
+    }
+    .what {
+      grid-column: 1 / -1;
+      margin-bottom: 14px;
+    }
+    .detail {
+      grid-column: 1 / -1;
+    }
   }
 `;
 
@@ -188,131 +158,43 @@ const Jobs = () => {
     }
   `);
 
-  const jobsData = data.jobs.edges;
-
-  const [activeTabId, setActiveTabId] = useState(0);
-  const [tabFocus, setTabFocus] = useState(null);
-  const tabs = useRef([]);
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealContainer.current, srConfig());
-  }, [prefersReducedMotion]);
-
-  const focusTab = () => {
-    if (tabs.current[tabFocus]) {
-      tabs.current[tabFocus].focus();
-      return;
-    }
-    // If we're at the end, go to the start
-    if (tabFocus >= tabs.current.length) {
-      setTabFocus(0);
-    }
-    // If we're at the start, move to the end
-    if (tabFocus < 0) {
-      setTabFocus(tabs.current.length - 1);
-    }
-  };
-
-  // Only re-run the effect if tabFocus changes
-  useEffect(() => focusTab(), [tabFocus]);
-
-  // Focus on tabs when using up & down arrow keys
-  const onKeyDown = e => {
-    switch (e.key) {
-      case KEY_CODES.ARROW_UP: {
-        e.preventDefault();
-        setTabFocus(tabFocus - 1);
-        break;
-      }
-
-      case KEY_CODES.ARROW_DOWN: {
-        e.preventDefault();
-        setTabFocus(tabFocus + 1);
-        break;
-      }
-
-      default: {
-        break;
-      }
-    }
-  };
+  const jobs = data.jobs.edges.map(e => e.node);
 
   return (
-    <StyledJobsSection id="jobs" ref={revealContainer}>
-      <h2 className="numbered-heading">Experience</h2>
-      <p className="chapter-lede">
-        Research, data and teaching roles since 2020 — statistics and education data first, with
-        programming and quantitative work throughout.
-      </p>
+    <Page id="jobs">
+      <div className="wrap">
+        <SectionHead
+          label="Experience"
+          aside="2020 — 2026"
+          title="Chronology"
+          standfirst="Research, data and teaching roles since 2020 — statistics and education data first, with programming and quantitative work throughout."
+        />
 
-      <ExperienceTimeline />
+        <ExperienceTimeline />
 
-      <div className="inner">
-        <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
-          {jobsData &&
-            jobsData.map(({ node }, i) => {
-              const { company } = node.frontmatter;
-              return (
-                <StyledTabButton
-                  key={i}
-                  isActive={activeTabId === i}
-                  onClick={() => setActiveTabId(i)}
-                  ref={el => (tabs.current[i] = el)}
-                  id={`tab-${i}`}
-                  role="tab"
-                  tabIndex={activeTabId === i ? '0' : '-1'}
-                  aria-selected={activeTabId === i ? true : false}
-                  aria-controls={`panel-${i}`}>
-                  <span>{company}</span>
-                </StyledTabButton>
-              );
-            })}
-          <StyledHighlight activeTabId={activeTabId} />
-        </StyledTabList>
-
-        <StyledTabPanels>
-          {jobsData &&
-            jobsData.map(({ node }, i) => {
-              const { frontmatter, html } = node;
-              const { title, url, company, range } = frontmatter;
-
-              return (
-                <CSSTransition key={i} in={activeTabId === i} timeout={250} classNames="fade">
-                  <StyledTabPanel
-                    id={`panel-${i}`}
-                    role="tabpanel"
-                    tabIndex={activeTabId === i ? '0' : '-1'}
-                    aria-labelledby={`tab-${i}`}
-                    aria-hidden={activeTabId !== i}
-                    hidden={activeTabId !== i}>
-                    <h3>
-                      <span className="mark">{title}</span>
-                      {url && (
-                        <span className="company">
-                          &nbsp;@&nbsp;
-                          <a href={url} className="inline-link">
-                            {company}
-                          </a>
-                        </span>
-                      )}
-                    </h3>
-
-                    <p className="range">{range}</p>
-
-                    <div dangerouslySetInnerHTML={{ __html: html }} />
-                  </StyledTabPanel>
-                </CSSTransition>
-              );
-            })}
-        </StyledTabPanels>
+        <Entries aria-label="Roles in detail">
+          {jobs.map(({ frontmatter: f, html }) => (
+            <li key={`${f.company}-${f.range}`}>
+              <p className="when">
+                {f.range.replace(' — ', ' – ')}
+                <small>{f.location}</small>
+              </p>
+              <div className="what">
+                <h3>{f.title}</h3>
+                {f.url ? (
+                  <a className="org" href={f.url}>
+                    {f.company.replace(' · 2022', '')}
+                  </a>
+                ) : (
+                  <span className="org">{f.company.replace(' · 2022', '')}</span>
+                )}
+              </div>
+              <div className="detail" dangerouslySetInnerHTML={{ __html: html }} />
+            </li>
+          ))}
+        </Entries>
       </div>
-    </StyledJobsSection>
+    </Page>
   );
 };
 

@@ -1,14 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
+import { Page, SectionHead, T, DISPLAY, SANS, cap } from '@components/editorial';
 
 /*
- * "What I Do" — the three threads that run through the work. Each pillar names the
- * question it answers, the methods it uses, and links to the projects that prove it,
- * so the page reads as an argument: focus → evidence → experience.
+ * What I do — an overview written as three questions, each answered in a paragraph and
+ * pointed at the work that tests it. No cards: rows on a ruled page.
  */
 
 const PILLARS = [
@@ -48,174 +45,109 @@ const PILLARS = [
   },
 ];
 
-const StyledFocus = styled.section`
-  ol {
-    ${({ theme }) => theme.mixins.resetList};
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    counter-reset: none;
-
-    @media (max-width: 960px) {
-      grid-template-columns: 1fr;
-    }
-  }
+const Rows = styled.ol`
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
   li {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 22px 26px 20px 0;
-    border: 0;
-    border-top: 1px solid var(--ink);
-    border-radius: 0;
-    background: none;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(16px, 2.2vw, 32px);
+    padding: clamp(28px, 3vw, 40px) 0;
+    border-top: 1px solid ${T.hair};
+  }
+  li:first-child {
+    border-top-color: ${T.rule};
   }
 
-  .key {
-    color: var(--green);
-    font-family: var(--font-serif);
-    font-size: 19px;
-    font-style: normal;
-    font-weight: 500;
+  .q {
+    grid-column: 1 / span 6;
+    margin: 0;
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: clamp(26px, 2.7vw, 38px);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 28;
+    line-height: 1.16;
+    letter-spacing: -0.005em;
   }
 
-  h3 {
-    margin: 6px 0 12px;
-    font-size: 27px;
+  .a {
+    grid-column: 8 / span 5;
+    font-family: ${SANS};
   }
-
-  .question {
+  .a h3 {
+    margin: 0 0 10px;
+    color: ${T.vermilionText};
+    ${cap};
+  }
+  .a p {
     margin: 0 0 14px;
-    color: var(--light-slate);
-    font-family: var(--font-hand);
-    font-size: 17px;
-    line-height: 1.55;
+    color: ${T.text};
+    font-size: 15.5px;
+    line-height: 1.65;
   }
-
-  .body {
-    margin: 0 0 18px;
-    color: var(--slate);
-    font-size: var(--fz-md);
+  .meta {
+    color: ${T.muted};
+    font-size: 13px;
     line-height: 1.6;
   }
-
-  .methods {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 0 0 20px;
-    padding: 0;
-    list-style: none;
-
-    li {
-      display: block;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: none;
-      color: var(--dark-slate);
-      font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      outline: 0;
-
-      & + li:before {
-        content: '·';
-        display: inline;
-        position: static;
-        margin: 0 8px 0 2px;
-        color: var(--green);
-      }
-
-      &:hover {
-        box-shadow: none;
-        border: 0;
-      }
+  .meta a {
+    color: ${T.ink};
+    text-decoration: underline;
+    text-decoration-color: ${T.vermilionText};
+    text-underline-offset: 3px;
+    &:hover {
+      color: ${T.vermilionText};
     }
   }
 
-  .evidence {
-    margin-top: auto;
-    padding-top: 16px;
-    border-top: 0.75px solid var(--hairline);
-    color: var(--dark-slate);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-
-    a {
-      ${({ theme }) => theme.mixins.inlineLink};
-      margin-left: 0;
-      font-family: var(--font-serif);
-      font-size: 17px;
-      font-style: normal;
-      font-weight: 500;
-      letter-spacing: 0;
-      text-transform: none;
+  @media (max-width: 900px) {
+    .q,
+    .a {
+      grid-column: 1 / -1;
     }
-
-    a + a:before {
-      content: '·';
-      margin: 0 8px;
-      color: var(--dark-slate);
+    .q {
+      margin-bottom: 18px;
     }
   }
 `;
 
-const Focus = () => {
-  const revealTitle = useRef(null);
-  const revealCards = useRef([]);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-    sr.reveal(revealTitle.current, srConfig());
-    revealCards.current.forEach((ref, i) => ref && sr.reveal(ref, srConfig(i * 110)));
-  }, [prefersReducedMotion]);
-
-  return (
-    <StyledFocus id="focus">
-      <div ref={revealTitle}>
-        <h2 className="numbered-heading">What I Do</h2>
-        <p className="lede">
-          Three threads run through everything I build. Each one links to the work that proves it.
-        </p>
-      </div>
-
-      <ol>
-        {PILLARS.map((p, i) => (
-          <li key={p.key} ref={el => (revealCards.current[i] = el)}>
-            <span className="key">Thread {p.key}</span>
-            <h3>
-              <span className="mark">{p.title}</span>
-            </h3>
-            <p className="question">{p.question}</p>
-            <p className="body">{p.body}</p>
-            <ul className="methods">
-              {p.methods.map(m => (
-                <li key={m}>{m}</li>
-              ))}
-            </ul>
-            <p className="evidence">
-              <span style={{ display: 'block', marginBottom: 4 }}>Evidence</span>
-              {p.evidence.map(e => (
-                <Link key={e.label} to={e.to}>
-                  {e.label}
-                </Link>
-              ))}
-            </p>
+const Focus = () => (
+  <Page id="focus">
+    <div className="wrap">
+      <SectionHead
+        label="What I do"
+        aside="Three questions"
+        title="The work, in three questions"
+        standfirst="Three threads run through everything I build. Each one links to the work that tests it."
+      />
+      <Rows>
+        {PILLARS.map(p => (
+          <li key={p.key}>
+            <p className="q">{p.question}</p>
+            <div className="a">
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <p className="meta">
+                {p.methods.join(' · ')}
+                <br />
+                See{' '}
+                {p.evidence.map((e, k) => (
+                  <React.Fragment key={e.label}>
+                    {k > 0 && (k === p.evidence.length - 1 ? ' and ' : ', ')}
+                    <Link to={e.to}>{e.label}</Link>
+                  </React.Fragment>
+                ))}
+                .
+              </p>
+            </div>
           </li>
         ))}
-      </ol>
-    </StyledFocus>
-  );
-};
+      </Rows>
+    </div>
+  </Page>
+);
 
 export default Focus;

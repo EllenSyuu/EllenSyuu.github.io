@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
-import ImpactCard, { StyledImpactGrid } from '@components/impact/card';
+import { Page, SectionHead, T, DISPLAY, SANS, cap } from '@components/editorial';
 
-// Leadership and community roles, kept as a ledger under the three stories.
+/*
+ * Beyond the code — documentary rather than decorative: three short stories set as
+ * newspaper columns (no stock drawings), then a plain ledger of leadership and community
+ * roles with dates.
+ */
+
 const ROLES = [
   {
     years: '2023 — 24',
@@ -58,116 +60,158 @@ const ROLES = [
   },
 ];
 
-const StyledLedger = styled.div`
-  margin-top: 70px;
-
-  h3 {
-    margin: 0 0 6px;
-    font-size: clamp(26px, 3vw, 32px);
-  }
-
-  .sub {
-    margin: 0 0 26px;
-    color: var(--dark-slate);
-    font-family: var(--font-hand);
-    font-size: 17px;
-  }
-
-  ol {
-    ${({ theme }) => theme.mixins.resetList};
-    border-top: 0.75px solid var(--ink);
-  }
+const Stories = styled.ol`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid ${T.rule};
 
   li {
-    display: grid;
-    grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1.25fr);
-    gap: 6px 28px;
-    align-items: baseline;
-    padding: 16px 0 15px;
-    border-bottom: 0.75px solid var(--hairline);
-
-    @media (max-width: 760px) {
-      grid-template-columns: 1fr;
-      gap: 2px;
-    }
+    padding: 22px clamp(18px, 2.4vw, 34px) 26px;
+    border-left: 1px solid ${T.hair};
+  }
+  li:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  li:last-child {
+    padding-right: 0;
   }
 
-  .years {
-    color: var(--green);
-    font-family: var(--font-serif);
-    font-size: 17px;
-    font-style: normal;
+  .over {
+    margin: 0 0 14px;
+    color: ${T.vermilionText};
+    ${cap};
+    font-size: 10px;
+  }
+  h3 {
+    margin: 0 0 12px;
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: clamp(24px, 2.2vw, 31px);
     font-weight: 500;
-    white-space: nowrap;
+    font-variation-settings: 'opsz' 26;
+    line-height: 1.12;
+  }
+  h3 a:hover {
+    color: ${T.vermilionText};
+  }
+  p {
+    margin: 0 0 16px;
+    color: ${T.text};
+    font-family: ${SANS};
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .more {
+    color: ${T.ink};
+    font-family: ${SANS};
+    font-size: 13.5px;
+    text-decoration: underline;
+    text-decoration-color: ${T.vermilionText};
+    text-underline-offset: 4px;
   }
 
-  .role {
-    color: var(--lightest-slate);
-    font-family: var(--font-serif);
-    font-size: 21px;
-    font-weight: 600;
-    line-height: 1.2;
-
-    small {
-      display: block;
-      margin-top: 3px;
-      color: var(--dark-slate);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+    li,
+    li:first-child,
+    li:last-child {
+      padding: 20px 0 24px;
+      border-left: 0;
+      border-top: 1px solid ${T.hair};
     }
-  }
-
-  .note {
-    margin: 0;
-    color: var(--slate);
-    font-size: 15.5px;
-    line-height: 1.6;
+    li:first-child {
+      border-top: 0;
+    }
   }
 `;
 
-const StyledImpactSection = styled.section`
-  /* A quiet text link under the story cards, not a boxed button. */
-  .more {
-    position: relative;
-    display: table;
-    margin: 34px 0 0 auto;
-    padding: 4px 0;
-    color: var(--lightest-slate);
-    font-family: var(--font-serif);
-    font-size: 20px;
-    font-style: normal;
+const Ledger = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(16px, 2.2vw, 32px);
+  margin-top: clamp(80px, 9vw, 128px);
 
-    span {
-      display: inline-block;
-      margin-left: 6px;
-      font-style: normal;
-      transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  h3 {
+    grid-column: 1 / span 3;
+    margin: 0;
+    padding-top: 14px;
+    border-top: 1px solid ${T.rule};
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: clamp(24px, 2.2vw, 30px);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  h3 small {
+    display: block;
+    margin-top: 8px;
+    color: ${T.muted};
+    font-family: ${SANS};
+    font-size: 13px;
+    font-weight: 400;
+  }
+  ol {
+    grid-column: 4 / span 9;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid ${T.rule};
+  }
+  li {
+    display: grid;
+    grid-template-columns: 7.5em minmax(0, 4fr) minmax(0, 5fr);
+    gap: 4px 24px;
+    padding: 14px 0 15px;
+    border-bottom: 1px solid ${T.hair};
+    font-family: ${SANS};
+  }
+  .years {
+    color: ${T.muted};
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    padding-top: 3px;
+  }
+  .role {
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: 18px;
+    font-variation-settings: 'opsz' 14;
+    line-height: 1.3;
+  }
+  .role small {
+    display: block;
+    margin-top: 3px;
+    color: ${T.muted};
+    font-family: ${SANS};
+    font-size: 12.5px;
+  }
+  .note {
+    margin: 0;
+    color: ${T.text};
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    h3,
+    ol {
+      grid-column: 1 / -1;
     }
-
-    &:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 0.75px;
-      background: currentColor;
-      transform-origin: right;
-      transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    h3 {
+      margin-bottom: 18px;
     }
-
-    &:hover,
-    &:focus-visible {
-      color: var(--green);
-
-      span {
-        transform: translateX(5px);
-      }
-      &:after {
-        transform: scaleX(0.4);
-      }
+    li {
+      grid-template-columns: 6.5em minmax(0, 1fr);
+    }
+    .note {
+      grid-column: 2;
+    }
+    .note:empty {
+      display: none;
     }
   }
 `;
@@ -190,12 +234,6 @@ const Impact = () => {
             slug
             overline
             description
-            coverAlt
-            cover {
-              childImageSharp {
-                gatsbyImageData(width: 640, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
-              }
-            }
           }
         }
       }
@@ -203,54 +241,52 @@ const Impact = () => {
   `);
 
   const stories = data.stories.nodes;
-  const revealTitle = useRef(null);
-  const revealCards = useRef([]);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-    sr.reveal(revealTitle.current, srConfig());
-    revealCards.current.forEach((ref, i) => ref && sr.reveal(ref, srConfig(i * 100)));
-  }, [prefersReducedMotion]);
 
   return (
-    <StyledImpactSection id="impact">
-      <div ref={revealTitle}>
-        <h2 className="numbered-heading">Beyond the Code</h2>
-        <p className="lede">
-          Statistics matters most when it reaches people. Some of the work I’m proudest of happens
-          outside a repository — in classrooms, communities and public data.
-        </p>
-      </div>
+    <Page id="impact" tone="deep">
+      <div className="wrap">
+        <SectionHead
+          label="Beyond the code"
+          aside="Classrooms · communities · public data"
+          title="Beyond the code"
+          standfirst="Statistics matters most when it reaches people. Some of the work I’m proudest of happens outside a repository — in classrooms, communities and public data."
+        />
 
-      <StyledImpactGrid>
-        {stories.map((node, i) => (
-          <ImpactCard key={node.id} node={node} innerRef={el => (revealCards.current[i] = el)} />
-        ))}
-      </StyledImpactGrid>
-
-
-      <StyledLedger>
-        <h3>
-          <span className="mark">Leadership &amp; community</span>
-        </h3>
-        <p className="sub">roles alongside the degrees</p>
-        <ol>
-          {ROLES.map(r => (
-            <li key={`${r.role}-${r.org}`}>
-              <span className="years">{r.years}</span>
-              <span className="role">
-                {r.role}
-                <small>{r.org}</small>
-              </span>
-              <p className="note">{r.note}</p>
+        <Stories>
+          {stories.map(({ id, frontmatter: f }) => (
+            <li key={id}>
+              <p className="over">{f.overline}</p>
+              <h3>
+                <Link to={f.slug}>{f.title}</Link>
+              </h3>
+              <p>{f.description}</p>
+              <Link className="more" to={f.slug} aria-label={`Read: ${f.title}`}>
+                Read the story
+              </Link>
             </li>
           ))}
-        </ol>
-      </StyledLedger>
-    </StyledImpactSection>
+        </Stories>
+
+        <Ledger>
+          <h3>
+            Leadership &amp; community
+            <small>Roles alongside the degrees</small>
+          </h3>
+          <ol>
+            {ROLES.map(r => (
+              <li key={`${r.role}-${r.org}`}>
+                <span className="years">{r.years.replace(' — ', '–')}</span>
+                <span className="role">
+                  {r.role}
+                  <small>{r.org}</small>
+                </span>
+                <p className="note">{r.note}</p>
+              </li>
+            ))}
+          </ol>
+        </Ledger>
+      </div>
+    </Page>
   );
 };
 

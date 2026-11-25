@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { StaticImage } from 'gatsby-plugin-image';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
+import { Page, SectionHead, T, DISPLAY, SANS, cap } from '@components/editorial';
 
-// The path so far, oldest first. Shown as a timeline beside the short bio.
+/*
+ * About — set as the opening feature of a magazine: one large photograph, a short
+ * biography with a drop initial, and a profile column of plain facts in the margin.
+ */
+
 const PATH = [
   {
     place: 'Hong Kong',
@@ -18,301 +20,248 @@ const PATH = [
     note: 'CGPA 3.88; NSERC research grant and Graduate Excellence Award. Thesis on covariate-dependent Archimax copulas for rainfall extremes in Québec.',
   },
   {
-    place: 'Montréal',
+    place: 'Montréal · now',
     title: 'UNESCO Institute for Statistics',
     note: 'Data Innovation and AI Intern: SDG 4 data pipelines and dashboards across 200+ countries.',
-    now: true,
   },
 ];
 
 const LANGUAGES = ['English', 'Français', '普通话', '廣東話', '日本語'];
 
-const StyledAboutSection = styled.section`
-  .inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: clamp(40px, 6vw, 80px);
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(16px, 2.2vw, 32px);
 
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
+  .lead-photo {
+    grid-column: 1 / span 8;
+    margin: 0;
+  }
+
+  .profile {
+    grid-column: 10 / span 3;
+    align-self: start;
+  }
+
+  .text {
+    grid-column: 2 / span 6;
+    margin-top: clamp(48px, 6vw, 88px);
+  }
+
+  .second-photo {
+    grid-column: 9 / span 4;
+    margin: clamp(48px, 6vw, 88px) 0 0;
+  }
+
+  @media (max-width: 1000px) {
+    .lead-photo {
+      grid-column: 1 / -1;
+    }
+    .profile {
+      grid-column: 1 / span 6;
+      margin-top: 40px;
+    }
+    .text {
+      grid-column: 1 / -1;
+      margin-top: 40px;
+    }
+    .second-photo {
+      grid-column: 7 / span 6;
+      grid-row: 2;
+      margin-top: 40px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .profile,
+    .second-photo {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+
+  figure {
+    .img {
+      display: block;
+    }
+    figcaption {
+      margin-top: 10px;
+      color: ${T.muted};
+      font-family: ${SANS};
+      font-size: 12.5px;
+      line-height: 1.5;
     }
   }
 `;
 
-const StyledText = styled.div`
+const Text = styled.div`
+  font-family: ${SANS};
+  font-size: 17px;
+  line-height: 1.72;
+  color: ${T.text};
+
   p {
-    margin: 0 0 18px;
+    max-width: 600px;
   }
 
-  .lead {
-    color: var(--lightest-slate);
-    font-family: var(--font-display);
-    font-size: clamp(20px, 1.9vw, 23px);
-    line-height: 1.4;
+  .opening {
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: clamp(22px, 2.1vw, 28px);
+    font-variation-settings: 'opsz' 18;
+    line-height: 1.38;
+    margin-bottom: 1.1em;
+  }
+`;
+
+const Profile = styled.aside`
+  border-top: 1px solid ${T.rule};
+
+  h3 {
+    margin: 0;
+    padding: 9px 0;
+    border-bottom: 1px solid ${T.hair};
+    color: ${T.ink};
+    ${cap};
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  .row {
+    padding: 14px 0 15px;
+    border-bottom: 1px solid ${T.hair};
+  }
+
+  dt {
+    margin-bottom: 4px;
+    color: ${T.muted};
+    ${cap};
+    font-size: 10px;
+  }
+
+  dd {
+    margin: 0;
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: 17px;
+    font-variation-settings: 'opsz' 14;
+    line-height: 1.3;
+  }
+
+  dd p {
+    margin: 4px 0 0;
+    color: ${T.muted};
+    font-family: ${SANS};
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .langs {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 26px 0 0;
-    padding: 0;
-    list-style: none;
-
-    li {
-      padding: 5px 14px 4px;
-      border: 0.75px solid var(--hairline);
-      border-radius: 0;
-      background: var(--light-navy);
-      color: var(--light-slate);
-      font-family: var(--font-serif);
-      font-size: 17px;
-      font-weight: 500;
-    }
-  }
-
-  .langs-label {
-    margin: 30px 0 0;
-    color: var(--dark-slate);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    gap: 2px 12px;
   }
 `;
 
-// Two photos, pinned like polaroids; they straighten and lift on hover.
-const StyledPolaroids = styled.div`
-  position: relative;
-  height: 330px;
-  margin: 0 0 34px;
+const About = () => (
+  <Page id="about">
+    <div className="wrap">
+      <SectionHead
+        label="About"
+        aside="Hong Kong · Montréal"
+        title={
+          <>
+            I study what happens
+            <br />
+            in the tails.
+          </>
+        }
+        standfirst="I model rare, high-impact events — floods, financial tail risk, gaps in education data — and build the software that makes those models trustworthy."
+      />
 
-  @media (max-width: 480px) {
-    height: 250px;
-  }
+      <Grid>
+        <figure className="lead-photo">
+          <StaticImage
+            className="img"
+            src="../../images/photos/whiteboard-wide.jpg"
+            alt="Ziyi (Ellen) Zhou in a graduation gown, wiping a whiteboard covered in copula formulas"
+            layout="fullWidth"
+            aspectRatio={3 / 2}
+            quality={84}
+            placeholder="dominantColor"
+            formats={['AUTO', 'WEBP', 'AVIF']}
+          />
+          <figcaption>Copula formulas on the whiteboard.</figcaption>
+        </figure>
 
-  figure {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    margin: 0;
-    padding: 10px 10px 34px;
-    border-radius: 4px;
-    background: #fffdf8;
-    box-shadow: 0 1px 2px rgba(60, 35, 18, 0.12), 0 18px 34px -18px rgba(60, 35, 18, 0.45);
-    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s ease, z-index 0s;
-
-    &:first-child {
-      left: -2%;
-      transform: rotate(-5deg);
-      z-index: 1;
-    }
-    &:last-child {
-      right: -2%;
-      top: 26px;
-      transform: rotate(4deg);
-    }
-    &:hover {
-      z-index: 2;
-      transform: rotate(0deg) translateY(-8px) scale(1.03);
-      box-shadow: 0 1px 2px rgba(60, 35, 18, 0.12), 0 30px 44px -20px rgba(60, 35, 18, 0.5);
-    }
-
-    .img {
-      display: block;
-      border-radius: 2px;
-    }
-
-    figcaption {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 8px;
-      color: var(--light-slate);
-      font-family: var(--font-hand);
-      font-size: 16px;
-      text-align: center;
-    }
-
-    /* A strip of washi tape. */
-    &:before {
-      content: '';
-      position: absolute;
-      z-index: 1;
-      top: -9px;
-      left: 50%;
-      width: 64px;
-      height: 20px;
-      margin-left: -32px;
-      background: rgba(226, 176, 74, 0.55);
-      transform: rotate(-3deg);
-    }
-  }
-`;
-
-const StyledPath = styled.ol`
-  position: relative;
-  margin: 6px 0 0;
-  padding: 0 0 0 30px;
-  list-style: none;
-
-  &:before {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 8px;
-    bottom: 8px;
-    width: 1px;
-    background: linear-gradient(var(--lightest-navy), var(--green));
-  }
-
-  li {
-    position: relative;
-    padding: 0 0 30px;
-
-    &:last-child {
-      padding-bottom: 0;
-    }
-
-    &:before {
-      content: '';
-      position: absolute;
-      left: -29px;
-      top: 7px;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--navy);
-      border: 2px solid var(--green);
-    }
-
-    &.now:before {
-      background: var(--green);
-      box-shadow: 0 0 0 5px var(--green-tint);
-    }
-  }
-
-  .place {
-    color: var(--green);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-
-    .now-badge {
-      margin-left: 10px;
-      padding: 0;
-      background: none;
-      color: var(--green);
-      font-family: var(--font-hand);
-      font-size: 16px;
-      font-weight: 400;
-      letter-spacing: 0;
-      text-transform: none;
-    }
-  }
-
-  h3 {
-    margin: 4px 0 4px;
-    font-size: 19px;
-  }
-
-  p {
-    margin: 0;
-    color: var(--slate);
-    font-size: var(--fz-md);
-    line-height: 1.55;
-  }
-`;
-
-const About = () => {
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-    sr.reveal(revealContainer.current, srConfig());
-  }, [prefersReducedMotion]);
-
-  return (
-    <StyledAboutSection id="about" ref={revealContainer}>
-      <h2 className="numbered-heading">About Me</h2>
-
-      <div className="inner">
-        <StyledText>
-          <p className="lead">
-            I study what happens in the tails — the rare, high-impact events that averages hide.
-          </p>
-          <p>
-            My work starts with a simple question: how sure can we be about things that almost
-            never happen? Answering it well takes two skills I try to hold to the same standard —
-            careful statistics, and engineering that lets anyone rerun the result.
-          </p>
-          <p>
-            I trained in statistics at <a href="https://www.hku.hk/">HKU</a> and{' '}
-            <a href="https://www.mcgill.ca/mathstat/">McGill</a>, and today I apply it to education
-            data for SDG 4 at the <a href="https://uis.unesco.org/">UNESCO Institute for Statistics</a>.
-            Next, I want to keep building on official statistics and education data, and to bring the same rigour to quantitative research.
-          </p>
-
-          <p className="langs-label">Working languages</p>
-          <ul className="langs">
-            {LANGUAGES.map(l => (
-              <li key={l}>{l}</li>
+        <Profile className="profile" aria-label="Profile">
+          <h3>Profile</h3>
+          <dl>
+            {PATH.map(s => (
+              <div className="row" key={s.title}>
+                <dt>{s.place}</dt>
+                <dd>
+                  {s.title}
+                  <p>{s.note}</p>
+                </dd>
+              </div>
             ))}
-          </ul>
-        </StyledText>
+            <div className="row">
+              <dt>Working languages</dt>
+              <dd className="langs">
+                {LANGUAGES.map(l => (
+                  <span key={l}>{l}</span>
+                ))}
+              </dd>
+            </div>
+          </dl>
+        </Profile>
 
-        <div>
-          <StyledPolaroids>
-            <figure>
-              <StaticImage
-                className="img"
-                src="../../images/photos/whiteboard.jpg"
-                alt="Ziyi (Ellen) Zhou in a graduation gown, wiping a whiteboard covered in copula formulas"
-                width={460}
-                aspectRatio={4 / 5}
-                quality={86}
-                placeholder="blurred"
-                formats={['AUTO', 'WEBP', 'AVIF']}
-              />
-              <figcaption>Copulas on the whiteboard</figcaption>
-            </figure>
-            <figure>
-              <StaticImage
-                className="img"
-                src="../../images/photos/autumn.jpg"
-                alt="Ziyi (Ellen) Zhou in a red sweater, sitting under a tree among autumn leaves"
-                width={460}
-                aspectRatio={4 / 5}
-                quality={86}
-                placeholder="blurred"
-                formats={['AUTO', 'WEBP', 'AVIF']}
-              />
-              <figcaption>Autumn leaves</figcaption>
-            </figure>
-          </StyledPolaroids>
+        <Text className="text">
+          <p className="opening">
+            My work starts with a simple question: how sure can we be about things that almost
+            never happen?
+          </p>
+          <p>
+            Answering it well takes two skills I try to hold to the same standard — careful
+            statistics, and engineering that lets anyone rerun the result.
+          </p>
+          <p>
+            I trained in statistics at{' '}
+            <a className="inline" href="https://www.hku.hk/">
+              HKU
+            </a>{' '}
+            and{' '}
+            <a className="inline" href="https://www.mcgill.ca/mathstat/">
+              McGill
+            </a>
+            , and today I apply it to education data for SDG 4 at the{' '}
+            <a className="inline" href="https://uis.unesco.org/">
+              UNESCO Institute for Statistics
+            </a>
+            . Next, I want to keep building on official statistics and education data, and to
+            bring the same rigour to quantitative research.
+          </p>
+        </Text>
 
-        <StyledPath aria-label="My path so far">
-          {PATH.map(step => (
-            <li key={step.title} className={step.now ? 'now' : ''}>
-              <span className="place">
-                {step.place}
-                {step.now && <span className="now-badge">Now</span>}
-              </span>
-              <h3>{step.title}</h3>
-              <p>{step.note}</p>
-            </li>
-          ))}
-        </StyledPath>
-        </div>
-      </div>
-    </StyledAboutSection>
-  );
-};
+        <figure className="second-photo">
+          <StaticImage
+            className="img"
+            src="../../images/photos/autumn.jpg"
+            alt="Ziyi (Ellen) Zhou in a red sweater, sitting under a tree among autumn leaves"
+            width={520}
+            aspectRatio={4 / 5}
+            quality={84}
+            placeholder="dominantColor"
+            formats={['AUTO', 'WEBP', 'AVIF']}
+          />
+          <figcaption>Autumn leaves.</figcaption>
+        </figure>
+      </Grid>
+    </div>
+  </Page>
+);
 
 export default About;

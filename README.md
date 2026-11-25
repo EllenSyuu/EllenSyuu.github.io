@@ -22,39 +22,33 @@
 
 ## Overview
 
-A portfolio ordered for a reader deciding quickly — who, then experience, then evidence:
+The cover — a masthead over a painting of Montréal at dusk — sets the art direction; everything below it is laid out as pages of the same publication, on the cover's margins, palette and type.
 
-| # | Chapter | What it answers |
-| --- | --- | --- |
-| — | **Cover** | Who I am in one sentence, with GitHub, LinkedIn and contact one click away |
-| — | **By the numbers** | Languages, research roles and a few concrete figures |
-| 01 | **About** | The short version and the path: HKU → McGill → UNESCO UIS |
-| 02 | **Experience** | A month-exact timeline of every role since 2020, then the details per role |
-| 03 | **What I Do** | Three threads — extremes & tail risk, trustworthy modelling software, statistics for the public good — each linked to its evidence |
-| 04 | **Work** | Four case studies, each as an illustrated plate with its key results and code: [SDG 4 Data Revision Tracker](https://github.com/EllenSyuu/SDG), [covarchimax](https://github.com/EllenSyuu/SAC-thesis-2026), VVI, TailFM |
-| 05 | **Beyond the Code** | Stories with their own pages, and a ledger of leadership and community roles |
-| 06 | **Contact** | A short note form that lands in my inbox |
+| Section | What it answers |
+| --- | --- |
+| **Cover** | Who I am, with GitHub, LinkedIn and contact one click away |
+| **About** | A short biography, two photographs and a profile column: HKU → McGill → UNESCO UIS, languages |
+| **Experience** | A month-exact range chart of every role since 2020, then each principal role as a dated entry |
+| **What I do** | Three questions that run through the work, each pointed at its evidence |
+| **Selected work** | Four short research articles — question, why it matters, method, evidence as figures, code: [SDG 4 Data Revision Tracker](https://github.com/EllenSyuu/SDG), [covarchimax](https://github.com/EllenSyuu/SAC-thesis-2026), [VVI](https://github.com/EllenSyuu/VVI), [selection-valid tail-index inference](https://github.com/EllenSyuu/tailfm-union-band) |
+| **Other projects** | A grouped index: research & methods, software & tools, study notebooks |
+| **Beyond the code** | Three stories with their own pages, and a ledger of leadership and community roles |
+| **Contact** | A short note form that lands in my inbox |
 
 Personal projects are labelled as independent work on synthetic data; none is an official product of an institution I have worked for. A **Notes** section renders Markdown with LaTeX (KaTeX) for technical writing.
 
-<div align="center">
-  <img src="docs/showcase.png" alt="The cover on desktop and on a phone" width="100%" />
-  <br /><br />
-  <img src="docs/sections.png" alt="Experience timeline, two case-study plates and the leadership ledger" width="100%" />
-</div>
+## Design
 
-## Design & motion
+An **editorial scientific atlas**, derived from the cover rather than added to it.
 
-An **atelier engineering drawing**: blue-black ink and graphite on warm paper, construction lines running past the corners, dimension lines and hand-lettered labels, with orange watercolour kept for autumn things (maples, clouds) and for the numbers that matter. Every motion either draws the plate or explains the data.
-
-- **Cover plate.** Montréal from the river — Mont Royal in contour and hatching, a skyline in architect's elevation, the Jacques-Cartier truss, ruled water, maples and a branch in watercolour. On wide screens the plate inks itself on load; on phones it appears finished. A hairline inset keeps the live **Gumbel-copula** field (Marshall–Olkin algorithm; positive-stable frailty via Chambers–Mallows–Stuck), whose joint extremes turn warm. [`hero.js`](src/components/sections/hero.js) · [`tail-field.js`](src/components/tail-field.js)
-- **Case studies as plates.** Each featured project is drawn from its own published numbers, not a pasted chart: an axonometric terrain block of southern Québec whose clouds and dependence arcs follow the season; Victoria Harbour in elevation with the 2022 Omicron waves and a ledger of sufficient statistics; heavy-tailed ridges feeding a two-pathway network; four data releases stacked as archive sheets. Plates draw in once when they come into view and pause off screen. [`src/components/cases/`](src/components/cases)
-- **Highlighter.** Titles get a watercolour brush stroke with a pencil underline as they scroll into view. [`mark-observer.js`](src/components/mark-observer.js)
-- **Experience timeline.** Every role on one ruled 2020-to-today axis, grouped into three strands. [`experience-timeline.js`](src/components/experience-timeline.js)
-- **Margins.** A small maple leaf follows the mouse; a few leaves drift down over the cover only; now and then an ink gull or pigeon crosses the page. [`cursor-trail.js`](src/components/cursor-trail.js) · [`bird-flyover.js`](src/components/bird-flyover.js)
-- **Contact form.** Name, email and message, sent to my inbox through [Web3Forms](https://web3forms.com) (a static site cannot send mail itself), with a honeypot against bots and a thank-you state. [`contact.js`](src/components/sections/contact.js)
-- **Typography.** Cormorant Garamond for display and small-caps labels, Inter for text, La Belle Aurore for hand-lettered notes, JetBrains Mono for code — self-hosted, preloaded, with a metric-matched fallback for Inter.
-- **Considerate by default.** All motion respects `prefers-reduced-motion`. On phones the cover is shown finished, watercolour edges and the paper grain are skipped, and the copula canvas is not loaded.
+- **One system.** Paper `#f6f0e4`, ink `#14213a`, vermilion `#c8431f` for emphasis, gold `#e0ad4a`, and the cover's river, hill and haze blues for data. Bodoni Moda for headings and decks, Inter for text and figures. Every section opens with the cover's double-ruled issue bar and sits on the cover's page margins. [`editorial.js`](src/components/editorial.js)
+- **Figures, not decoration.** Each case study is told with figures drawn from the project's own published numbers, set like a journal: numbered captions with their source, direct labels, no chart junk. Charts are drawn at their real width, so text stays legible on a phone. [`src/components/figures/`](src/components/figures)
+  - SDG 4: one indicator as published in four releases (synthetic data).
+  - covarchimax: two small maps of southern Québec (Natural Earth base map) with station pairs weighted by tail dependence in June–July and October–November, and the six-station extremal coefficient by season with bootstrap intervals.
+  - VVI: a forest plot of recovered against planted hazard ratios, and the build-and-fit benchmark.
+  - Tail-index inference: union and first-order bands on the Danish fire-insurance data, and the pre-registered coverage benchmark — including the four settings where the method fails.
+- **Photographs** are my own; no stock images or generated illustrations below the cover.
+- **Quiet by default.** Motion is kept to the cover; the sections below do not animate.
 
 ## Quality
 
@@ -102,10 +96,10 @@ Content and presentation are separate: every entry on the site is a Markdown fil
 ├── .github/workflows/deploy.yml   build and publish to GitHub Pages
 ├── content/                       all site content (Markdown + images)
 │   ├── featured/  impact/  jobs/  posts/  projects/
-├── docs/                          README images
+├── docs/                          README images; redesign/ holds the redesign record
 ├── scripts/readme-images/         reproducible screenshots for this README
 ├── src/
-│   ├── components/                layout, sections, cases (plates), tail-field, experience-timeline, bird-flyover, chapter-map
+│   ├── components/                layout, sections, editorial (design system), figures, experience-timeline
 │   ├── pages/                     /, /archive, /impact, /notes, 404
 │   ├── templates/                 notes and story pages (KaTeX), tag pages
 │   ├── styles/                    theme variables, global styles, mixins
@@ -138,6 +132,6 @@ Every push to `main` runs [`deploy.yml`](.github/workflows/deploy.yml): install 
 
 ## Credits & licence
 
-Design and original code by [Brittany Chiang](https://brittanychiang.com) ([v4](https://github.com/bchiang7/v4)), used under the MIT licence and adapted here: upgraded to Gatsby 5 and React 18, redrawn as an atelier engineering plate with a new type system and motion layer, and extended with the Beyond the Code column, LaTeX notes and an automated Pages deployment.
+The code started from [Brittany Chiang](https://brittanychiang.com)'s [v4](https://github.com/bchiang7/v4), used under the MIT licence, upgraded to Gatsby 5 and React 18 and since redesigned. Base-map data for the Québec figure: [Natural Earth](https://www.naturalearthdata.com/) (public domain).
 
-Code is MIT-licensed (see [LICENSE](LICENSE)). Text and images in `content/`, `src/images/` and `static/` are personal and not covered by the licence. Fonts (Cormorant Garamond, Inter, La Belle Aurore, JetBrains Mono) are under the SIL Open Font License.
+Code is MIT-licensed (see [LICENSE](LICENSE)). Text and images in `content/`, `src/images/` and `static/` are personal and not covered by the licence. Fonts (Bodoni Moda, Inter, JetBrains Mono and others under `@fontsource`) are under the SIL Open Font License.

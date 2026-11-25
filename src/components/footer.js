@@ -1,109 +1,66 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Icon } from '@components/icons';
-import { socialMedia } from '@config';
+import { T, SANS, MARGIN, cap } from '@components/editorial';
+
+/*
+ * The colophon closes the publication with the same double-ruled bar that opens it on the
+ * cover. The site's code started from Brittany Chiang's open-source v4 (MIT); the credit
+ * stays here and in LICENSE.
+ */
 
 const StyledFooter = styled.footer`
-  ${({ theme }) => theme.mixins.flexCenter};
-  flex-direction: column;
-  height: auto;
-  min-height: 70px;
-  padding: 15px;
-  text-align: center;
-`;
+  padding: 0 ${MARGIN} 28px;
+  font-family: ${SANS};
 
-const StyledSocialLinks = styled.div`
-  display: none;
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 9px 0;
+    border-top: 1px solid ${T.rule};
+    border-bottom: 1px solid ${T.rule};
+    color: ${T.ink};
+    ${cap};
 
-  @media (max-width: 768px) {
-    display: block;
-    width: 100%;
-    max-width: 270px;
-    margin: 0 auto 10px;
-    color: var(--light-slate);
+    @media (max-width: 600px) {
+      font-size: 9.5px;
+      letter-spacing: 0.16em;
+    }
   }
 
-  ul {
-    ${({ theme }) => theme.mixins.flexBetween};
-    padding: 0;
-    margin: 0;
-    list-style: none;
+  .credit {
+    max-width: 1280px;
+    margin: 12px auto 0;
+    color: ${T.muted};
+    font-size: 12px;
 
     a {
-      padding: 10px;
-      svg {
-        width: 20px;
-        height: 20px;
+      color: ${T.muted};
+      text-decoration: underline;
+      text-decoration-color: ${T.hair};
+      text-underline-offset: 3px;
+      &:hover {
+        color: ${T.vermilionText};
       }
     }
   }
 `;
 
-const StyledCredit = styled.div`
-  color: var(--light-slate);
-  font-family: var(--font-mono);
-  font-size: var(--fz-xxs);
-  line-height: 1;
-
-  a {
-    padding: 10px;
-  }
-
-  .design {
-    margin-top: 6px;
-    color: var(--slate);
-  }
-
-  .github-stats {
-    margin-top: 10px;
-
-    & > span {
-      display: inline-flex;
-      align-items: center;
-      margin: 0 7px;
-    }
-    svg {
-      display: inline-block;
-      margin-right: 5px;
-      width: 14px;
-      height: 14px;
-    }
-  }
-`;
-
-const Footer = () => {
-
-
-  return (
-    <StyledFooter>
-      <StyledSocialLinks>
-        <ul>
-          {socialMedia &&
-            socialMedia.map(({ name, url }, i) => (
-              <li key={i}>
-                <a href={url} aria-label={name}>
-                  <Icon name={name} />
-                </a>
-              </li>
-            ))}
-        </ul>
-      </StyledSocialLinks>
-
-      <StyledCredit tabindex="-1">
-        <a href="https://github.com/EllenSyuu/EllenSyuu.github.io">
-          <div>Built by Ziyi (Ellen) Zhou</div>
-        </a>
-        <a href="https://brittanychiang.com">
-          <div className="design">Design by Brittany Chiang</div>
-        </a>
-      </StyledCredit>
-    </StyledFooter>
-  );
-};
-
-Footer.propTypes = {
-  githubInfo: PropTypes.object,
-};
+const Footer = () => (
+  <StyledFooter>
+    <div className="bar">
+      <span>Ziyi (Ellen) Zhou</span>
+      <span>Montréal · Hiver 2026</span>
+    </div>
+    <p className="credit">
+      <a href="https://github.com/EllenSyuu/EllenSyuu.github.io">Source on GitHub</a> · code first
+      built on <a href="https://github.com/bchiang7/v4">Brittany Chiang’s v4</a> (MIT) · base
+      map data from <a href="https://www.naturalearthdata.com/">Natural Earth</a>.
+    </p>
+  </StyledFooter>
+);
 
 export default Footer;

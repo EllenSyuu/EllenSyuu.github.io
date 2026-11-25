@@ -9,6 +9,7 @@ question: 'Does a booster before your first Omicron infection protect you — or
 figure: './figure.png'
 figureAlt: 'Synthetic validation: estimated hazard ratios for each vaccination–infection profile sit on top of the true values planted in the simulation.'
 figureCaption: 'Synthetic validation: the fitted hazard ratios recover the values planted in a simulated cohort.'
+why: "Protection against Omicron reinfection depends on a person's whole history: which vaccine, how many doses, and whether an infection came before or after them. Comparing those histories fairly means measuring everyone on the same calendar days, under the same force of infection."
 results:
   - value: '5×10⁸ → 17,520'
     label: 'Person-days collapsed into sufficient statistics (people at risk and events per covariate cell × calendar day) — same MLE, same standard errors, no sub-sampling.'

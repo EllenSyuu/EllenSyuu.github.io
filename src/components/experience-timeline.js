@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Figure, T, SANS, cap } from '@components/editorial';
 
 /*
- * Experience at a glance: every role on one ruled time axis (2020 → today), grouped into the
- * three strands the work is built on. Bars are drawn like dimension lines with end ticks;
- * the current role carries a warm wash. Dates are month-exact so the years can be counted.
+ * Experience at a glance: every role on one time axis (2020 → today), grouped into three
+ * strands. A plain range chart — hairline years, one ink rule per role, vermilion for the
+ * roles still running. Dates are month-exact so the years can be counted.
  */
 
 const START = 2020;
@@ -52,219 +53,131 @@ const STRANDS = [
 ];
 
 const pct = v => `${(((Math.min(v, END) - START) / (END - START)) * 100).toFixed(2)}%`;
+const YEARS = Array.from({ length: END - START + 1 }, (_, k) => START + k);
 
-const StyledTimeline = styled.figure`
-  margin: 0 0 64px;
-  padding: 0;
-
-  @media (max-width: 600px) {
-    padding: 22px 16px 18px;
-  }
-
-  .head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 6px 20px;
-    margin-bottom: 18px;
-  }
-
-  .kicker {
-    margin: 0;
-    color: var(--dark-slate);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  .hand {
-    margin: 0;
-    color: var(--green);
-    font-family: var(--font-hand);
-    font-size: 16px;
-  }
-
-  .row {
-    display: grid;
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-    gap: 4px 18px;
-    align-items: center;
-    padding: 5px 0;
-
-    @media (max-width: 760px) {
-      grid-template-columns: 1fr;
-      padding: 7px 0;
-    }
-  }
-
-  .label {
-    color: var(--light-slate);
-    font-size: 13.5px;
-    line-height: 1.35;
-
-    .span {
-      display: block;
-      color: var(--dark-slate);
-      font-family: var(--font-serif);
-      font-size: 14px;
-      font-style: normal;
-    }
-  }
-
-  .track {
-    position: relative;
-    height: 14px;
-    background-image: repeating-linear-gradient(
-      90deg,
-      var(--hairline) 0 0.75px,
-      transparent 0.75px calc(100% / ${END - START})
-    );
-  }
-
-  .bar {
-    position: absolute;
-    top: 6px;
-    height: 0.75px;
-    min-width: 6px;
-    background: var(--ink);
-    transform-origin: left;
-
-    &:before,
-    &:after {
-      content: '';
-      position: absolute;
-      top: -4px;
-      width: 0.75px;
-      height: 9px;
-      background: var(--ink);
-      transform: skewX(-35deg);
-    }
-    &:before {
-      left: 0;
-    }
-    &:after {
-      right: 0;
-    }
-
-    i {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: -4px;
-      height: 9px;
-      background: rgba(224, 160, 70, 0.32);
-    }
-
-    &.now i {
-      background: rgba(207, 96, 43, 0.38);
-    }
-  }
+const StyledChart = styled.div`
+  font-family: ${SANS};
 
   .strand {
-    margin: 18px 0 4px;
-    padding-top: 12px;
-    border-top: 0.75px solid var(--hairline);
-    color: var(--lightest-slate);
-    font-family: var(--font-serif);
-    font-size: 20px;
-    font-weight: 600;
-
-    &:first-of-type {
-      margin-top: 0;
-      border-top: 0;
-      padding-top: 0;
-    }
-  }
-
-  .axis {
-    position: relative;
-    height: 22px;
-    margin-top: 10px;
-    border-top: 0.75px solid var(--ink);
-
-    span {
-      position: absolute;
-      top: 4px;
-      transform: translateX(-50%);
-      color: var(--dark-slate);
-      font-family: var(--font-serif);
-      font-size: 13px;
-      font-weight: 600;
-    }
-  }
-
-  .axis-row {
     display: grid;
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-    gap: 18px;
-
-    @media (max-width: 760px) {
-      grid-template-columns: 1fr;
-
-      > :first-child {
-        display: none;
-      }
+    grid-template-columns: minmax(220px, 4fr) minmax(0, 8fr);
+    column-gap: 24px;
+    padding-top: 14px;
+    border-top: 1px solid ${T.rule};
+    & + .strand {
+      margin-top: 22px;
     }
   }
-
+  .strand h3 {
+    grid-column: 1 / -1;
+    margin: 0 0 8px;
+    color: ${T.ink};
+    ${cap};
+  }
+  .row {
+    display: contents;
+  }
+  .label {
+    padding: 7px 0;
+    border-bottom: 1px solid ${T.hair};
+    color: ${T.ink};
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .label small {
+    display: block;
+    color: ${T.muted};
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .track {
+    position: relative;
+    background-image: linear-gradient(to right, rgba(20, 33, 58, 0.1) 1px, transparent 1px);
+    background-size: calc(100% / ${END - START}) 100%;
+  }
+  .bar {
+    position: absolute;
+    top: 50%;
+    height: 5px;
+    margin-top: -2.5px;
+    background: ${T.ink};
+  }
+  .bar.now {
+    background: ${T.vermilion};
+  }
   .today {
     position: absolute;
-    top: -6px;
-    bottom: -6px;
+    top: 0;
+    bottom: 0;
     width: 0;
-    border-left: 0.75px dashed var(--maple);
+    border-left: 1px dashed ${T.vermilion};
+  }
+  .axis {
+    display: grid;
+    grid-template-columns: minmax(220px, 4fr) minmax(0, 8fr);
+    column-gap: 24px;
+  }
+  .axis .years {
+    position: relative;
+    height: 26px;
+  }
+  .axis span {
+    position: absolute;
+    top: 8px;
+    transform: translateX(-50%);
+    color: ${T.muted};
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .axis span:first-child {
+    transform: none;
+  }
+  .axis span:last-child {
+    transform: translateX(-100%);
   }
 
-  figcaption {
-    margin-top: 12px;
-    color: var(--dark-slate);
-    font-family: var(--font-serif);
-    font-size: 15px;
-    font-style: normal;
-  }
-
-  /* Bars draw out from their start date when the figure scrolls in. */
-  @media (prefers-reduced-motion: no-preference) {
-    .bar {
-      transform: scaleX(0);
-      transition: transform 1.2s cubic-bezier(0.55, 0.05, 0.25, 1);
+  @media (max-width: 700px) {
+    .strand,
+    .axis {
+      grid-template-columns: 1fr;
     }
-    &.is-marked .bar {
-      transform: none;
+    .label {
+      border-bottom: 0;
+      padding-bottom: 2px;
+    }
+    .track {
+      height: 14px;
+      margin-bottom: 6px;
+    }
+    .axis > div:first-child {
+      display: none;
     }
   }
 `;
 
-const ExperienceTimeline = () => {
-  const years = Array.from({ length: END - START + 1 }, (_, i) => START + i);
-  let n = 0;
-  return (
-    <StyledTimeline className="mark-trigger" aria-label="Timeline of roles from 2020 to today">
-      <div className="head">
-        <p className="kicker">Experience at a glance · 2020 — today</p>
-        <p className="hand">each bar to the month</p>
-      </div>
-
+const ExperienceTimeline = () => (
+  <Figure
+    n={1}
+    label="Timeline of roles from 2020 to today"
+    caption="Every role since 2020, to the month. Research and teaching roles ran alongside the B.Sc. and M.Sc.; vermilion marks roles that continue today, and the dashed line marks today.">
+    <StyledChart>
       {STRANDS.map(s => (
-        <div key={s.key}>
-          <p className="strand">{s.title}</p>
+        <div className="strand" key={s.key}>
+          <h3>{s.title}</h3>
           {s.roles.map(r => {
-            n += 1;
+            const [role, org] = r.label.split(' · ');
             return (
               <div className="row" key={r.label}>
                 <div className="label">
-                  {r.label}
-                  <span className="span">{r.span}</span>
+                  {role}
+                  {org ? <span> · {org}</span> : null}
+                  <small>{r.span.replace(' — ', '–')}</small>
                 </div>
                 <div className="track" aria-hidden="true">
                   <span
-                    className={`bar${r.now ? ' now' : ''}`}
-                    style={{ left: pct(r.from), width: `calc(${pct(r.to)} - ${pct(r.from)})`, transitionDelay: `${0.05 * n}s` }}>
-                    <i />
-                  </span>
+                    className={`bar${r.now || r.to >= TODAY ? ' now' : ''}`}
+                    style={{ left: pct(r.from), width: `calc(${pct(r.to)} - ${pct(r.from)})` }}
+                  />
                   <span className="today" style={{ left: pct(TODAY) }} />
                 </div>
               </div>
@@ -272,23 +185,18 @@ const ExperienceTimeline = () => {
           })}
         </div>
       ))}
-
-      <div className="axis-row" aria-hidden="true">
+      <div className="axis" aria-hidden="true">
         <div />
-        <div className="axis">
-          {years.map(y => (
+        <div className="years">
+          {YEARS.map(y => (
             <span key={y} style={{ left: pct(y) }}>
               {y}
             </span>
           ))}
         </div>
       </div>
-
-      <figcaption>
-        Research and teaching roles ran alongside the B.Sc. and M.Sc.; the dashed line marks today.
-      </figcaption>
-    </StyledTimeline>
-  );
-};
+    </StyledChart>
+  </Figure>
+);
 
 export default ExperienceTimeline;

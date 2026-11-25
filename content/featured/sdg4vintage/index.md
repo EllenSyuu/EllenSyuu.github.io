@@ -10,6 +10,7 @@ cover: './cover.jpg'
 figure: './figure.png'
 figureAlt: 'The same indicator as published in four successive releases: each release adds a year, fills in late data and revises the past; for reference year 2021 the number of countries with a value grows from 16 to 44 across releases.'
 figureCaption: 'One indicator, published four times (synthetic data). Each release adds a year, fills in late data and revises the past.'
+why: "Education statistics keep changing after they are first published: late data arrive for years, and earlier values are revised. A trend read off a single release can mix those revisions in with real change."
 results:
   - value: '16 → 44'
     label: 'Countries with a 2021 value as successive releases backfill it, in the synthetic test data — why a trend read off one release can mislead.'

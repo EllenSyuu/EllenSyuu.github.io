@@ -1,12 +1,10 @@
 import React from 'react';
 import { graphql, Link } from 'gatsby';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import kebabCase from 'lodash/kebabCase';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Layout } from '@components';
-import Vignette, { hasVignette } from '@components/impact/vignette';
 // KaTeX styles only load on pages that can contain maths.
 import 'katex/dist/katex.min.css';
 
@@ -106,9 +104,8 @@ const StyledPostContent = styled.div`
 
 const PostTemplate = ({ data, location }) => {
   const { frontmatter, html, fileAbsolutePath } = data.markdownRemark;
-  const { title, date, tags, overline, location: place, cover, coverAlt, slug } = frontmatter;
+  const { title, date, tags, overline, location: place } = frontmatter;
   const isImpact = /\/content\/impact\//.test(fileAbsolutePath);
-  const image = cover ? getImage(cover) : null;
 
   return (
     <Layout location={location}>
@@ -143,15 +140,6 @@ const PostTemplate = ({ data, location }) => {
               ))}
           </p>
 
-          {hasVignette(slug) ? (
-            <div className="cover">
-              <Vignette slug={slug} />
-            </div>
-          ) : image && (
-            <div className="cover">
-              <GatsbyImage image={image} alt={coverAlt || title} />
-            </div>
-          )}
         </StyledPostHeader>
 
         <StyledPostContent dangerouslySetInnerHTML={{ __html: html }} />

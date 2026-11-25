@@ -11,4 +11,4 @@ tech:
 showInProjects: true
 ---
 
-Built on Brittany Chiang’s open-source v4 design, upgraded to Gatsby 5, with a LaTeX-ready notes section and a column for public-interest work.
+Gatsby 5 and React, first built on Brittany Chiang’s open-source v4 and since redesigned as an editorial publication: figures drawn from each project’s published numbers, a LaTeX-ready notes section and a column for public-interest work.

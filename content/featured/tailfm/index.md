@@ -10,6 +10,7 @@ cover: './cover.jpg'
 figure: './figure.png'
 figureAlt: 'Danish fire-insurance losses: at thresholds k = 19, 39, 79, 158 and 317, the union band, a generalised-Pareto band and the first-order band for the tail index; a shaded stripe marks where all union bands overlap, from 0.52 to 0.84.'
 figureCaption: 'From the preprint: Danish fire-insurance losses (n = 2,167), bands for the tail index at five thresholds. The shaded stripe is the intersection of the union bands.'
+why: "The tail index ξ says how heavy a tail is — how large the rarest losses can be — and it carries every estimate of risk beyond the observed data. Yet intervals for it are routinely reported at a threshold that was chosen by looking at the same data."
 results:
   - value: '16 of 16'
     label: 'Pre-registered settings where the band kept coverage after four rules for choosing k; the usual interval at a chosen k fell below 80% in 12 of them, as low as 3%.'

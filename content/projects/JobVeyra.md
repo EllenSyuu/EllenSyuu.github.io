@@ -4,7 +4,6 @@ title: 'JobVeyra · Job-Search Engine'
 github: 'https://github.com/EllenSyuu/JobVeyra'
 tech:
   - Python
-  - Claude Code plugin
   - GitHub Actions
 company: 'Independent'
 showInProjects: true

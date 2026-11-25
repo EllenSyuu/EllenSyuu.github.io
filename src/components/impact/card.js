@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Vignette, { hasVignette } from './vignette';
 
 // Photo card in the v4 language: navy card, mint overline, duotone photo that turns
 // to full colour on hover (same treatment as the About photo).
@@ -121,21 +119,11 @@ const StyledCard = styled.li`
 
 const ImpactCard = ({ node, innerRef, style, headingLevel = 3 }) => {
   const Heading = `h${headingLevel}`;
-  const { title, slug, overline, description, cover, coverAlt } = node.frontmatter;
-  const image = cover ? getImage(cover) : null;
+  const { title, slug, overline, description } = node.frontmatter;
 
   return (
     <StyledCard ref={innerRef} style={style}>
       <div className="card__inner">
-        {hasVignette(slug) ? (
-          <div className="card__media">
-            <Vignette slug={slug} />
-          </div>
-        ) : image && (
-          <div className="card__media">
-            <GatsbyImage image={image} alt={coverAlt || title} className="img" />
-          </div>
-        )}
         <div className="card__body">
           {overline && <p className="card__overline">{overline}</p>}
           <Heading className="card__title">

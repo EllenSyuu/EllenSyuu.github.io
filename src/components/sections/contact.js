@@ -1,225 +1,181 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { srConfig, formAccessKey } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
+import { formAccessKey, socialMedia } from '@config';
+import { Page, SectionHead, T, DISPLAY, SANS, cap } from '@components/editorial';
 
 /*
- * Contact: a short note form. Messages go to Ellen's inbox through Web3Forms
- * (https://web3forms.com) — a static site cannot send email itself. The access key in
- * config.js is public by design and does not reveal the address.
+ * Contact — a short note form that lands in my inbox through Web3Forms
+ * (https://web3forms.com) — a static site cannot send email itself. The access key is
+ * public by design. A honeypot field keeps most bots out.
  */
 
-const StyledContactSection = styled.section`
-  max-width: 600px;
-  margin: 0 auto 100px;
-  text-align: center;
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(16px, 2.2vw, 32px);
+  padding-bottom: clamp(96px, 10vw, 150px);
 
-  @media (max-width: 768px) {
-    margin: 0 auto 50px;
+  form,
+  .thanks {
+    grid-column: 1 / span 7;
+  }
+  aside {
+    grid-column: 9 / span 4;
   }
 
-  .overline {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--lightest-slate);
-    font-family: var(--font-serif);
-    font-size: clamp(38px, 5.4vw, 60px);
-    font-weight: 500;
-    letter-spacing: -0.022em;
-    text-transform: none;
-
-    &:after {
-      display: none;
+  @media (max-width: 900px) {
+    form,
+    .thanks,
+    aside {
+      grid-column: 1 / -1;
     }
-  }
-
-  .note {
-    margin: 0 auto 30px;
-    max-width: 440px;
-    color: var(--slate);
-    font-family: var(--font-serif);
-    font-size: clamp(20px, 2.4vw, 23px);
-    font-style: normal;
+    aside {
+      margin-top: 56px;
+    }
   }
 `;
 
-const StyledForm = styled.form`
-  position: relative;
+const Form = styled.form`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 22px 28px;
-  padding: 10px 0 0;
-  text-align: left;
-
-  .stamp {
-    position: absolute;
-    top: -22px;
-    right: 26px;
-    width: 64px;
-    height: 76px;
-    transform: rotate(4deg);
-  }
-
-  @media (max-width: 560px) {
-    grid-template-columns: 1fr;
-    padding: 20px;
-  }
+  gap: 28px 28px;
+  font-family: ${SANS};
 
   label {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    color: var(--dark-slate);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    display: block;
+    color: ${T.muted};
+    ${cap};
+    font-size: 10px;
   }
-
   .full {
     grid-column: 1 / -1;
   }
-
   input,
   textarea {
+    display: block;
     width: 100%;
-    padding: 8px 2px 6px;
+    margin-top: 8px;
+    padding: 8px 0 10px;
     border: 0;
-    border-bottom: 0.75px solid var(--ink);
+    border-bottom: 1px solid ${T.ink};
     border-radius: 0;
     background: transparent;
-    color: var(--lightest-slate);
-    font-family: var(--font-sans);
-    font-size: var(--fz-md);
+    color: ${T.ink};
+    font-family: ${SANS};
+    font-size: 17px;
+    letter-spacing: 0;
     text-transform: none;
-    letter-spacing: normal;
-    transition: var(--transition);
-
     &::placeholder {
-      color: var(--dark-slate);
-      font-family: var(--font-hand);
-      font-size: 17px;
-      opacity: 0.75;
+      color: #8b93a5;
     }
-
     &:focus {
-      outline: none;
-      border-color: var(--green);
-      box-shadow: 0 1px 0 0 var(--maple);
+      outline: 0;
+      border-bottom: 2px solid ${T.vermilion};
+      padding-bottom: 9px;
     }
   }
-
   textarea {
-    min-height: 132px;
+    min-height: 150px;
     resize: vertical;
-    line-height: 32px;
-    background-image: repeating-linear-gradient(transparent 0 31px, var(--hairline) 31px 32px);
-    border-bottom: 0;
+    line-height: 1.6;
   }
-
   .hp {
     position: absolute;
     left: -9999px;
   }
-
   .actions {
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
+    gap: 20px;
   }
-
   .status {
     margin: 0;
-    color: var(--slate);
-    font-size: var(--fz-sm);
+    color: ${T.muted};
+    font-size: 14px;
   }
-
   .status.error {
-    color: var(--cranberry);
+    color: ${T.vermilionText};
   }
-
   button {
-    ${({ theme }) => theme.mixins.button};
-    margin-left: auto;
-
+    padding: 15px 30px;
+    border: 0;
+    border-radius: 0;
+    background: ${T.ink};
+    color: ${T.paper};
+    cursor: pointer;
+    ${cap};
+    transition: background 0.2s ease;
+    &:hover,
+    &:focus-visible {
+      background: ${T.vermilionText};
+    }
     &:disabled {
       opacity: 0.6;
-      cursor: wait;
+      cursor: progress;
     }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const StyledThanks = styled.div`
-  padding: 20px 0;
-
-  .sig {
-    margin-top: 10px;
-    color: var(--green);
-    font-family: var(--font-hand);
-    font-size: 22px;
-  }
+const Elsewhere = styled.aside`
+  border-top: 1px solid ${T.rule};
+  font-family: ${SANS};
 
   h3 {
-    margin: 0 0 6px;
-    font-size: clamp(22px, 3vw, 28px);
-  }
-
-  p {
     margin: 0;
-    color: var(--slate);
+    padding: 9px 0;
+    border-bottom: 1px solid ${T.hair};
+    color: ${T.ink};
+    ${cap};
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid ${T.hair};
+    color: ${T.muted};
+    font-size: 13px;
+  }
+  a,
+  .v {
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: 18px;
+  }
+  a:hover {
+    color: ${T.vermilionText};
   }
 `;
 
-// A small postage stamp: perforated edge, a maple in warm watercolour, drawn in ink.
-const MAPLE =
-  'M0 -1 L.14 -.6 L.34 -.74 L.3 -.42 L.64 -.5 L.54 -.28 L.96 -.12 L.64 .06 L.74 .3 L.4 .22 L.34 .46 L.08 .32 L.04 .98 L-.04 .98 L-.08 .32 L-.34 .46 L-.4 .22 L-.74 .3 L-.64 .06 L-.96 -.12 L-.54 -.28 L-.64 -.5 L-.3 -.42 L-.34 -.74 L-.14 -.6 Z';
-const Stamp = () => (
-  <svg className="stamp" viewBox="0 0 64 76" aria-hidden="true">
-    <defs>
-      <mask id="perf">
-        <rect width="64" height="76" fill="#fff" />
-        {Array.from({ length: 9 }, (_, i) => (
-          <g key={i} fill="#000">
-            <circle cx={4 + i * 7} cy="0" r="2.4" />
-            <circle cx={4 + i * 7} cy="76" r="2.4" />
-          </g>
-        ))}
-        {Array.from({ length: 11 }, (_, i) => (
-          <g key={`v${i}`} fill="#000">
-            <circle cx="0" cy={4 + i * 7} r="2.4" />
-            <circle cx="64" cy={4 + i * 7} r="2.4" />
-          </g>
-        ))}
-      </mask>
-    </defs>
-    <rect width="64" height="76" fill="#fafaf6" mask="url(#perf)" style={{ filter: 'drop-shadow(0 2px 3px rgba(34,49,74,.18))' }} />
-    <rect x="7" y="7" width="50" height="62" fill="none" stroke="#14213a" strokeWidth="0.6" />
-    <path d={MAPLE} transform="translate(32 34) scale(15)" fill="#c8431f" opacity="0.7" />
-    <path d={MAPLE} transform="translate(32 34) scale(15)" fill="none" stroke="#14213a" strokeWidth="0.05" />
-    <text x="32" y="63" textAnchor="middle" fontFamily="Bodoni Moda Variable, Cormorant Garamond, serif" fontSize="7" fontWeight="600" letterSpacing="1.2" fill="#14213a">
-      MONTRÉAL
-    </text>
-  </svg>
-);
+const Thanks = styled.div`
+  h3 {
+    margin: 0 0 12px;
+    color: ${T.ink};
+    font-family: ${DISPLAY};
+    font-size: 40px;
+    font-weight: 500;
+  }
+  p {
+    color: ${T.text};
+    font-family: ${SANS};
+    font-size: 17px;
+  }
+`;
 
 const Contact = () => {
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
   const [state, setState] = useState('idle'); // idle | sending | sent | error
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealContainer.current, srConfig());
-  }, [prefersReducedMotion]);
 
   const onSubmit = async e => {
     e.preventDefault();
@@ -256,58 +212,85 @@ const Contact = () => {
     }
   };
 
+  const linkedin = socialMedia.find(s => s.name === 'Linkedin');
+  const github = socialMedia.find(s => s.name === 'GitHub');
+
   return (
-    <StyledContactSection id="contact" ref={revealContainer}>
-      <h2 className="numbered-heading overline">Contact</h2>
+    <Page id="contact">
+      <div className="wrap">
+        <SectionHead
+          label="Contact"
+          aside="Montréal"
+          title="Write to me"
+          standfirst="Leave me a note — it comes straight to my inbox, and I’ll write back."
+        />
+        <Grid>
+          {state === 'sent' ? (
+            <Thanks className="thanks" role="status">
+              <h3>Thank you.</h3>
+              <p>Your message is on its way. I’ll write back soon.</p>
+              <p>— Ellen</p>
+            </Thanks>
+          ) : (
+            <Form onSubmit={onSubmit}>
+              <label htmlFor="c-name">
+                Name
+                <input id="c-name" name="name" type="text" autoComplete="name" required placeholder="Your name" />
+              </label>
+              <label htmlFor="c-email">
+                Email
+                <input
+                  id="c-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="you@example.com"
+                />
+              </label>
+              <label className="full" htmlFor="c-message">
+                Message
+                <textarea id="c-message" name="message" required placeholder="Hello Ellen…" />
+              </label>
+              <input
+                className="hp"
+                type="checkbox"
+                name="botcheck"
+                tabIndex="-1"
+                autoComplete="off"
+                aria-hidden="true"
+              />
+              <div className="actions">
+                <p className={`status${state === 'error' ? ' error' : ''}`} aria-live="polite">
+                  {state === 'error' ? error : state === 'sending' ? 'Sending…' : ''}
+                </p>
+                <button type="submit" disabled={state === 'sending'}>
+                  {state === 'sending' ? 'Sending…' : 'Send the note'}
+                </button>
+              </div>
+            </Form>
+          )}
 
-      <p className="note">Leave me a note — it comes straight to my inbox.</p>
-
-      {state === 'sent' ? (
-        <StyledThanks role="status">
-          <h3>Thank you.</h3>
-          <p>Your message is on its way. I’ll write back soon.</p>
-          <p className="sig">— Ellen</p>
-        </StyledThanks>
-      ) : (
-        <StyledForm onSubmit={onSubmit}>
-
-          <label>
-            Name
-            <input name="name" type="text" autoComplete="name" required placeholder="Your name" />
-          </label>
-          <label>
-            Email
-            <input
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              placeholder="you@example.com"
-            />
-          </label>
-          <label className="full">
-            Message
-            <textarea name="message" required placeholder="Hello Ellen…" />
-          </label>
-          <input
-            className="hp"
-            type="checkbox"
-            name="botcheck"
-            tabIndex="-1"
-            autoComplete="off"
-            aria-hidden="true"
-          />
-          <div className="actions">
-            <p className={`status${state === 'error' ? ' error' : ''}`} aria-live="polite">
-              {state === 'error' ? error : state === 'sending' ? 'Sending…' : ''}
-            </p>
-            <button type="submit" disabled={state === 'sending'}>
-              {state === 'sending' ? 'Sending…' : 'Send'}
-            </button>
-          </div>
-        </StyledForm>
-      )}
-    </StyledContactSection>
+          <Elsewhere>
+            <h3>Elsewhere</h3>
+            <ul>
+              <li>
+                GitHub
+                {github && <a href={github.url}>EllenSyuu</a>}
+              </li>
+              <li>
+                LinkedIn
+                {linkedin && <a href={linkedin.url}>ellenziyizhou</a>}
+              </li>
+              <li>
+                Based in
+                <span className="v">Montréal, Québec</span>
+              </li>
+            </ul>
+          </Elsewhere>
+        </Grid>
+      </div>
+    </Page>
   );
 };
 

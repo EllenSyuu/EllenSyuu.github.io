@@ -10,6 +10,7 @@ cover: './cover.jpg'
 figure: './figure.png'
 figureAlt: 'Two panels for southern Québec, 1930–2017. Left: mean monthly maximum precipitation by season, before and after 1975, higher after 1975 in Aug–Sep and Oct–Nov. Right: six-station extremal coefficient by season, near 6 (independence) in June–July and lowest in Oct–Nov.'
 figureCaption: 'Southern Québec, 1930–2017. Magnitude (left) and spatial co-occurrence (right) of precipitation extremes respond to different covariates.'
+why: "How large rainfall extremes are and whether they strike several places at once are separate questions. The thesis models both — the size of extremes at each station, and how often stations' extremes coincide — and finds that they respond to different covariates."
 results:
   - value: '3.90 vs 5.73'
     label: 'Six-station extremal coefficient: autumn storms strike together, early-summer extremes are close to independent (difference 1.83, 90% CI 1.24–2.28).'
