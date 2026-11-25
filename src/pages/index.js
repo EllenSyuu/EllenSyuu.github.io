@@ -2,15 +2,12 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Layout, Hero } from '@components';
-import SpreadA from '@components/phase1/a-spread';
-import MarginB from '@components/phase1/b-margin';
-import RoomC from '@components/phase1/c-room';
+import FieldD from '@components/phase1/d-field';
 
 /* Phase-1 prototype: the cover, About and the way into Experience only.
-   GATSBY_VARIANT=A|B|C chooses the composition at build time. */
+   GATSBY_FIELD=gold|blue|red chooses the colour of the field. */
 
-const VARIANTS = { A: SpreadA, B: MarginB, C: RoomC };
-const Variant = VARIANTS[process.env.GATSBY_VARIANT] || SpreadA;
+const Variant = FieldD;
 
 /* The leaves and the passing birds belong to the cover. Below it they fade out, so nothing
    moves over the reading pages. */
@@ -61,8 +58,8 @@ const IndexPage = ({ location }) => {
         <Hero />
         <Variant />
         <End>
-          Phase 1 prototype {process.env.GATSBY_VARIANT || 'A'} ends here · remaining sections not
-          yet redesigned
+          Phase 1 prototype D ({process.env.GATSBY_FIELD || 'gold'}) ends here · remaining sections
+          not yet redesigned
         </End>
       </StyledMainContainer>
     </Layout>
