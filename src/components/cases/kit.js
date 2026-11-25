@@ -106,7 +106,7 @@ export const ORANGE = '#c8431f';
 export const AMBER = '#e0ad4a';
 export const RUST = '#a5391c';
 export const SERIF = '"Bodoni Moda Variable", "Cormorant Garamond", Didot, Georgia, serif';
-export const HAND = '"La Belle Aurore", cursive';
+export const HAND = 'Inter, system-ui, sans-serif';
 export const GREEK = "Georgia, 'Times New Roman', serif";
 
 /* Pen draw-in on first view. Give the SVG className={drawClass(scene)} and use
@@ -151,19 +151,6 @@ export const StyledScene = styled.div`
       inset: 0;
       width: 100%;
       height: 100%;
-    }
-
-    /* Paper grain over the whole drawing. */
-    &:after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      pointer-events: none;
-      background-image: url(${withPrefix('/grain.png')});
-      background-size: 160px;
-      mix-blend-mode: multiply;
-      opacity: 0.3;
     }
   }
 
@@ -218,9 +205,9 @@ export const StyledScene = styled.div`
   .note {
     margin: 8px 0 0;
     color: #4a5568;
-    font-family: ${SERIF};
-    font-size: 15px;
-    font-style: italic;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-style: normal;
     line-height: 1.3;
   }
 
@@ -302,9 +289,9 @@ export const StyledScene = styled.div`
   .caption {
     margin: 12px 2px 0;
     color: ${GRAPH};
-    font-family: ${SERIF};
-    font-size: 15px;
-    font-style: italic;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-style: normal;
     line-height: 1.45;
 
     a {
