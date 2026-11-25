@@ -60,6 +60,18 @@ const Rows = styled.ol`
   li:first-child {
     border-top-color: ${T.rule};
   }
+  @media (min-width: 901px) {
+    li:nth-child(2) {
+      .q {
+        grid-column: 6 / span 7;
+        grid-row: 1;
+      }
+      .a {
+        grid-column: 1 / span 4;
+        grid-row: 1;
+      }
+    }
+  }
 
   .q {
     grid-column: 1 / span 6;
@@ -118,6 +130,7 @@ const Focus = () => (
   <Page id="focus">
     <div className="wrap">
       <SectionHead
+        layout="open"
         label="What I do"
         aside="Three questions"
         title="The work, in three questions"

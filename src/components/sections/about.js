@@ -147,6 +147,7 @@ const About = () => (
   <Page id="about">
     <div className="wrap">
       <SectionHead
+        layout="open"
         label="About"
         aside="Hong Kong · Montréal"
         title={

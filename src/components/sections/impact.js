@@ -243,9 +243,10 @@ const Impact = () => {
   const stories = data.stories.nodes;
 
   return (
-    <Page id="impact" tone="deep">
+    <Page id="impact">
       <div className="wrap">
         <SectionHead
+          layout="split"
           label="Beyond the code"
           aside="Classrooms · communities · public data"
           title="Beyond the code"

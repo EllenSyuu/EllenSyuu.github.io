@@ -235,6 +235,7 @@ const Contact = () => {
     <Page id="contact">
       <div className="wrap">
         <SectionHead
+          layout="open"
           label="Contact"
           aside="Montréal"
           title="Write to me"

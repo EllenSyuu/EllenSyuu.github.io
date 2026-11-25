@@ -164,6 +164,7 @@ const Jobs = () => {
     <Page id="jobs">
       <div className="wrap">
         <SectionHead
+          layout="split"
           label="Experience"
           aside="2020 — 2026"
           title="Chronology"

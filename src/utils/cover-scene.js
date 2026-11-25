@@ -16,10 +16,10 @@ export const COVER = {
   gold: '#e0ad4a',
 };
 
-const GROUND = 742;
+export const GROUND = 742;
 
 // [x, width, height, kind] — kind: slab | step | point | mast | cross (Place Ville Marie)
-const TOWERS = [
+export const TOWERS = [
   [596, 30, 58, 'slab'],
   [634, 24, 84, 'step'],
   [666, 34, 66, 'slab'],
@@ -44,7 +44,7 @@ const TOWERS = [
 ];
 
 // a second, paler row of towers behind the first
-const BACK = [
+export const BACK = [
   [580, 36, 70],
   [650, 30, 104],
   [730, 34, 130],

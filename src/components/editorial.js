@@ -53,9 +53,9 @@ export const Page = styled.section`
     width: 100vw;
     max-width: none;
     margin: 0 calc(50% - 50vw);
+    z-index: 1;
     padding: clamp(88px, 10vw, 150px) ${MARGIN} 0;
-    background: ${({ tone }) => (tone === 'deep' ? T.paperDeep : 'transparent')};
-    padding-bottom: ${({ tone }) => (tone === 'deep' ? 'clamp(80px, 9vw, 130px)' : '0')};
+    background: transparent;
     color: ${T.text};
   }
 
@@ -102,6 +102,28 @@ const StyledHead = styled.header`
     }
   }
 
+  .kicker {
+    margin: 0;
+    color: ${T.vermilionText};
+    ${cap};
+    span {
+      color: ${T.muted};
+    }
+  }
+  &.head-open .row {
+    display: block;
+    margin-top: 18px;
+    .standfirst {
+      margin-top: 22px;
+    }
+  }
+  &.head-split .row {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    .standfirst {
+      justify-self: end;
+    }
+  }
+
   .row {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
@@ -137,14 +159,21 @@ const StyledHead = styled.header`
   }
 `;
 
-export const SectionHead = ({ label, aside, title, standfirst, as = 'h2' }) => {
+export const SectionHead = ({ label, aside, title, standfirst, as = 'h2', layout = 'bar' }) => {
   const H = as;
   return (
-    <StyledHead>
-      <div className="bar">
-        <span>{label}</span>
-        {aside && <span>{aside}</span>}
-      </div>
+    <StyledHead className={`head-${layout}`}>
+      {layout === 'bar' ? (
+        <div className="bar">
+          <span>{label}</span>
+          {aside && <span>{aside}</span>}
+        </div>
+      ) : (
+        <p className="kicker">
+          {label}
+          {aside && <span> · {aside}</span>}
+        </p>
+      )}
       <div className="row">
         <H>{title}</H>
         {standfirst && <p className="standfirst">{standfirst}</p>}
