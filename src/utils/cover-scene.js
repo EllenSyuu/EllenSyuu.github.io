@@ -59,13 +59,23 @@ const BACK = [
   [1340, 36, 60],
 ];
 
-export const coverScene = () => {
+/*
+ * The cover is drawn as five depth layers — sky, far shore and mountain, the paler back row
+ * of towers, the city, and the river with its bridge — so the transition below the cover can
+ * move them at slightly different speeds. Drawn together, in this order, they are the cover.
+ */
+export const COVER_LAYERS = ['sky', 'far', 'back', 'city', 'water'];
+
+export const coverLayers = () => {
   const C = COVER;
   const K = 1.38; // everything standing on the shore is drawn tall
+  const L = { sky: '', far: '', back: '', city: '', water: '' };
+  const tall = s =>
+    `<g transform="translate(0 ${GROUND}) scale(1 ${K}) translate(0 ${-GROUND})">${s}</g>`;
   let o = '';
 
   // dusk
-  o += `<defs><linearGradient id="cvsky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f3cda6" stop-opacity="0"/><stop offset=".55" stop-color="#f3cda6"/><stop offset="1" stop-color="#eeae8f"/></linearGradient><linearGradient id="cvriver" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${C.river}"/><stop offset=".45" stop-color="${C.river}"/><stop offset="1" stop-color="${C.ink}"/></linearGradient></defs>`;
+  o += `<defs><linearGradient id="cvsky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f3cda6" stop-opacity="0"/><stop offset=".55" stop-color="#f3cda6"/><stop offset="1" stop-color="#eeae8f"/></linearGradient></defs>`;
   o += `<rect x="0" y="300" width="1440" height="${GROUND - 300}" fill="url(#cvsky)"/>`;
   // long clouds, cut flat
   const cloud = (x, y, w, h, c) =>
@@ -92,16 +102,18 @@ export const coverScene = () => {
     gulls += `M${x - r} ${y}q${r / 2} ${-r * 0.7} ${r} 0q${r / 2} ${-r * 0.7} ${r} 0`;
   });
   o += `<path class="cv-gull" d="${gulls}" stroke="${C.ink}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+  L.sky = o;
 
-  o += `<g transform="translate(0 ${GROUND}) scale(1 ${K}) translate(0 ${-GROUND})">`;
   // far shore and the mountain
-  o += `<path d="M0 716 C200 700 380 704 560 690 C720 678 800 640 900 604 C1000 570 1080 548 1160 548 C1260 548 1350 580 1440 596 V${GROUND} H0Z" fill="${C.haze}"/>`;
+  o = `<path d="M0 716 C200 700 380 704 560 690 C720 678 800 640 900 604 C1000 570 1080 548 1160 548 C1260 548 1350 580 1440 596 V${GROUND} H0Z" fill="${C.haze}"/>`;
   o += `<path d="M640 ${GROUND} C740 716 800 668 870 624 C912 598 944 568 990 556 C1030 545 1056 560 1090 540 C1124 520 1150 498 1190 496 C1232 494 1256 520 1290 530 C1330 542 1352 536 1380 556 C1404 573 1424 590 1440 600 V${GROUND}Z" fill="${C.hill}"/>`;
+  L.far = o;
   let back = '';
   BACK.forEach(([x, w, h]) => {
     back += `M${x} ${GROUND}V${GROUND - h}h${w}V${GROUND}Z`;
   });
-  o += `<path d="${back}" fill="${C.back}"/>`;
+  L.back = tall(`<path d="${back}" fill="${C.back}"/>`);
+  o = '';
 
   // Old Port: grain silos, sheds and the clock tower
   let port = '';
@@ -152,13 +164,14 @@ export const coverScene = () => {
   o += `<path d="${body}" fill="${C.ink}"/>`;
   o += `<path d="${lit}" stroke="${C.gold}" stroke-width="1.6" fill="none"/>`;
   o += `<path class="cv-tw" d="${litB}" stroke="${C.gold}" stroke-width="1.6" fill="none"/>`;
-  o += `</g>`;
+  L.city = tall(o);
   const summit = GROUND - (GROUND - 496) * K;
-  o += `<path d="M1190 ${summit}v-38M1179 ${summit - 26}h22" stroke="${
+  L.far = `${tall(L.far)}<path d="M1190 ${summit}v-38M1179 ${summit - 26}h22" stroke="${
     C.gold
   }" stroke-width="2.6"/>`;
 
   // the river
+  o = `<defs><linearGradient id="cvriver" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${C.river}"/><stop offset=".45" stop-color="${C.river}"/><stop offset="1" stop-color="${C.ink}"/></linearGradient></defs>`;
   o += `<rect x="0" y="${GROUND - 1}" width="1440" height="160" fill="url(#cvriver)"/>`;
   let water = '';
   [
@@ -206,5 +219,11 @@ export const coverScene = () => {
   [780, 900, 1140, 1300].forEach(px => {
     o += `<path d="M${px} 752V806" stroke="${C.gold}" stroke-width="2.4"/>`;
   });
-  return o;
+  L.water = o;
+  return L;
+};
+
+export const coverScene = () => {
+  const L = coverLayers();
+  return COVER_LAYERS.map(k => L[k]).join('');
 };

@@ -3,7 +3,7 @@ import { Link, withPrefix } from 'gatsby';
 import styled, { keyframes } from 'styled-components';
 import { showResume, socialMedia } from '@config';
 import { Icon } from '@components/icons';
-import { COVER, coverScene } from '@utils/cover-scene';
+import { COVER, COVER_LAYERS, coverLayers } from '@utils/cover-scene';
 
 /*
  * The cover, set like a magazine: an issue bar, the name as a masthead across the page, and one
@@ -55,12 +55,56 @@ const StyledHero = styled.section`
     bottom: 0;
     z-index: -1;
     height: max(43.06vw, 300px);
-    animation: ${rise} 1.4s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: ${rise} 1.4s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
 
     svg {
       display: block;
       width: 100%;
       height: 100%;
+    }
+    /* depth layers: still on the cover; the page transition (index.js) sets --cam and --p */
+    .layer {
+      position: absolute;
+      inset: 0;
+      transform: translate3d(0, calc(var(--cam, 0px) * var(--d) * -1), 0);
+      will-change: transform;
+    }
+    .layer-sky {
+      --d: 0.32;
+      opacity: var(--fade-far, 1);
+    }
+    .layer-far {
+      --d: 0.48;
+      opacity: var(--fade-far, 1);
+    }
+    .layer-back {
+      --d: 0.62;
+      opacity: var(--fade-mid, 1);
+    }
+    .layer-city {
+      --d: 0.72;
+      opacity: var(--fade-mid, 1);
+    }
+    .layer-water {
+      --d: 0.76;
+      opacity: var(--fade-water, 1);
+    }
+    /* the river continues below the drawing, lightening into the paper of the next page */
+    .deep {
+      position: absolute;
+      top: calc(100% - 1px);
+      left: 0;
+      right: 0;
+      height: 110svh;
+      background: linear-gradient(
+        180deg,
+        ${COVER.ink} 0%,
+        ${COVER.river} 12%,
+        #7d9cb4 34%,
+        #bccbd5 54%,
+        #e4e2da 74%,
+        ${COVER.cream} 90%
+      );
     }
     .cv-cloud {
       animation: ${drift} 16s ease-in-out infinite alternate;
@@ -125,13 +169,13 @@ const StyledHero = styled.section`
     text-transform: uppercase;
     white-space: nowrap;
     color: ${COVER.navy};
-    animation: ${rise} 1s 0.05s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: ${rise} 1s 0.05s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
 
   .copy {
     max-width: 520px;
     margin-top: clamp(20px, 2vw, 28px);
-    animation: ${rise} 1s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: ${rise} 1s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
 
   .tagline {
@@ -228,6 +272,14 @@ const StyledHero = styled.section`
     }
   }
 
+  .issue,
+  h1,
+  .copy,
+  .creds {
+    opacity: var(--text-o, 1);
+    translate: 0 var(--text-y, 0px);
+  }
+
   .creds {
     position: absolute;
     left: clamp(22px, 5.5vw, 80px);
@@ -269,16 +321,21 @@ const StyledHero = styled.section`
 `;
 
 const Hero = () => {
-  const scene = useMemo(() => coverScene(), []);
+  const layers = useMemo(() => coverLayers(), []);
 
   return (
     <StyledHero id="top">
       <div className="scene" aria-hidden="true">
-        <svg
-          viewBox="0 280 1440 620"
-          preserveAspectRatio="xMaxYMax slice"
-          dangerouslySetInnerHTML={{ __html: scene }}
-        />
+        {COVER_LAYERS.map(k => (
+          <div key={k} className={`layer layer-${k}`}>
+            <svg
+              viewBox="0 280 1440 620"
+              preserveAspectRatio="xMaxYMax slice"
+              dangerouslySetInnerHTML={{ __html: layers[k] }}
+            />
+            {k === 'water' && <div className="deep" />}
+          </div>
+        ))}
       </div>
 
       <ul className="issue" aria-label="Role and city">
