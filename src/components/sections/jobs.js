@@ -9,7 +9,7 @@ import sr from '@utils/sr';
 import { usePrefersReducedMotion } from '@hooks';
 
 const StyledJobsSection = styled.section`
-  max-width: 1000px;
+  max-width: 1080px;
 
   .inner {
     display: flex;

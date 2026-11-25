@@ -11,9 +11,12 @@ import { usePrefersReducedMotion } from '@hooks';
  */
 
 const StyledContactSection = styled.section`
-  max-width: 600px;
+  max-width: 1080px;
   margin: 0 auto 100px;
-  text-align: center;
+
+  > * {
+    max-width: 600px;
+  }
 
   @media (max-width: 768px) {
     margin: 0 auto 50px;
@@ -35,7 +38,7 @@ const StyledContactSection = styled.section`
   }
 
   .note {
-    margin: 0 auto 30px;
+    margin: 0 0 30px;
     max-width: 440px;
     color: var(--slate);
     font-family: var(--font-serif);
@@ -197,11 +200,31 @@ const Stamp = () => (
         ))}
       </mask>
     </defs>
-    <rect width="64" height="76" fill="#fafaf6" mask="url(#perf)" style={{ filter: 'drop-shadow(0 2px 3px rgba(34,49,74,.18))' }} />
+    <rect
+      width="64"
+      height="76"
+      fill="#fafaf6"
+      mask="url(#perf)"
+      style={{ filter: 'drop-shadow(0 2px 3px rgba(34,49,74,.18))' }}
+    />
     <rect x="7" y="7" width="50" height="62" fill="none" stroke="#14213a" strokeWidth="0.6" />
     <path d={MAPLE} transform="translate(32 34) scale(15)" fill="#c8431f" opacity="0.7" />
-    <path d={MAPLE} transform="translate(32 34) scale(15)" fill="none" stroke="#14213a" strokeWidth="0.05" />
-    <text x="32" y="63" textAnchor="middle" fontFamily="Bodoni Moda Variable, Cormorant Garamond, serif" fontSize="7" fontWeight="600" letterSpacing="1.2" fill="#14213a">
+    <path
+      d={MAPLE}
+      transform="translate(32 34) scale(15)"
+      fill="none"
+      stroke="#14213a"
+      strokeWidth="0.05"
+    />
+    <text
+      x="32"
+      y="63"
+      textAnchor="middle"
+      fontFamily="Bodoni Moda Variable, Cormorant Garamond, serif"
+      fontSize="7"
+      fontWeight="600"
+      letterSpacing="1.2"
+      fill="#14213a">
       MONTRÉAL
     </text>
   </svg>
@@ -270,7 +293,6 @@ const Contact = () => {
         </StyledThanks>
       ) : (
         <StyledForm onSubmit={onSubmit}>
-
           <label>
             Name
             <input name="name" type="text" autoComplete="name" required placeholder="Your name" />
