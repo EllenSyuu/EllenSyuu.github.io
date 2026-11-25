@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import {
   Layout,
   Hero,
@@ -13,6 +13,34 @@ import {
   Impact,
   Contact,
 } from '@components';
+
+/* The leaves and the passing birds belong to the cover; below it they fade out, so nothing
+   moves across the reading pages. */
+const CoverOnly = createGlobalStyle`
+  [data-cover-fx] {
+    transition: opacity 0.6s ease;
+  }
+  body.past-cover [data-cover-fx] {
+    opacity: 0 !important;
+    visibility: hidden;
+  }
+`;
+
+const usePastCover = () => {
+  useEffect(() => {
+    const hero = document.getElementById('top');
+    const set = () => {
+      const h = hero ? hero.offsetHeight : window.innerHeight;
+      document.body.classList.toggle('past-cover', window.scrollY > h * 0.6);
+    };
+    set();
+    window.addEventListener('scroll', set, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', set);
+      document.body.classList.remove('past-cover');
+    };
+  }, []);
+};
 
 const StyledMainContainer = styled.main`
   counter-reset: section;
@@ -85,23 +113,27 @@ const Thread = styled.div`
   }
 `;
 
-const IndexPage = ({ location }) => (
-  <Layout location={location}>
-    <StyledMainContainer className="fillHeight">
-      <Hero />
-      <Thread>
-        <Stats />
-        <About />
-        <Jobs />
-        <Focus />
-        <Featured />
-        <Projects />
-        <Impact />
-        <Contact />
-      </Thread>
-    </StyledMainContainer>
-  </Layout>
-);
+const IndexPage = ({ location }) => {
+  usePastCover();
+  return (
+    <Layout location={location}>
+      <CoverOnly />
+      <StyledMainContainer className="fillHeight">
+        <Hero />
+        <Thread>
+          <Stats />
+          <About />
+          <Jobs />
+          <Focus />
+          <Featured />
+          <Projects />
+          <Impact />
+          <Contact />
+        </Thread>
+      </StyledMainContainer>
+    </Layout>
+  );
+};
 
 IndexPage.propTypes = {
   location: PropTypes.object.isRequired,

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withPrefix } from 'gatsby';
 import styled, { ThemeProvider } from 'styled-components';
-import { Head, Nav, Social, Email, Footer, Ambient, ChapterMap } from '@components';
+import { Head, Nav, Social, Email, Footer, Ambient } from '@components';
 import FallingLeaves from '@components/falling-leaves';
 import CursorTrail from '@components/cursor-trail';
 import { isFrost } from '@utils/season';
@@ -73,7 +73,7 @@ const Layout = ({ children, location }) => {
                 Skip to Content
               </a>
               <Nav isHome={isHome} />
-              {isHome ? <ChapterMap /> : <Social isHome={isHome} />}
+              {!isHome && <Social isHome={isHome} />}
               <Email isHome={isHome} />
 
               <div id="content">
