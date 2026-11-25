@@ -142,9 +142,14 @@ export const StyledScene = styled.div`
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 2px;
-    background: ${PAPER};
-    box-shadow: 0 0 0 0.75px rgba(20, 33, 58, 0.28), 0 30px 60px -44px rgba(20, 33, 58, 0.45);
     isolation: isolate;
+    /* no frame: the drawing fades into the page on every side */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+      linear-gradient(to bottom, transparent 0, #000 10%, #000 88%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+      linear-gradient(to bottom, transparent 0, #000 10%, #000 88%, transparent 100%);
+    mask-composite: intersect;
 
     > svg {
       position: absolute;
@@ -165,12 +170,9 @@ export const StyledScene = styled.div`
     width: min(320px, 37%);
     padding: 16px 20px 14px;
     border-radius: 0;
-    background: rgba(250, 247, 240, 0.94);
-    box-shadow: 0 0 0 0.75px ${INK}, 0 22px 40px -30px rgba(20, 33, 58, 0.55);
-    outline: 0.75px solid rgba(20, 33, 58, 0.35);
-    outline-offset: -6px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    /* a soft patch of paper behind the notes, with no edge */
+    background: rgba(246, 240, 228, 0.9);
+    box-shadow: 0 0 26px 20px rgba(246, 240, 228, 0.9);
     color: ${INK};
     font-size: var(--fz-sm);
 

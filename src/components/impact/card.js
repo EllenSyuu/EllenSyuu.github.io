@@ -42,12 +42,11 @@ const StyledCard = styled.li`
   }
 
   .card__inner {
-    ${({ theme }) => theme.mixins.boxShadow};
     display: flex;
     flex-direction: column;
     height: 100%;
     border-radius: 0;
-    background-color: var(--light-navy);
+    background: none;
     overflow: hidden;
     transition: var(--transition);
   }
@@ -55,8 +54,7 @@ const StyledCard = styled.li`
   .card__media {
     position: relative;
     aspect-ratio: 16 / 10;
-    background-color: var(--photo-tint);
-    border-bottom: 0.75px solid var(--hairline);
+    background: none;
     overflow: hidden;
 
     &:before {

@@ -49,11 +49,7 @@ const StyledForm = styled.form`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px 28px;
-  padding: 40px 38px 30px;
-  background: var(--light-navy);
-  box-shadow: 0 0 0 0.75px var(--ink), 0 24px 44px -34px var(--navy-shadow);
-  outline: 0.75px solid var(--hairline);
-  outline-offset: -8px;
+  padding: 10px 0 0;
   text-align: left;
 
   .stamp {
@@ -159,11 +155,7 @@ const StyledForm = styled.form`
 `;
 
 const StyledThanks = styled.div`
-  padding: 38px 30px;
-  background: var(--light-navy);
-  box-shadow: 0 0 0 0.75px var(--ink);
-  outline: 0.75px solid var(--hairline);
-  outline-offset: -8px;
+  padding: 20px 0;
 
   .sig {
     margin-top: 10px;

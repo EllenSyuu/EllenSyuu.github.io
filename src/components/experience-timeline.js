@@ -55,11 +55,7 @@ const pct = v => `${(((Math.min(v, END) - START) / (END - START)) * 100).toFixed
 
 const StyledTimeline = styled.figure`
   margin: 0 0 64px;
-  padding: 28px 30px 22px;
-  background: var(--light-navy);
-  box-shadow: 0 0 0 0.75px var(--ink);
-  outline: 0.75px solid var(--hairline);
-  outline-offset: -7px;
+  padding: 0;
 
   @media (max-width: 600px) {
     padding: 22px 16px 18px;

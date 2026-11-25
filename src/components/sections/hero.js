@@ -17,6 +17,24 @@ const rise = keyframes`
   to   { opacity: 1; transform: none; }
 `;
 
+const drift = keyframes`
+  from { transform: translateX(-26px); }
+  to   { transform: translateX(26px); }
+`;
+const glide = keyframes`
+  0%   { transform: translate(-30px, 8px); }
+  50%  { transform: translate(40px, -10px); }
+  100% { transform: translate(110px, 4px); }
+`;
+const twinkle = keyframes`
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+`;
+const sail = keyframes`
+  from { transform: translateX(-140px); }
+  to   { transform: translateX(300px); }
+`;
+
 const StyledHero = styled.section`
   position: relative;
   width: 100vw;
@@ -44,8 +62,30 @@ const StyledHero = styled.section`
       width: 100%;
       height: 100%;
     }
+    .cv-cloud {
+      animation: ${drift} 16s ease-in-out infinite alternate;
+    }
+    .cv-gull {
+      animation: ${glide} 22s ease-in-out infinite alternate;
+    }
+    .cv-tw {
+      animation: ${twinkle} 6s ease-in-out infinite;
+    }
+    .cv-water {
+      animation: ${drift} 9s ease-in-out infinite alternate;
+    }
+    .cv-ferry {
+      animation: ${sail} 70s linear infinite alternate;
+    }
     @media (prefers-reduced-motion: reduce) {
       animation: none;
+      .cv-cloud,
+      .cv-gull,
+      .cv-tw,
+      .cv-water,
+      .cv-ferry {
+        animation: none;
+      }
     }
   }
 
@@ -257,7 +297,11 @@ const Hero = () => {
             See selected work <span className="arrow">→</span>
           </Link>
           {showResume ? (
-            <a className="secondary" href={withPrefix('/resume.pdf')} target="_blank" rel="noreferrer">
+            <a
+              className="secondary"
+              href={withPrefix('/resume.pdf')}
+              target="_blank"
+              rel="noreferrer">
               Résumé ↗
             </a>
           ) : (

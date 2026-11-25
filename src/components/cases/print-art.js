@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { COVER } from '@utils/cover-scene';
 
 /*
@@ -11,7 +11,73 @@ const C = { ...COVER, sheet: '#fffaf0' };
 const SANS = 'Inter, system-ui, sans-serif';
 const DISPLAY = '"Bodoni Moda Variable", Didot, serif';
 
+const fall = keyframes`
+  0%   { transform: translateY(-8px); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: translateY(16px); opacity: 0; }
+`;
+const drift = keyframes`
+  from { transform: translateX(-12px); }
+  to   { transform: translateX(12px); }
+`;
+const twinkle = keyframes`
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+`;
+const flow = keyframes`
+  to { stroke-dashoffset: -1; }
+`;
+const pulse = keyframes`
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+`;
+
 const Svg = styled.svg`
+  .rain path {
+    animation: ${fall} 1.1s linear infinite;
+  }
+  .cloud {
+    animation: ${drift} 9s ease-in-out infinite alternate;
+  }
+  .tw {
+    animation: ${twinkle} 5s ease-in-out infinite;
+  }
+  .flow {
+    stroke-dasharray: 0.09 0.91;
+    animation: ${flow} 3.2s linear infinite;
+  }
+  .pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ${pulse} 2.2s ease-out infinite;
+  }
+  .ripple {
+    animation: ${drift} 6s ease-in-out infinite alternate;
+  }
+  .grow {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scaleY(0);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.2, 0.9, 0.2, 1), opacity 0.4s ease;
+  }
+  &.on .grow {
+    transform: none;
+    opacity: 1;
+  }
+  &.still .grow {
+    transition: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rain path,
+    .cloud,
+    .tw,
+    .flow,
+    .pulse,
+    .ripple {
+      animation: none;
+    }
+  }
   .pa {
     opacity: 0;
     transform: translateY(10px);
@@ -98,31 +164,30 @@ export const PrintTail = ({ cls, ks, union, first, inter }) => {
       {ks.map((k, i) => (
         <g key={k}>
           <rect
-            className="pa"
-            x={cx(i) - 20}
+            className="grow"
+            x={cx(i) - 17}
             y={y(union[i][2])}
-            width="40"
+            width="34"
             height={y(union[i][0]) - y(union[i][2])}
+            rx="17"
             fill={C.gold}
-            style={t(0.15 * i)}
+            style={t(0.14 * i)}
           />
-          <rect
+          <circle
             className="pa"
-            x={cx(i) - 20}
-            y={y(union[i][1]) - 1.5}
-            width="40"
-            height="3"
+            cx={cx(i)}
+            cy={y(union[i][1])}
+            r="5"
             fill={C.ink}
-            style={t(0.15 * i + 0.2)}
+            style={t(0.14 * i + 0.5)}
           />
-          <rect
-            className="pa"
-            x={cx(i) + 28}
-            y={y(first[i][2])}
-            width="12"
-            height={y(first[i][0]) - y(first[i][2])}
-            fill={C.ink}
-            style={t(0.15 * i + 0.3)}
+          <path
+            className="grow"
+            d={`M${cx(i) + 32} ${y(first[i][2])}V${y(first[i][0])}`}
+            stroke={C.ink}
+            strokeWidth="5"
+            strokeLinecap="round"
+            style={t(0.14 * i + 0.3)}
           />
           <text className="lab" x={cx(i) + 4} y="468" textAnchor="middle">
             K = {k}
@@ -134,11 +199,11 @@ export const PrintTail = ({ cls, ks, union, first, inter }) => {
           ξ ∈ [{inter[0].toFixed(2)}, {inter[1].toFixed(2)}]
         </text>
       </g>
-      <rect x="60" y="494" width="14" height="14" fill={C.gold} />
+      <rect x="60" y="494" width="14" height="14" rx="7" fill={C.gold} />
       <text className="lab" x="82" y="505">
         UNION BAND
       </text>
-      <rect x="196" y="494" width="6" height="14" fill={C.ink} />
+      <rect x="197" y="494" width="5" height="14" rx="2.5" fill={C.ink} />
       <text className="lab" x="210" y="505">
         FIRST-ORDER BAND
       </text>
@@ -250,6 +315,7 @@ export const PrintVintage = ({ cls, releases, at2021, sel }) => {
           style={t(1.2 + 0.1 * n)}
         />
       ))}
+      <circle className="pulse" cx={px(13)} cy={py(at2021[sel])} r="7" fill={C.gold} />
       <text className="num pa" x={px(13) + 16} y={py(at2021[sel]) + 8} fontSize="30" style={t(1.5)}>
         {at2021[sel]}
       </text>
@@ -322,6 +388,20 @@ export const PrintQuebec = ({ cls, stations, pairs, river, heavy = 0.5 }) => {
             />
           ) : null,
         )}
+        {pairs
+          .filter(([, , l]) => l > 0.28)
+          .map(([i, j]) => (
+            <path
+              key={`f-${i}-${j}`}
+              className="flow"
+              pathLength="1"
+              d={arc(stations[i], stations[j])}
+              fill="none"
+              stroke={C.gold}
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          ))}
         {stations.map((s, i) => (
           <g key={s.name} className="pa" style={t(0.6 + 0.08 * i)}>
             <circle cx={X(s.e)} cy={Y(s.n)} r="8" fill={C.ink} />
@@ -337,20 +417,23 @@ export const PrintQuebec = ({ cls, stations, pairs, river, heavy = 0.5 }) => {
         ))}
         {/* cloud and rain: heavier in the heavier season */}
         <g transform="translate(186 62)">
-          <g className="pa" style={t(0.9)}>
+          <g className="pa cloud" style={t(0.9)}>
             <path
               d="M352 196h96a13 13 0 0 0 0-26h-10a22 22 0 0 0-42-8a17 17 0 0 0-30 8h-14a13 13 0 0 0 0 26Z"
               fill={C.sheet}
             />
-            {Array.from({ length: drops }, (_, k) => (
-              <path
-                key={k}
-                d={`M${358 + (k % 8) * 12} ${206 + Math.floor(k / 8) * 16}l-4 10`}
-                stroke={C.river}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            ))}
+            <g className="rain">
+              {Array.from({ length: drops }, (_, k) => (
+                <path
+                  key={k}
+                  d={`M${358 + (k % 8) * 12} ${206 + Math.floor(k / 8) * 16}l-4 10`}
+                  stroke={C.river}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  style={{ animationDelay: `${-((k * 0.37) % 1.1)}s` }}
+                />
+              ))}
+            </g>
           </g>
         </g>
         <text className="lab" x="330" y="40" style={{ fill: C.cream }}>
@@ -395,15 +478,19 @@ export const PrintImmunity = ({ cls, waveY }) => {
   ridge += `L590 ${WATER}Z`;
   let body = '';
   let lit = '';
+  let litB = '';
   TOWERS.forEach(([x, w, h], n) => {
     body += `M${x} ${WATER}V${WATER - h}h${w}V${WATER}Z`;
     if (n % 3 === 1) body += `M${x + w / 2 - 1} ${WATER - h}v-20h2v20Z`;
     const rows = Math.floor((h - 18) / 8);
     for (let r = 0; r < rows; r++) {
-      if ((n * 7 + r * 3) % 11 < 4)
-        lit += `M${x + 4 + ((n * 5 + r * 2) % Math.max(1, w - 14))} ${WATER - h + 14 + r * 8}h${
-          5 + ((n + r) % 2) * 4
-        }`;
+      if ((n * 7 + r * 3) % 11 < 4) {
+        const bar = `M${x + 4 + ((n * 5 + r * 2) % Math.max(1, w - 14))} ${
+          WATER - h + 14 + r * 8
+        }h${5 + ((n + r) % 2) * 4}`;
+        if ((n + r) % 3 === 0) litB += bar;
+        else lit += bar;
+      }
     }
   });
   const cells = [];
@@ -425,8 +512,10 @@ export const PrintImmunity = ({ cls, waveY }) => {
       </text>
       <path className="pa" d={body} fill={C.ink} style={t(0.3)} />
       <path className="pa" d={lit} stroke={C.gold} strokeWidth="2" fill="none" style={t(0.7)} />
+      <path className="tw" d={litB} stroke={C.gold} strokeWidth="2" fill="none" />
       <rect x="0" y={WATER} width="960" height={540 - WATER} fill={C.river} />
       <path
+        className="ripple"
         d="M40 398h150M260 400h90M30 418h80M150 420h170M60 440h120M40 470h90M70 500h160"
         stroke={C.cream}
         strokeWidth="1"
@@ -451,19 +540,22 @@ export const PrintImmunity = ({ cls, waveY }) => {
         [282, 226],
         [346, 262],
         [412, 280],
-      ].map(([x, y0], k) => (
-        <g key={k} className="pa" style={t(1.1 + 0.12 * k)}>
-          {[0, 1, 2, 3].map(q => (
-            <circle
-              key={q}
-              cx={x + ((400 + k * 30 - x) * (q + 1)) / 5}
-              cy={y0 + ((412 - y0) * (q + 1)) / 5}
-              r={3.2 - q * 0.4}
-              fill={C.gold}
+        [250, 300],
+        [380, 240],
+      ].map(([x, y0], k) =>
+        [0, 1, 2].map(q => (
+          <circle key={`${k}-${q}`} r={3.4 - q * 0.6} fill={C.gold}>
+            <animateMotion
+              dur={`${3.4 + (k % 3) * 0.5}s`}
+              begin={`${-(q * 0.9 + k * 0.45)}s`}
+              repeatCount="indefinite"
+              path={`M${x} ${y0}Q${x + 30} ${y0 + 60} ${352 + ((k * 3 + q * 2) % 9) * 26} ${
+                430 + ((k + q) % 4) * 21
+              }`}
             />
-          ))}
-        </g>
-      ))}
+          </circle>
+        )),
+      )}
       <text className="lab" x="40" y="524" style={{ fill: C.cream }}>
         PERSON-DAYS, SUMMED INTO CELLS
       </text>

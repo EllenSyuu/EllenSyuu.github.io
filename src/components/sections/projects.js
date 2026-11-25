@@ -63,15 +63,15 @@ const StyledProject = styled.li`
   }
 
   .project-inner {
-    ${({ theme }) => theme.mixins.boxShadow};
     ${({ theme }) => theme.mixins.flexBetween};
     flex-direction: column;
     align-items: flex-start;
     position: relative;
     height: 100%;
-    padding: 2rem 1.75rem 1.75rem;
+    padding: 1.4rem 1.25rem 1.5rem 0;
+    border-top: 1px solid var(--hairline);
     border-radius: 0;
-    background-color: var(--light-navy);
+    background: none;
     transition: var(--transition);
     overflow: auto;
   }

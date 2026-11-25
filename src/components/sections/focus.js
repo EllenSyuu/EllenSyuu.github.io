@@ -65,19 +65,11 @@ const StyledFocus = styled.section`
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 34px 30px 26px;
-    border: 0.75px solid var(--hairline);
+    padding: 22px 26px 20px 0;
+    border: 0;
+    border-top: 1px solid var(--ink);
     border-radius: 0;
-    background: var(--light-navy);
-    outline: 0.75px solid transparent;
-    outline-offset: -7px;
-    transition: border-color 0.4s ease, outline-color 0.4s ease, box-shadow 0.4s ease;
-
-    &:hover {
-      border-color: var(--ink);
-      outline-color: var(--hairline);
-      box-shadow: 0 26px 44px -34px var(--navy-shadow);
-    }
+    background: none;
   }
 
   .key {
