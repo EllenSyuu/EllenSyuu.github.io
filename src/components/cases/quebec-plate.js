@@ -283,7 +283,7 @@ const Ring = ({ A, w }) => {
 
 const Eta = ({ idx, w }) => {
   const row = 22;
-  const H = SEASONS.length * row + 34;
+  const H = SEASONS.length * row + 50;
   const m = { l: 74, r: 14 };
   const x = v => m.l + ((v - 1) / 5) * (w - m.l - m.r);
   const base = SEASONS.length * row + 6;
@@ -320,15 +320,17 @@ const Eta = ({ idx, w }) => {
       {[1, 2, 3, 4, 5, 6].map(v => (
         <g key={v}>
           <line x1={x(v)} x2={x(v)} y1={base} y2={base + 4} stroke={INK} strokeWidth="1" />
-          <text
-            x={x(v)}
-            y={base + 18}
-            textAnchor={v === 1 ? 'start' : v === 6 ? 'end' : 'middle'}
-            className="tick">
-            {v === 1 ? '1 · all together' : v === 6 ? '6 · independent' : v}
+          <text x={x(v)} y={base + 18} textAnchor="middle" className="tick">
+            {v}
           </text>
         </g>
       ))}
+      <text x={x(1)} y={base + 34} className="note">
+        all together
+      </text>
+      <text x={x(6)} y={base + 34} textAnchor="end" className="note">
+        independent
+      </text>
     </svg>
   );
 };
@@ -518,8 +520,8 @@ const QuebecPlate = () => {
         <div className="panel" ref={rightRef}>
           <h5>Which pairs share their extremes</h5>
           <p>
-            The six stations from west to east; the thicker the curve, the more often two stations
-            see their extremes in the same month.
+            The six stations, west to east; the thicker the curve, the more often two stations’
+            monthly extremes arrive together.
           </p>
           <Ring A={A} w={Math.max(260, rw)} />
         </div>
