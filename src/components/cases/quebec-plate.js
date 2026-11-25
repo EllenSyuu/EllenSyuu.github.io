@@ -8,8 +8,8 @@ import DATA from './pickands-seasons.json';
  * Left: the estimated Pickands dependence function A(ω) for all 15 station pairs, inside the
  * triangle every Pickands function must stay in — A = 1 is independence, max(ω, 1 − ω) is
  * complete dependence. Choosing a season morphs the 15 curves to that season's estimates.
- * Right: the six stations at their true longitude and latitude; each link is as heavy as the
- * pair's upper-tail dependence 2(1 − A(½)) read from the same curves.
+ * Right: the six stations on a ring, west to east; each curve is as heavy as the pair's
+ * upper-tail dependence 2(1 − A(½)) read from the same curves.
  * Below: the six-station extremal coefficient η for the four seasons, with 90% intervals.
  *
  * Sources: SAC-thesis-2026 — results/tables/tab_15_season_pickands_curves.csv (curves),
@@ -214,21 +214,19 @@ const Curves = ({ A, w, seen }) => {
   );
 };
 
-const Network = ({ A, w }) => {
-  const lons = STATIONS.map(s => s.lon);
-  const lats = STATIONS.map(s => s.lat);
-  const k = Math.cos((46 * Math.PI) / 180);
-  const spanX = (Math.max(...lons) - Math.min(...lons)) * k;
-  const spanY = Math.max(...lats) - Math.min(...lats);
-  const pad = { l: 72, r: 78, t: 30, b: 46 };
-  const s = (w - pad.l - pad.r) / spanX;
-  const H = Math.round(pad.t + spanY * s + pad.b);
-  const ox = pad.l;
-  const P = st => [
-    ox + (st.lon - Math.min(...lons)) * k * s,
-    pad.t + (Math.max(...lats) - st.lat) * s,
-  ];
-  const km50 = (50 / 111) * s; // 50 km at this latitude, in px (1° lat ≈ 111 km)
+/* the six stations on a ring, west to east clockwise from the left; each pair is joined by a
+   curve through the middle, as thick as the pair's upper-tail dependence 2(1 − A(½)) */
+const RING = [...STATIONS.keys()].sort((a, b) => STATIONS[a].lon - STATIONS[b].lon);
+const Ring = ({ A, w }) => {
+  const H = Math.round(Math.min(380, Math.max(260, w * 0.86)));
+  const cx = w / 2;
+  const cy = H / 2;
+  const R = Math.min(w / 2 - 70, H / 2 - 30);
+  const pos = {};
+  RING.forEach((st, i) => {
+    const a = Math.PI + (i / RING.length) * 2 * Math.PI + Math.PI / RING.length;
+    pos[st] = { a, x: cx + R * Math.cos(a), y: cy + R * Math.sin(a) };
+  });
   const lam = A.map(row => Math.max(0, 2 * (1 - row[W_HALF])));
   return (
     <svg
@@ -236,46 +234,49 @@ const Network = ({ A, w }) => {
       width={w}
       height={H}
       role="img"
-      aria-label="The six stations, linked by the strength of shared extremes">
+      aria-label="Upper-tail dependence between each pair of the six stations">
+      <circle cx={cx} cy={cy} r={R} fill="none" stroke={INK} strokeOpacity="0.14" />
       {PAIRS.map(([a, b], i) => {
-        const [x1, y1] = P(STATIONS[a]);
-        const [x2, y2] = P(STATIONS[b]);
+        const p1 = pos[a];
+        const p2 = pos[b];
+        const k = 0.18;
+        const qx = cx + ((p1.x + p2.x) / 2 - cx) * k;
+        const qy = cy + ((p1.y + p2.y) / 2 - cy) * k;
         return (
-          <line
+          <path
             key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
+            d={`M${p1.x},${p1.y} Q${qx},${qy} ${p2.x},${p2.y}`}
+            fill="none"
             stroke={RED}
             strokeLinecap="round"
-            style={{
-              strokeWidth: 0.6 + lam[i] * 14,
-              opacity: lam[i] < 0.02 ? 0.18 : 0.35 + lam[i],
-            }}
             className="link"
-          />
+            style={{
+              strokeWidth: 0.8 + lam[i] * 16,
+              opacity: lam[i] < 0.02 ? 0.12 : 0.22 + lam[i] * 1.3,
+            }}>
+            <title>{`${DATA.pairs[i]}: ${lam[i].toFixed(2)}`}</title>
+          </path>
         );
       })}
-      {STATIONS.map(st => {
-        const [cx, cy] = P(st);
+      {RING.map(st => {
+        const p = pos[st];
+        const lx = cx + (R + 14) * Math.cos(p.a);
+        const ly = cy + (R + 14) * Math.sin(p.a);
+        const anchor =
+          Math.abs(Math.cos(p.a)) < 0.3 ? 'middle' : Math.cos(p.a) > 0 ? 'start' : 'end';
         return (
-          <g key={st.short}>
-            <circle cx={cx} cy={cy} r="4.5" fill="#f6f0e4" stroke={INK} strokeWidth="1.6" />
-            <text x={cx + st.dx} y={cy + st.dy} textAnchor={st.ax} className="stn">
-              {st.name}
+          <g key={st}>
+            <circle cx={p.x} cy={p.y} r="5" fill="#f6f0e4" stroke={INK} strokeWidth="1.6" />
+            <text
+              x={lx}
+              y={ly + 4 + (Math.sin(p.a) > 0.8 ? 8 : Math.sin(p.a) < -0.8 ? -6 : 0)}
+              textAnchor={anchor}
+              className="stn">
+              {STATIONS[st].name}
             </text>
           </g>
         );
       })}
-      <g transform={`translate(${pad.l - 40},${H - 16})`}>
-        <line x1="0" x2={km50} y1="0" y2="0" stroke={INK} strokeWidth="1" />
-        <line x1="0" x2="0" y1="-4" y2="0" stroke={INK} strokeWidth="1" />
-        <line x1={km50} x2={km50} y1="-4" y2="0" stroke={INK} strokeWidth="1" />
-        <text x={km50 + 8} y="4" className="tick">
-          50 km
-        </text>
-      </g>
     </svg>
   );
 };
@@ -515,9 +516,12 @@ const QuebecPlate = () => {
           <Curves A={A} w={Math.max(280, lw)} seen={seen || reduce} />
         </div>
         <div className="panel" ref={rightRef}>
-          <h5>Where they are</h5>
-          <p>Six stations at true position; a heavier link means extremes shared more often.</p>
-          <Network A={A} w={Math.max(260, rw)} />
+          <h5>Which pairs share their extremes</h5>
+          <p>
+            The six stations from west to east; the thicker the curve, the more often two stations
+            see their extremes in the same month.
+          </p>
+          <Ring A={A} w={Math.max(260, rw)} />
         </div>
       </div>
 
@@ -540,8 +544,8 @@ const QuebecPlate = () => {
       </div>
       <p className="src">
         From the M.Sc. thesis repository: season-wise pointwise estimates of A(ω)
-        (results/tables/tab_15); station coordinates (data/processed/stations.csv); η, its intervals
-        and the monthly-maxima tests from the README.
+        (results/tables/tab_15); station order by longitude (data/processed/stations.csv); η, its
+        intervals and the monthly-maxima tests from the README.
       </p>
     </Wrap>
   );

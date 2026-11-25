@@ -13,6 +13,7 @@ import {
   Impact,
   Contact,
 } from '@components';
+import Flood from '@components/flood';
 
 /* The leaves and the passing birds belong to the cover; below it they fade out, so nothing
    moves across the reading pages. */
@@ -46,9 +47,9 @@ const StyledMainContainer = styled.main`
   counter-reset: section;
 `;
 
-/* The cover stays put while the page slides up over it like a sheet of paper laid on a print:
-   the cover sinks back a little and dims as the sheet covers it. One continuous movement
-   instead of a cut between two slides. */
+/* The cover stays put while the page rises over it like flood water: the cover sinks back a
+   little and dims as the water covers it, and the blue runs down into the paper below. One
+   continuous movement instead of a cut between two slides. */
 const Stage = styled.div`
   position: sticky;
   top: var(--cover-top, 0px);
@@ -63,8 +64,8 @@ const Stage = styled.div`
     content: '';
     position: absolute;
     inset: 0 calc(50% - 50vw);
-    background: #14213a;
-    opacity: calc(var(--p, 0) * 0.3);
+    background: #3f6f96;
+    opacity: calc(var(--p, 0) * 0.35);
     pointer-events: none;
   }
 `;
@@ -72,7 +73,6 @@ const Stage = styled.div`
 const Sheet = styled.div`
   position: relative;
   z-index: 1;
-  padding-top: 8px;
 
   /* the paper itself, edge to edge, with a soft shadow on its leading edge */
   &:before {
@@ -84,7 +84,6 @@ const Sheet = styled.div`
     right: calc(50% - 50vw);
     z-index: -1;
     background: var(--navy);
-    box-shadow: 0 -22px 60px rgba(20, 33, 58, 0.28);
   }
 
   /* chapter headings without slide numbers or divider rules */
@@ -127,7 +126,7 @@ const useSheet = ref => {
       stage.style.setProperty('--cover-top', `${Math.min(0, window.innerHeight - h)}px`);
       if (!reduce) {
         const p = Math.max(0, Math.min(1, window.scrollY / Math.max(1, h)));
-        stage.style.setProperty('--p', p.toFixed(4));
+        document.documentElement.style.setProperty('--p', p.toFixed(4));
       }
     };
     const onScroll = () => {
@@ -158,6 +157,7 @@ const IndexPage = ({ location }) => {
           <Hero />
         </Stage>
         <Sheet>
+          <Flood />
           <Stats />
           <About />
           <Jobs />
