@@ -103,7 +103,7 @@ const BirdFlyover = () => {
   if (reduced) return null;
 
   return (
-    <StyledSky aria-hidden="true">
+    <StyledSky aria-hidden="true" data-cover-fx="">
       <g ref={gRef} style={{ opacity: 0, transition: 'opacity 0.6s' }}>
         <path ref={wingRef} fill="none" stroke={INK} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
         <path ref={bodyRef} fill="#f6f0e4" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />

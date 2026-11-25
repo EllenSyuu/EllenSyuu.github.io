@@ -216,7 +216,7 @@ const FallingLeaves = () => {
     };
   }, [prefersReducedMotion]);
 
-  return <StyledCanvas ref={ref} aria-hidden="true" />;
+  return <StyledCanvas ref={ref} aria-hidden="true" data-cover-fx="" />;
 };
 
 export default FallingLeaves;
