@@ -22,20 +22,28 @@ const CONTRASTS = [
   ['SSSI vs SSI', 0.905, 0.96, 0.877, 1.052],
 ];
 
+const decode = code => {
+  const n = (code.match(/[BS]/g) || []).length;
+  const inf = code.endsWith('I');
+  return `${n} dose${n > 1 ? 's' : ''}${inf ? ', then infection' : ''}`;
+};
+
 export const VviRecovery = () => {
   const [ref, w] = useWidth(640);
   const narrow = w < 520;
-  const m = { l: narrow ? 92 : 104, r: narrow ? 8 : 132, t: 28, b: 44 };
-  const row = 26;
+  const m = { l: narrow ? 112 : 168, r: narrow ? 10 : 112, t: 20, b: 46 };
+  const row = 28;
   const groups = [
-    { title: 'Hazard ratio vs BB', rows: VS_BB },
-    { title: 'Contrasts', rows: CONTRASTS },
+    { title: 'Comirnaty', color: T.river, rows: VS_BB.slice(0, 3) },
+    { title: 'CoronaVac', color: '#c2902f', rows: VS_BB.slice(3) },
+    { title: 'Contrasts', color: T.ink, rows: CONTRASTS },
   ];
+  const gap = 30;
   const n = VS_BB.length + CONTRASTS.length;
-  const h = m.t + n * row + 30 + m.b;
+  const h = m.t + n * row + gap * groups.length + m.b;
   const x = logScale([0.15, 1.6], [m.l, w - m.r]);
   const ticks = [0.2, 0.3, 0.5, 0.7, 1, 1.5];
-  let yAcc = m.t;
+  let top = m.t;
   return (
     <div ref={ref}>
       <ChartSvg
@@ -46,42 +54,68 @@ export const VviRecovery = () => {
         aria-label="Estimated hazard ratios with 95% confidence intervals for each vaccination–infection history, against the values planted in a synthetic cohort of 600,000 people. Every planted value lies inside its interval.">
         {ticks.map(t => (
           <g key={t}>
-            <line className="grid" x1={x(t)} x2={x(t)} y1={m.t - 8} y2={h - m.b + 4} />
+            <line className="grid" x1={x(t)} x2={x(t)} y1={m.t} y2={h - m.b + 4} />
             <text className="tick" x={x(t)} y={h - m.b + 20} textAnchor="middle">
               {t}
             </text>
           </g>
         ))}
-        <line x1={x(1)} x2={x(1)} y1={m.t - 8} y2={h - m.b + 4} stroke={T.ink} strokeWidth="1" />
         <text className="axis-title" x={(m.l + w - m.r) / 2} y={h - 4} textAnchor="middle">
-          hazard ratio of reinfection (log scale)
+          hazard ratio of reinfection, log scale ← more protection
         </text>
-        {!narrow && (
-          <text className="note" x={w} y={m.t - 12} textAnchor="end">
-            estimate (95% CI)
-          </text>
-        )}
-        {groups.map((g, gi) => {
-          const top = yAcc + (gi ? 22 : 0);
-          yAcc = top + g.rows.length * row + 8;
+        {groups.map(g => {
+          const g0 = top + gap;
+          top = g0 + g.rows.length * row;
           return (
             <g key={g.title}>
-              <text className="note" x="0" y={top - 10}>
-                {g.title.toUpperCase()}
+              <rect x="0" y={g0 - 19} width="10" height="10" fill={g.color} />
+              <text className="label-strong" x="16" y={g0 - 10}>
+                {g.title}
               </text>
+              <line x1="0" x2={w} y1={g0 - 3} y2={g0 - 3} stroke={T.hair} />
               {g.rows.map(([k, truth, est, lo, hi], i) => {
-                const cy = top + i * row + row / 2;
+                const cy = g0 + i * row + row / 2;
                 return (
                   <g key={k}>
-                    <text className="label" x="0" y={cy + 4} style={{ fontFeatureSettings: '"tnum"' }}>
+                    {i % 2 === 0 && (
+                      <rect x="0" y={cy - row / 2} width={w} height={row} fill={T.paperDeep} />
+                    )}
+                    <text className="label-strong" x="0" y={cy + 4}>
                       {k}
                     </text>
-                    <line x1={x(lo)} x2={x(hi)} y1={cy} y2={cy} stroke={T.ink} strokeWidth="1.6" />
-                    <circle cx={x(est)} cy={cy} r="3.8" fill={T.ink} />
-                    <line x1={x(truth)} x2={x(truth)} y1={cy - 8} y2={cy + 8} stroke={T.vermilion} strokeWidth="2" />
+                    {!narrow && g.title !== 'Contrasts' && (
+                      <text className="note" x="46" y={cy + 4}>
+                        {decode(k)}
+                      </text>
+                    )}
+                    <line
+                      x1={x(lo)}
+                      x2={x(hi)}
+                      y1={cy}
+                      y2={cy}
+                      stroke={g.color}
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                    <circle
+                      cx={x(est)}
+                      cy={cy}
+                      r="4.6"
+                      fill={g.color}
+                      stroke="#fff"
+                      strokeWidth="1.3"
+                    />
+                    <line
+                      x1={x(truth)}
+                      x2={x(truth)}
+                      y1={cy - 9}
+                      y2={cy + 9}
+                      stroke={T.vermilion}
+                      strokeWidth="2"
+                    />
                     {!narrow && (
                       <text className="tick" x={w} y={cy + 4} textAnchor="end">
-                        {est.toFixed(3)} ({lo.toFixed(3)}–{hi.toFixed(3)})
+                        {est.toFixed(2)} ({lo.toFixed(2)}–{hi.toFixed(2)})
                       </text>
                     )}
                   </g>
@@ -90,6 +124,18 @@ export const VviRecovery = () => {
             </g>
           );
         })}
+        <line x1={x(1)} x2={x(1)} y1={m.t} y2={h - m.b + 4} stroke={T.ink} strokeWidth="1.2" />
+        {!narrow && (
+          <text className="note" x={w} y={m.t + 8} textAnchor="end">
+            estimate (95% CI)
+          </text>
+        )}
+        <g transform={`translate(${m.l} ${m.t + 2})`}>
+          <line x1="0" x2="0" y1="-6" y2="8" stroke={T.vermilion} strokeWidth="2" />
+          <text className="note" x="7" y="5">
+            planted value
+          </text>
+        </g>
       </ChartSvg>
     </div>
   );
@@ -150,7 +196,27 @@ export const VviScaling = () => {
           people in the synthetic cohort (log scale)
         </text>
 
-        <path d={path(PERSON_DAY)} fill="none" stroke={T.steel} strokeWidth="1.8" />
+        <path
+          d={`${path(PERSON_DAY)}L${f1(x(5000))} ${f1(y(1.03))}L${f1(x(2500))} ${f1(y(1.02))}L${f1(
+            x(1000),
+          )} ${f1(y(1.22))}Z`}
+          fill={T.mist}
+        />
+        <line
+          x1={x(5000)}
+          x2={x(5000)}
+          y1={y(71.86) + 6}
+          y2={y(1.03) - 6}
+          stroke={T.ink}
+          strokeWidth="0.9"
+        />
+        <text className="label-strong" x={x(5000) + 8} y={y(8.6)}>
+          ≈70× faster
+        </text>
+        <text className="note" x={x(5000) + 8} y={y(8.6) + 15}>
+          at 5,000 people
+        </text>
+        <path d={path(PERSON_DAY)} fill="none" stroke={T.steel} strokeWidth="2" />
         {PERSON_DAY.map(([a, b]) => (
           <circle key={a} cx={x(a)} cy={y(b)} r="3" fill={T.steel} />
         ))}
@@ -158,7 +224,7 @@ export const VviScaling = () => {
           {w < 400 ? 'person-day rows' : 'person-day rows (run to 5,000)'}
         </text>
 
-        <path d={path(AGGREGATED)} fill="none" stroke={T.vermilion} strokeWidth="2" />
+        <path d={path(AGGREGATED)} fill="none" stroke={T.vermilion} strokeWidth="2.4" />
         {AGGREGATED.map(([a, b]) => (
           <circle key={a} cx={x(a)} cy={y(b)} r="3" fill={T.vermilion} />
         ))}

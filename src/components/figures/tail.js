@@ -31,7 +31,7 @@ export const TailBands = () => {
   const y = linear([0.25, 1.65], [h - m.b, m.t]);
   const step = (w - m.l - m.r) / KS.length;
   const cx = i => m.l + step * (i + 0.5);
-  const off = Math.min(9, step * 0.12);
+  const off = Math.min(11, step * 0.13);
 
   return (
     <div ref={ref}>
@@ -42,19 +42,48 @@ export const TailBands = () => {
         role="img"
         aria-label="Danish fire-insurance losses: at five thresholds k from 19 to 317, the union band and the first-order band for the tail index ξ. All five union bands contain the interval 0.52 to 0.84.">
         <g transform={`translate(${m.l} 12)`}>
-          <line x1="0" x2="18" y1="0" y2="0" stroke={T.gold} strokeWidth="7" />
+          <line
+            x1="0"
+            x2="18"
+            y1="0"
+            y2="0"
+            stroke={T.river}
+            strokeOpacity="0.55"
+            strokeWidth="9"
+          />
           <text className="label" x="26" y="4">
             union band
           </text>
-          <line x1="118" x2="136" y1="0" y2="0" stroke={T.ink} strokeWidth="1.6" />
+          <line x1="118" x2="136" y1="0" y2="0" stroke={T.vermilion} strokeWidth="2" />
           <text className="label" x="144" y="4">
             first-order band
           </text>
         </g>
 
-        <rect x={m.l} y={y(INTER[1])} width={w - m.l - m.r} height={y(INTER[0]) - y(INTER[1])} fill={T.mist} />
-        <line x1={m.l} x2={w - m.r} y1={y(INTER[0])} y2={y(INTER[0])} stroke={T.river} strokeWidth="1" />
-        <line x1={m.l} x2={w - m.r} y1={y(INTER[1])} y2={y(INTER[1])} stroke={T.river} strokeWidth="1" />
+        <rect
+          x={m.l}
+          y={y(INTER[1])}
+          width={w - m.l - m.r}
+          height={y(INTER[0]) - y(INTER[1])}
+          fill={T.gold}
+          fillOpacity="0.22"
+        />
+        <line
+          x1={m.l}
+          x2={w - m.r}
+          y1={y(INTER[0])}
+          y2={y(INTER[0])}
+          stroke={T.gold}
+          strokeWidth="1.4"
+        />
+        <line
+          x1={m.l}
+          x2={w - m.r}
+          y1={y(INTER[1])}
+          y2={y(INTER[1])}
+          stroke={T.gold}
+          strokeWidth="1.4"
+        />
 
         {[0.25, 0.5, 0.75, 1, 1.25, 1.5].map(v => (
           <g key={v}>
@@ -70,10 +99,39 @@ export const TailBands = () => {
           const [fl, fc, fh] = FIRST[i];
           return (
             <g key={k}>
-              <line x1={cx(i) - off} x2={cx(i) - off} y1={y(ul)} y2={y(uh)} stroke={T.gold} strokeWidth="7" />
-              <circle cx={cx(i) - off} cy={y(uc)} r="3.2" fill={T.ink} />
-              <line x1={cx(i) + off} x2={cx(i) + off} y1={y(fl)} y2={y(fh)} stroke={T.ink} strokeWidth="1.6" />
-              <circle cx={cx(i) + off} cy={y(fc)} r="2.6" fill={T.ink} />
+              <line
+                x1={cx(i) - off}
+                x2={cx(i) - off}
+                y1={y(ul)}
+                y2={y(uh)}
+                stroke={T.river}
+                strokeOpacity="0.55"
+                strokeWidth="10"
+              />
+              <circle
+                cx={cx(i) - off}
+                cy={y(uc)}
+                r="4"
+                fill={T.river}
+                stroke="#fff"
+                strokeWidth="1.3"
+              />
+              <line
+                x1={cx(i) + off}
+                x2={cx(i) + off}
+                y1={y(fl)}
+                y2={y(fh)}
+                stroke={T.vermilion}
+                strokeWidth="2"
+              />
+              <circle
+                cx={cx(i) + off}
+                cy={y(fc)}
+                r="3.2"
+                fill={T.vermilion}
+                stroke="#fff"
+                strokeWidth="1"
+              />
               <text className="tick" x={cx(i)} y={h - m.b + 20} textAnchor="middle">
                 {k}
               </text>
@@ -89,7 +147,13 @@ export const TailBands = () => {
           x={w - m.r - 6}
           y={y(INTER[0]) + 16}
           textAnchor="end"
-          style={{ fill: T.river, paintOrder: 'stroke', stroke: T.paper, strokeWidth: 4, strokeLinejoin: 'round' }}>
+          style={{
+            fill: '#8a6416',
+            paintOrder: 'stroke',
+            stroke: '#fff',
+            strokeWidth: 4,
+            strokeLinejoin: 'round',
+          }}>
           ξ ∈ [0.52, 0.84] at every k
         </text>
         <text className="tick" x={m.l - 8} y={m.t - 14} textAnchor="end">
@@ -131,7 +195,7 @@ export const TailCoverage = () => {
   const [ref, w] = useWidth(440);
   const lw = 162;
   const m = { l: lw, r: 12, t: 46, b: 40 };
-  const row = 15;
+  const row = 17;
   const gap = 30;
   const h = m.t + BENCH.length * row + gap + m.b;
   const x = linear([0, 1], [m.l, w - m.r]);
@@ -145,11 +209,11 @@ export const TailCoverage = () => {
         role="img"
         aria-label="Pre-registered benchmark coverage. In all 16 settings inside the stated range, the union band's worst coverage over four selection rules is 0.95 or more; the usual interval at a selected k falls below 0.80 in 12 of them, as low as 0.03. In four settings outside the range, with ρ = −0.25, both fail.">
         <g transform={`translate(0 12)`}>
-          <circle cx="5" cy="0" r="4" fill={T.vermilion} />
+          <circle cx="5" cy="0" r="4.4" fill={T.river} />
           <text className="label" x="14" y="4">
             union band, worst of four rules
           </text>
-          <circle cx="5" cy="18" r="3.6" fill={T.paper} stroke={T.ink} strokeWidth="1.3" />
+          <circle cx="5" cy="18" r="3.8" fill="#fff" stroke={T.vermilion} strokeWidth="1.6" />
           <text className="label" x="14" y="22">
             usual interval at a selected k
           </text>
@@ -162,9 +226,16 @@ export const TailCoverage = () => {
             </text>
           </g>
         ))}
-        <line x1={x(0.9)} x2={x(0.9)} y1={m.t - 4} y2={h - m.b + 2} stroke={T.vermilion} strokeDasharray="3 3" />
-        <text className="note" x={x(0.9) - 4} y={h - m.b + 18} textAnchor="end" style={{ fill: T.vermilionText }}>
-          0.90
+        <line
+          x1={x(0.9)}
+          x2={x(0.9)}
+          y1={m.t - 4}
+          y2={h - m.b + 2}
+          stroke={T.ink}
+          strokeDasharray="3 3"
+        />
+        <text className="note" x={x(0.9) - 4} y={h - m.b + 18} textAnchor="end">
+          target 0.90
         </text>
         <text className="axis-title" x={(m.l + w - m.r) / 2} y={h - 4} textAnchor="middle">
           coverage after choosing k from the data
@@ -177,15 +248,30 @@ export const TailCoverage = () => {
           const op = out ? 0.5 : 1;
           return (
             <g key={`${fam}${rho}${xi}${n}`} opacity={op}>
+              {i % 2 === 0 && <rect x="0" y={cy - row / 2} width={w} height={row} fill={T.paperDeep} />}
               <text className="tick" x="0" y={cy + 4} style={{ fill: T.ink }}>
                 {fam}
               </text>
               <text className="tick" x="52" y={cy + 4}>
                 ρ {minus(rho)} · ξ {xi} · {n / 1000}k
               </text>
-              <line x1={x(Math.min(u, f))} x2={x(Math.max(u, f))} y1={cy} y2={cy} stroke={T.hair} strokeWidth="1" />
-              <circle cx={x(f)} cy={cy} r="3.4" fill={T.paper} stroke={T.ink} strokeWidth="1.2" />
-              <circle cx={x(u)} cy={cy} r="3.8" fill={T.vermilion} />
+              <line
+                x1={x(Math.min(u, f))}
+                x2={x(Math.max(u, f))}
+                y1={cy}
+                y2={cy}
+                stroke={T.rose}
+                strokeWidth="3"
+              />
+              <circle
+                cx={x(f)}
+                cy={cy}
+                r="3.6"
+                fill="#fff"
+                stroke={T.vermilion}
+                strokeWidth="1.5"
+              />
+              <circle cx={x(u)} cy={cy} r="4.2" fill={T.river} />
             </g>
           );
         })}

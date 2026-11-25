@@ -10,8 +10,9 @@ import { COVER } from '@utils/cover-scene';
  */
 
 export const T = {
-  paper: COVER.cream, // #f6f0e4
-  paperDeep: '#efe6d3',
+  paper: '#ffffff', // the pages are white; the cream belongs to the cover
+  paperDeep: '#f2f5f7', // a cool off-white for rhythm, from the cover's haze
+  land: '#f3f4f2',
   ink: COVER.navy, // #14213a
   text: '#2b3852',
   muted: '#5d6880',
@@ -24,7 +25,10 @@ export const T = {
   deep: COVER.back, // #456a8e, the far towers
   steel: COVER.hill, // #7d9cb4, Mont Royal
   pale: COVER.haze, // #bccbd5, the haze
-  mist: '#dfe6ea',
+  mist: '#e4ebf0',
+  water: '#cddbe5',
+  dusk: '#f2c79c', // the cover's sky at the horizon
+  rose: '#e8a184',
 };
 
 export const DISPLAY = '"Bodoni Moda Variable", "Bodoni Moda", Didot, "Bodoni MT", serif';
@@ -153,6 +157,27 @@ export const SectionHead = ({ label, aside, title, standfirst, as = 'h2' }) => {
 const StyledFigure = styled.figure`
   margin: 0;
 
+  .fig-head {
+    margin-bottom: 16px;
+    padding-top: 12px;
+    border-top: 3px solid ${T.ink};
+  }
+  .fig-title {
+    margin: 0;
+    color: ${T.ink};
+    font-family: ${SANS};
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .fig-sub {
+    margin: 4px 0 0;
+    color: ${T.muted};
+    font-family: ${SANS};
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
   figcaption {
     max-width: 760px;
     margin-top: 14px;
@@ -177,8 +202,14 @@ const StyledFigure = styled.figure`
   }
 `;
 
-export const Figure = ({ n, caption, source, children, className, label }) => (
+export const Figure = ({ n, title, subtitle, caption, source, children, className, label }) => (
   <StyledFigure className={className} aria-label={label}>
+    {title && (
+      <header className="fig-head">
+        <p className="fig-title">{title}</p>
+        {subtitle && <p className="fig-sub">{subtitle}</p>}
+      </header>
+    )}
     {children}
     {(caption || source) && (
       <figcaption>

@@ -32,51 +32,28 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: clamp(16px, 2.2vw, 32px);
+  align-items: start;
 
-  .lead-photo {
-    grid-column: 1 / span 8;
+  .portrait {
+    grid-column: 1 / span 5;
     margin: 0;
   }
-
-  .profile {
-    grid-column: 10 / span 3;
-    align-self: start;
+  .col {
+    grid-column: 7 / span 6;
   }
 
-  .text {
-    grid-column: 2 / span 6;
-    margin-top: clamp(48px, 6vw, 88px);
-  }
-
-  .second-photo {
-    grid-column: 9 / span 4;
-    margin: clamp(48px, 6vw, 88px) 0 0;
-  }
-
-  @media (max-width: 1000px) {
-    .lead-photo {
-      grid-column: 1 / -1;
+  @media (max-width: 900px) {
+    .portrait {
+      grid-column: 1 / span 8;
     }
-    .profile {
-      grid-column: 1 / span 6;
-      margin-top: 40px;
-    }
-    .text {
+    .col {
       grid-column: 1 / -1;
       margin-top: 40px;
     }
-    .second-photo {
-      grid-column: 7 / span 6;
-      grid-row: 2;
-      margin-top: 40px;
-    }
   }
-
-  @media (max-width: 640px) {
-    .profile,
-    .second-photo {
+  @media (max-width: 560px) {
+    .portrait {
       grid-column: 1 / -1;
-      grid-row: auto;
     }
   }
 
@@ -115,6 +92,7 @@ const Text = styled.div`
 `;
 
 const Profile = styled.aside`
+  margin-top: 40px;
   border-top: 1px solid ${T.rule};
 
   h3 {
@@ -182,83 +160,71 @@ const About = () => (
       />
 
       <Grid>
-        <figure className="lead-photo">
+        <figure className="portrait">
           <StaticImage
             className="img"
-            src="../../images/photos/whiteboard-wide.jpg"
+            src="../../images/photos/whiteboard.jpg"
             alt="Ziyi (Ellen) Zhou in a graduation gown, wiping a whiteboard covered in copula formulas"
-            layout="fullWidth"
-            aspectRatio={3 / 2}
-            quality={84}
+            width={620}
+            aspectRatio={4 / 5}
+            quality={86}
             placeholder="dominantColor"
             formats={['AUTO', 'WEBP', 'AVIF']}
           />
           <figcaption>Copula formulas on the whiteboard.</figcaption>
         </figure>
 
-        <Profile className="profile" aria-label="Profile">
-          <h3>Profile</h3>
-          <dl>
-            {PATH.map(s => (
-              <div className="row" key={s.title}>
-                <dt>{s.place}</dt>
-                <dd>
-                  {s.title}
-                  <p>{s.note}</p>
+        <div className="col">
+          <Text>
+            <p className="opening">
+              My work starts with a simple question: how sure can we be about things that almost
+              never happen?
+            </p>
+            <p>
+              Answering it well takes two skills I try to hold to the same standard — careful
+              statistics, and engineering that lets anyone rerun the result.
+            </p>
+            <p>
+              I trained in statistics at{' '}
+              <a className="inline" href="https://www.hku.hk/">
+                HKU
+              </a>{' '}
+              and{' '}
+              <a className="inline" href="https://www.mcgill.ca/mathstat/">
+                McGill
+              </a>
+              , and today I apply it to education data for SDG 4 at the{' '}
+              <a className="inline" href="https://uis.unesco.org/">
+                UNESCO Institute for Statistics
+              </a>
+              . Next, I want to keep building on official statistics and education data, and to
+              bring the same rigour to quantitative research.
+            </p>
+          </Text>
+
+          <Profile aria-label="Profile">
+            <h3>Profile</h3>
+            <dl>
+              {PATH.map(s => (
+                <div className="row" key={s.title}>
+                  <dt>{s.place}</dt>
+                  <dd>
+                    {s.title}
+                    <p>{s.note}</p>
+                  </dd>
+                </div>
+              ))}
+              <div className="row">
+                <dt>Working languages</dt>
+                <dd className="langs">
+                  {LANGUAGES.map(l => (
+                    <span key={l}>{l}</span>
+                  ))}
                 </dd>
               </div>
-            ))}
-            <div className="row">
-              <dt>Working languages</dt>
-              <dd className="langs">
-                {LANGUAGES.map(l => (
-                  <span key={l}>{l}</span>
-                ))}
-              </dd>
-            </div>
-          </dl>
-        </Profile>
-
-        <Text className="text">
-          <p className="opening">
-            My work starts with a simple question: how sure can we be about things that almost
-            never happen?
-          </p>
-          <p>
-            Answering it well takes two skills I try to hold to the same standard — careful
-            statistics, and engineering that lets anyone rerun the result.
-          </p>
-          <p>
-            I trained in statistics at{' '}
-            <a className="inline" href="https://www.hku.hk/">
-              HKU
-            </a>{' '}
-            and{' '}
-            <a className="inline" href="https://www.mcgill.ca/mathstat/">
-              McGill
-            </a>
-            , and today I apply it to education data for SDG 4 at the{' '}
-            <a className="inline" href="https://uis.unesco.org/">
-              UNESCO Institute for Statistics
-            </a>
-            . Next, I want to keep building on official statistics and education data, and to
-            bring the same rigour to quantitative research.
-          </p>
-        </Text>
-
-        <figure className="second-photo">
-          <StaticImage
-            className="img"
-            src="../../images/photos/autumn.jpg"
-            alt="Ziyi (Ellen) Zhou in a red sweater, sitting under a tree among autumn leaves"
-            width={520}
-            aspectRatio={4 / 5}
-            quality={84}
-            placeholder="dominantColor"
-            formats={['AUTO', 'WEBP', 'AVIF']}
-          />
-          <figcaption>Autumn leaves.</figcaption>
-        </figure>
+            </dl>
+          </Profile>
+        </div>
       </Grid>
     </div>
   </Page>

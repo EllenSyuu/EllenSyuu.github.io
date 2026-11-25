@@ -53,6 +53,7 @@ const STRANDS = [
 ];
 
 const pct = v => `${(((Math.min(v, END) - START) / (END - START)) * 100).toFixed(2)}%`;
+const COLOURS = { stats: T.river, edu: '#c2902f', code: T.ink };
 const YEARS = Array.from({ length: END - START + 1 }, (_, k) => START + k);
 
 const StyledChart = styled.div`
@@ -98,12 +99,30 @@ const StyledChart = styled.div`
   .bar {
     position: absolute;
     top: 50%;
-    height: 5px;
-    margin-top: -2.5px;
-    background: ${T.ink};
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 4px;
+    background: var(--strand);
   }
-  .bar.now {
+  .bar.now:after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: -2px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
     background: ${T.vermilion};
+  }
+  .strand h3 i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 2px;
+    background: var(--strand);
+    vertical-align: 0;
   }
   .today {
     position: absolute;
@@ -158,12 +177,17 @@ const StyledChart = styled.div`
 const ExperienceTimeline = () => (
   <Figure
     n={1}
+    title="Every role since 2020, month by month"
+    subtitle="Statistics and research, education data and teaching, programming and quantitative work"
     label="Timeline of roles from 2020 to today"
-    caption="Every role since 2020, to the month. Research and teaching roles ran alongside the B.Sc. and M.Sc.; vermilion marks roles that continue today, and the dashed line marks today.">
+    caption="Every role since 2020, to the month. Research and teaching roles ran alongside the B.Sc. and M.Sc.; a vermilion dot marks roles that continue today, and the dashed line marks today.">
     <StyledChart>
       {STRANDS.map(s => (
-        <div className="strand" key={s.key}>
-          <h3>{s.title}</h3>
+        <div className="strand" key={s.key} style={{ '--strand': COLOURS[s.key] }}>
+          <h3>
+            <i />
+            {s.title}
+          </h3>
           {s.roles.map(r => {
             const [role, org] = r.label.split(' · ');
             return (

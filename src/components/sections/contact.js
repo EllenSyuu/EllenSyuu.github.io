@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { StaticImage } from 'gatsby-plugin-image';
 import { formAccessKey, socialMedia } from '@config';
 import { Page, SectionHead, T, DISPLAY, SANS, cap } from '@components/editorial';
 
@@ -15,22 +16,37 @@ const Grid = styled.div`
   column-gap: clamp(16px, 2.2vw, 32px);
   padding-bottom: clamp(96px, 10vw, 150px);
 
-  form,
-  .thanks {
-    grid-column: 1 / span 7;
+  align-items: start;
+
+  .photo {
+    grid-column: 1 / span 4;
+    margin: 0;
+    figcaption {
+      margin-top: 10px;
+      color: ${T.muted};
+      font-family: ${SANS};
+      font-size: 12.5px;
+    }
+  }
+  .side {
+    grid-column: 6 / span 7;
   }
   aside {
-    grid-column: 9 / span 4;
+    margin-top: 56px;
   }
 
   @media (max-width: 900px) {
-    form,
-    .thanks,
-    aside {
+    .photo {
+      grid-column: 1 / span 6;
+      margin-bottom: 40px;
+    }
+    .side {
       grid-column: 1 / -1;
     }
-    aside {
-      margin-top: 56px;
+  }
+  @media (max-width: 560px) {
+    .photo {
+      grid-column: 1 / span 9;
     }
   }
 `;
@@ -225,69 +241,91 @@ const Contact = () => {
           standfirst="Leave me a note — it comes straight to my inbox, and I’ll write back."
         />
         <Grid>
-          {state === 'sent' ? (
-            <Thanks className="thanks" role="status">
-              <h3>Thank you.</h3>
-              <p>Your message is on its way. I’ll write back soon.</p>
-              <p>— Ellen</p>
-            </Thanks>
-          ) : (
-            <Form onSubmit={onSubmit}>
-              <label htmlFor="c-name">
-                Name
-                <input id="c-name" name="name" type="text" autoComplete="name" required placeholder="Your name" />
-              </label>
-              <label htmlFor="c-email">
-                Email
+          <figure className="photo">
+            <StaticImage
+              className="img"
+              src="../../images/photos/autumn.jpg"
+              alt="Ziyi (Ellen) Zhou in a red sweater, sitting under a tree among autumn leaves"
+              width={480}
+              aspectRatio={4 / 5}
+              quality={86}
+              placeholder="dominantColor"
+              formats={['AUTO', 'WEBP', 'AVIF']}
+            />
+            <figcaption>Autumn leaves.</figcaption>
+          </figure>
+          <div className="side">
+            {state === 'sent' ? (
+              <Thanks className="thanks" role="status">
+                <h3>Thank you.</h3>
+                <p>Your message is on its way. I’ll write back soon.</p>
+                <p>— Ellen</p>
+              </Thanks>
+            ) : (
+              <Form onSubmit={onSubmit}>
+                <label htmlFor="c-name">
+                  Name
+                  <input
+                    id="c-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    required
+                    placeholder="Your name"
+                  />
+                </label>
+                <label htmlFor="c-email">
+                  Email
+                  <input
+                    id="c-email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    placeholder="you@example.com"
+                  />
+                </label>
+                <label className="full" htmlFor="c-message">
+                  Message
+                  <textarea id="c-message" name="message" required placeholder="Hello Ellen…" />
+                </label>
                 <input
-                  id="c-email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="you@example.com"
+                  className="hp"
+                  type="checkbox"
+                  name="botcheck"
+                  tabIndex="-1"
+                  autoComplete="off"
+                  aria-hidden="true"
                 />
-              </label>
-              <label className="full" htmlFor="c-message">
-                Message
-                <textarea id="c-message" name="message" required placeholder="Hello Ellen…" />
-              </label>
-              <input
-                className="hp"
-                type="checkbox"
-                name="botcheck"
-                tabIndex="-1"
-                autoComplete="off"
-                aria-hidden="true"
-              />
-              <div className="actions">
-                <p className={`status${state === 'error' ? ' error' : ''}`} aria-live="polite">
-                  {state === 'error' ? error : state === 'sending' ? 'Sending…' : ''}
-                </p>
-                <button type="submit" disabled={state === 'sending'}>
-                  {state === 'sending' ? 'Sending…' : 'Send the note'}
-                </button>
-              </div>
-            </Form>
-          )}
+                <div className="actions">
+                  <p className={`status${state === 'error' ? ' error' : ''}`} aria-live="polite">
+                    {state === 'error' ? error : state === 'sending' ? 'Sending…' : ''}
+                  </p>
+                  <button type="submit" disabled={state === 'sending'}>
+                    {state === 'sending' ? 'Sending…' : 'Send the note'}
+                  </button>
+                </div>
+              </Form>
+            )}
 
-          <Elsewhere>
-            <h3>Elsewhere</h3>
-            <ul>
-              <li>
-                GitHub
-                {github && <a href={github.url}>EllenSyuu</a>}
-              </li>
-              <li>
-                LinkedIn
-                {linkedin && <a href={linkedin.url}>ellenziyizhou</a>}
-              </li>
-              <li>
-                Based in
-                <span className="v">Montréal, Québec</span>
-              </li>
-            </ul>
-          </Elsewhere>
+            <Elsewhere>
+              <h3>Elsewhere</h3>
+              <ul>
+                <li>
+                  GitHub
+                  {github && <a href={github.url}>EllenSyuu</a>}
+                </li>
+                <li>
+                  LinkedIn
+                  {linkedin && <a href={linkedin.url}>ellenziyizhou</a>}
+                </li>
+                <li>
+                  Based in
+                  <span className="v">Montréal, Québec</span>
+                </li>
+              </ul>
+            </Elsewhere>
+          </div>
         </Grid>
       </div>
     </Page>

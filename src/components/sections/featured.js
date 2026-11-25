@@ -21,6 +21,8 @@ const STUDIES = {
     figs: [
       {
         C: SdgVintages,
+        title: 'Each new release rewrites the recent past',
+        subtitle: 'Countries with a value for SDG indicator 4.c.1, by reference year · synthetic data',
         area: 'f1',
         caption:
           'One indicator (4.c.1, teachers with the minimum required qualifications), published four times: countries with a value, by reference year. Each release adds a year, fills in late data and revises the past.',
@@ -33,13 +35,17 @@ const STUDIES = {
     figs: [
       {
         C: QuebecDependence,
+        title: 'Early-summer extremes stay local; autumn extremes are shared',
+        subtitle: 'Tail dependence of monthly rainfall maxima between six stations in southern Québec, 1930–2017',
         area: 'f1',
         caption:
-          'Six ECCC stations in southern Québec, 1930–2017. Each pair is joined by a line weighted by the empirical upper-tail dependence of their monthly precipitation maxima at the 0.8 quantile. *Under independence the value is 0.2. In June–July extremes are close to independent; in October–November most pairs share their extremes.',
+          'Six ECCC stations in southern Québec, 1930–2017. Each pair is joined by an arc coloured by the empirical upper-tail dependence of their monthly precipitation maxima at the 0.8 quantile; under independence the value is 0.2. In June–July extremes are close to independent; in October–November most pairs share their extremes.',
         source: 'Base map: Natural Earth (public domain). Values: SAC-thesis-2026, results/tables/tab_07.',
       },
       {
         C: ExtremalCoefficient,
+        title: 'How many stations an extreme reaches, by season',
+        subtitle: 'Six-station extremal coefficient with 90% bootstrap interval',
         area: 'f2',
         caption:
           'Six-station extremal coefficient by season, with 90% block-bootstrap intervals (200 replicates). The June–July minus October–November difference is 1.83 (1.24–2.28).',
@@ -52,6 +58,8 @@ const STUDIES = {
     figs: [
       {
         C: VviRecovery,
+        title: 'Every planted effect is recovered',
+        subtitle: 'Hazard ratio of reinfection by history, relative to two Comirnaty doses (BB) · synthetic cohort of 600,000',
         area: 'f1',
         caption:
           'Synthetic validation. Hazard ratios of reinfection by vaccination–infection history (B = Comirnaty dose, S = CoronaVac dose, I = infection, in order), with 95% intervals; the vermilion tick is the value planted in the simulation. All nine are recovered.',
@@ -59,6 +67,8 @@ const STUDIES = {
       },
       {
         C: VviScaling,
+        title: 'Aggregation fits a million people in 13 seconds',
+        subtitle: 'Build and fit time by cohort size, log–log scale',
         area: 'f2',
         caption:
           'Build and fit time against cohort size. Identical estimates; only the cost differs. At 5,000 people the person-day route peaks at 5.3 GB of memory, the aggregated one at 59 MB.',
@@ -71,6 +81,8 @@ const STUDIES = {
     figs: [
       {
         C: TailBands,
+        title: 'One interval survives every choice of threshold',
+        subtitle: 'Tail index ξ of Danish fire-insurance losses at five thresholds k',
         area: 'f1',
         caption:
           'Danish fire-insurance losses (n = 2,167). At each threshold k, the union band (the hull of simultaneous bands over a range of working ρ′) and the first-order band. The shaded stripe, ξ ∈ [0.52, 0.84], lies inside every union band.',
@@ -78,6 +90,8 @@ const STUDIES = {
       },
       {
         C: TailCoverage,
+        title: 'The usual interval collapses; the union band holds',
+        subtitle: 'Coverage after choosing k from the data, pre-registered benchmark',
         area: 'f2',
         caption:
           'Pre-registered benchmark, run once on frozen code. Inside the stated ρ range the union band holds coverage in all 16 settings; the usual interval at a selected k falls below 0.80 in 12. Outside it (ρ = −0.25) both fail, and this is reported.',
@@ -403,10 +417,10 @@ const Featured = () => {
               </p>
 
               <Body className={study.layout}>
-                {study.figs.map(({ C, area, caption, source }) => {
+                {study.figs.map(({ C, area, title, subtitle, caption, source }) => {
                   n += 1;
                   return (
-                    <Figure key={area} className={area} n={n} caption={caption} source={source}>
+                    <Figure key={area} className={area} n={n} title={title} subtitle={subtitle} caption={caption} source={source}>
                       <C />
                     </Figure>
                   );

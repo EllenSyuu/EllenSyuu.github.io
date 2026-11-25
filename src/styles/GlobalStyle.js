@@ -67,10 +67,10 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 10px;
   }
 
-  /* Fine paper grain over everything (pointer-events off, very low contrast). */
-  body:after {
+  /* Fine paper grain, on the cover only (pointer-events off, very low contrast). */
+  #top:after {
     content: '';
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 100;
     pointer-events: none;
@@ -463,8 +463,8 @@ const GlobalStyle = createGlobalStyle`
       filter: none !important;
     }
 
-    /* The full-page grain is blended over everything; skip it on phones. */
-    body:after {
+    /* The cover's grain is skipped on phones. */
+    #top:after {
       display: none;
     }
   }

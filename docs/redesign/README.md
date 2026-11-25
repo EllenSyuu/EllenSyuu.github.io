@@ -24,9 +24,11 @@ Everything is derived from the cover (`src/components/sections/hero.js`, `src/ut
 
 - **Margins.** Sections use the cover's own page margin, `clamp(22px, 5.5vw, 80px)`, so every column lines up with the masthead. A 12-column grid allows deliberate asymmetry.
 - **Section openings.** The cover's double-ruled issue bar (11 px Inter, 0.22 em tracking) opens every section, with a Bodoni Moda headline and a Bodoni standfirst. No numbers.
-- **Palette.** `COVER` constants only: paper `#f6f0e4`, ink `#14213a`, vermilion `#c8431f` (with `#a3331a` for small text, to pass WCAG AA), gold `#e0ad4a`, and the cover's river `#3f6f96`, hill `#7d9cb4` and haze `#bccbd5` for data. No gradients, glows or shadows.
+- **Palette.** The cover keeps its cream; the pages below are white (`#ffffff`, with a cool off-white `#f2f5f7` for rhythm), and the paper grain now stays on the cover. Otherwise `COVER` constants only: ink `#14213a`, vermilion `#c8431f` (with `#a3331a` for small text, to pass WCAG AA), gold `#e0ad4a`, and the cover's river `#3f6f96`, hill `#7d9cb4` and haze `#bccbd5` for data. No gradients, glows or shadows.
 - **Type.** Bodoni Moda (upright only) for headlines, decks and figures of note; Inter for text, captions and chart labels with tabular figures.
-- **Rhythm.** One section sits on a deeper paper (`#efe6d3`) to vary the pace; case studies use four different layouts (wide figure, map plus side figure, text beside figures, figure pair).
+- **Figures.** Each figure has a headline and a standfirst above it (FT/NYT style) and a numbered caption with its source below; colours carry meaning (Comirnaty/CoronaVac, release vintage, dependence class), with direct labels and annotations.
+- **Photographs.** The whiteboard portrait sits beside the biography; the autumn photograph closes the page beside the contact form.
+- **Rhythm.** One section sits on the cool off-white to vary the pace; case studies use four different layouts (wide figure, map plus side figure, text beside figures, figure pair).
 - **Motion.** Kept to the cover (its snow, birds and boat). Sections below do not animate.
 
 Shared pieces: `src/components/editorial.js` (tokens, `Page`, `SectionHead`, `Figure`, chart helpers). Figures: `src/components/figures/`.
@@ -36,11 +38,11 @@ Shared pieces: `src/components/editorial.js` (tokens, `Page`, `SectionHead`, `Fi
 | Item | Status | Source of every number / asset |
 | --- | --- | --- |
 | Cover painting, masthead, cover motion | **Retained, unchanged** | — |
-| Whiteboard photograph | **Retained**, now full-frame (3:2) from the original in the project files, EXIF stripped | Ellen's own photograph |
-| Autumn photograph | **Retained** | Ellen's own photograph |
+| Whiteboard photograph | **Retained** (About, beside the biography) | Ellen's own photograph |
+| Autumn photograph | **Retained**, moved to Contact | Ellen's own photograph |
 | Fig. 1 — roles since 2020 | **Replaced** (range chart) | Existing month-exact role data |
 | Fig. 2 — SDG 4.c.1 in four releases | **Replaced** (was stacked-sheets drawing) | `EllenSyuu/SDG` synthetic generator, seed 42 (values already on the site; match the repo's `figure.png`) |
-| Fig. 3 — Québec dependence maps | **Replaced** (was terrain/cloud drawing) | Station coordinates: `SAC-thesis-2026/data/processed/stations.csv`; λ_U: `results/tables/tab_07_tail_dependence_empirical.csv`; base map: Natural Earth 10 m land, lakes, rivers, boundaries |
+| Fig. 3 — Québec dependence maps with locator inset | **Replaced** (was terrain/cloud drawing) | Station coordinates: `SAC-thesis-2026/data/processed/stations.csv`; λ_U: `results/tables/tab_07_tail_dependence_empirical.csv`; base map: Natural Earth 10 m land, lakes, rivers, boundaries |
 | Fig. 4 — extremal coefficient by season | **New** | `SAC-thesis-2026/results/tables/tab_20_bootstrap_theta_eta.csv` |
 | Fig. 5 — VVI recovered vs planted hazard ratios | **Replaced** (was harbour skyline) | `EllenSyuu/VVI` README, "Validated against a planted ground truth" |
 | Fig. 6 — VVI build-and-fit time | **Replaced** | `EllenSyuu/VVI/docs/benchmark.md` |
@@ -65,7 +67,7 @@ Synthetic and real data are labelled in every caption: SDG and VVI figures are s
 - Cover: pixel comparison before/after differs only where the animated birds, boat and snow are mid-flight (0.2% of pixels).
 - Links: all 20 internal links and anchors resolve; every external repository link answers.
 - Accessibility (axe-core, WCAG 2 A/AA) on the home page: 0 violations (previously 17 contrast failures). Form fields now have explicit `for`/`id` labels; every chart has a text alternative.
-- Weight: about 1.1 MB transferred on first load at 1440 px (1.0 MB before); the larger About photograph accounts for the difference. The ambient canvas, cursor trail and scroll observers no longer run.
+- Weight: about 1.1 MB transferred on first load at 1440 px (1.0 MB before); the figures and their geometry account for most of the difference. The ambient canvas, cursor trail and scroll observers no longer run.
 
 ## 6. Unresolved items for Ellen
 

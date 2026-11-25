@@ -6,10 +6,10 @@ const variables = css`
        with orange kept for autumn things and for the data that matters.
        Variable names are kept from v4 so every component keeps working:
        "navy" = paper, "slate" = ink, "green" = the warm accent. */
-    --dark-navy: #ece4d4;
-    --navy: #f6f0e4;
-    --light-navy: #fbf7ee;
-    --lightest-navy: #ddd4c2;
+    --dark-navy: #eef1f4;
+    --navy: #ffffff;
+    --light-navy: #ffffff;
+    --lightest-navy: #e2e6eb;
     --navy-shadow: rgba(20, 33, 58, 0.14);
     --dark-slate: #66708a;
     --slate: #3f4c66;
@@ -18,7 +18,7 @@ const variables = css`
     --white: #14213a;
     --green: #c8431f;
     --green-tint: rgba(200, 67, 31, 0.08);
-    --photo-tint: #ece4d4;
+    --photo-tint: #eef1f4;
     --amber: #e0ad4a;
     --gold: #e0ad4a;
     --maple: #c8431f;
