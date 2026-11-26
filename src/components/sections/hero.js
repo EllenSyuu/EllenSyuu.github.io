@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import riverLife from '@utils/river-life';
 import { Link, withPrefix } from 'gatsby';
 import styled, { keyframes } from 'styled-components';
 import { showResume, socialMedia } from '@config';
@@ -90,6 +91,19 @@ const StyledHero = styled.section`
       opacity: var(--fade-water, 1);
     }
     /* the river continues below the drawing, lightening into the paper of the next page */
+    .cv-haze {
+      opacity: var(--haze, 0);
+    }
+    .cv-bridge {
+      opacity: var(--fade-mid, 1);
+    }
+    .deep:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, ${COVER.haze} 0%, #d6d8d2 40%, ${COVER.cream} 90%);
+      opacity: var(--haze, 0);
+    }
     .deep {
       position: absolute;
       top: calc(100% - 1px);
@@ -120,6 +134,11 @@ const StyledHero = styled.section`
     }
     .cv-ferry {
       animation: ${sail} 70s linear infinite alternate;
+    }
+    /* when the river is driven by utils/river-life.js, it replaces these loops */
+    &.river-live .cv-water,
+    &.river-live .cv-ferry {
+      animation: none;
     }
     @media (prefers-reduced-motion: reduce) {
       animation: none;
@@ -322,10 +341,16 @@ const StyledHero = styled.section`
 
 const Hero = () => {
   const layers = useMemo(() => coverLayers(), []);
+  const sceneRef = useRef(null);
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const pin = scene && scene.closest('.pin');
+    return riverLife(scene, pin ? pin.parentElement : null);
+  }, []);
 
   return (
     <StyledHero id="top">
-      <div className="scene" aria-hidden="true">
+      <div className="scene" aria-hidden="true" ref={sceneRef}>
         {COVER_LAYERS.map(k => (
           <div key={k} className={`layer layer-${k}`}>
             <svg

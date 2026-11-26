@@ -195,17 +195,19 @@ export const coverLayers = () => {
     [380, 828, 300],
     [820, 828, 110],
   ].forEach(([x, y, l]) => {
-    water += `M${x} ${y}h${l}`;
+    // one path per current, so the river can move them one by one (utils/river-life.js)
+    water += `<path class="cv-current" data-x="${x}" data-y="${y}" data-l="${l}" d="M${x} ${y}h${l}"/>`;
   });
-  o += `<path class="cv-water" d="${water}" stroke="${C.cream}" stroke-width="1" opacity=".5" fill="none"/>`;
+  o += `<g class="cv-water" stroke="${C.cream}" stroke-width="1" opacity=".5" fill="none">${water}</g>`;
   let glow = '';
   [884, 930, 973, 806, 1055, 722, 1134, 476].forEach((x, i) => {
-    for (let k = 0; k < 5 - (i % 2); k++)
-      glow += `M${x - 7 + k * 1.5} ${760 + k * 8}h${14 - k * 3}`;
+    let g = '';
+    for (let k = 0; k < 5 - (i % 2); k++) g += `M${x - 7 + k * 1.5} ${760 + k * 8}h${14 - k * 3}`;
+    glow += `<path class="cv-glow" data-x="${x}" d="${g}"/>`;
   });
-  o += `<path class="cv-tw" d="${glow}" stroke="${C.gold}" stroke-width="1.6" opacity=".9" fill="none"/>`;
+  o += `<g class="cv-tw" stroke="${C.gold}" stroke-width="1.6" opacity=".9" fill="none">${glow}</g>`;
   // the river ferry
-  o += `<g class="cv-ferry"><path d="M236 786h96l-10 12h-78Z" fill="${C.navy}"/><path d="M256 786v-9h52v9Z M270 777v-6h22v6Z" fill="${C.cream}"/><path d="M262 781h4m6 0h4m6 0h4m6 0h4m6 0h4" stroke="${C.gold}" stroke-width="2"/><path d="M281 771v-12" stroke="${C.navy}" stroke-width="1.4"/></g>`;
+  o += `<g class="cv-ferry"><path class="cv-wake" d="" stroke="${C.cream}" stroke-width="1" opacity=".55" fill="none"/><path d="M236 786h96l-10 12h-78Z" fill="${C.navy}"/><path d="M256 786v-9h52v9Z M270 777v-6h22v6Z" fill="${C.cream}"/><path d="M262 781h4m6 0h4m6 0h4m6 0h4m6 0h4" stroke="${C.gold}" stroke-width="2"/><path d="M281 771v-12" stroke="${C.navy}" stroke-width="1.4"/></g>`;
 
   // Jacques-Cartier bridge
   let br = 'M700 752H1440M700 736H1440';
@@ -215,10 +217,16 @@ export const coverLayers = () => {
     const t = (bx - 900) / 240;
     br += `M${bx} ${(736 - 4 * 48 * t * (1 - t)).toFixed(1)}V736`;
   }
-  o += `<path d="${br}" fill="none" stroke="${C.gold}" stroke-width="1.5"/>`;
+  o += `<g class="cv-bridge"><path d="${br}" fill="none" stroke="${C.gold}" stroke-width="1.5"/>`;
   [780, 900, 1140, 1300].forEach(px => {
     o += `<path d="M${px} 752V806" stroke="${C.gold}" stroke-width="2.4"/>`;
   });
+  o += `</g>`;
+  // the river turns to mist during the transition below the cover (opacity from --haze; 0 on the cover)
+  o += `<defs><linearGradient id="cvhaze" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${C.haze}" stop-opacity="0"/><stop offset=".5" stop-color="${C.haze}"/></linearGradient></defs>`;
+  o += `<rect class="cv-haze" x="0" y="${
+    GROUND - 160
+  }" width="1440" height="330" fill="url(#cvhaze)"/>`;
   L.water = o;
   return L;
 };

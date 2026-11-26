@@ -13,6 +13,7 @@ import {
   Impact,
   Contact,
 } from '@components';
+import { PaperLayer, Currents } from '@components/paper';
 
 /* The leaves and the passing birds belong to the cover; below it they fade out, so nothing
    moves across the reading pages. */
@@ -144,6 +145,8 @@ const Sheet = styled.div`
   }
 
   > section {
+    position: relative;
+    z-index: 1;
     padding-top: 64px;
     padding-bottom: 28px;
     @media (max-width: 768px) {
@@ -208,7 +211,8 @@ const useCameraMove = ref => {
       s.setProperty('--text-y', `${(-34 * ss(0, 0.4, p)).toFixed(1)}px`);
       s.setProperty('--fade-far', (1 - ss(0.36, 0.68, p)).toFixed(3));
       s.setProperty('--fade-mid', (1 - ss(0.42, 0.74, p)).toFixed(3));
-      s.setProperty('--fade-water', (1 - ss(0.52, 0.82, p)).toFixed(3));
+      s.setProperty('--haze', ss(0.44, 0.68, p).toFixed(3));
+      s.setProperty('--fade-water', (1 - ss(0.62, 0.88, p)).toFixed(3));
       const so = ss(0.7, 0.95, p);
       s.setProperty('--stats-o', so.toFixed(3));
       s.setProperty('--stats-y', `${((1 - so) * 26).toFixed(1)}px`);
@@ -253,12 +257,14 @@ const IndexPage = ({ location }) => {
         <Stage ref={stage}>
           <div className="pin">
             <Hero />
+            <Currents />
             <div className="numbers">
               <Stats />
             </div>
           </div>
         </Stage>
         <Sheet>
+          <PaperLayer />
           <About />
           <Jobs />
           <Focus />
