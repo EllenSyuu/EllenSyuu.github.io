@@ -7,7 +7,7 @@ module.exports = {
     title: config.name,
     description: config.description,
     siteUrl: config.siteUrl, // No trailing slash allowed!
-    image: '/og.png', // Path to your image you placed in the 'static' folder
+    image: '/og-cover.png', // Path to your image you placed in the 'static' folder
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
